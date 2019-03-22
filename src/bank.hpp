@@ -7,7 +7,7 @@ class Bank
     void* chr[256];
     void* bgm[256];
     void* eff[256];
-    int pal[256];
+    unsigned char pal[1024];
 
     Bank(const void* rom, size_t size)
     {
