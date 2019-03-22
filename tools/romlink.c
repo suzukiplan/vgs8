@@ -20,6 +20,23 @@ struct BmpHead {
     unsigned int inum;     /* 重要色数 */
 };
 
+/* Wav情報ヘッダ */
+struct WavHead {
+    char riff[4];
+    unsigned int fsize;
+    char wave[4];
+    char fmt[4];
+    unsigned int bnum;
+    unsigned short fid;
+    unsigned short ch;
+    unsigned int sample;
+    unsigned int bps;
+    unsigned short bsize;
+    unsigned short bits;
+    char data[4];
+    unsigned int dsize;
+};
+
 unsigned char palette_data[1024];
 int palette_loaded;
 
@@ -217,7 +234,106 @@ static int linkBGM(FILE* fpW, const char* file)
 
 static int linkEFF(FILE* fpW, const char* file)
 {
-    return -1; // TODO: not implemented
+
+    FILE* fpR = NULL;
+    int rc = 0;
+    struct WavHead dh;
+    char* data = NULL;
+    char mh[4];
+
+    /* 読み込みファイルをオープン */
+    rc++;
+    if (NULL == (fpR = fopen(file, "rb"))) {
+        fprintf(stderr, "ERROR: Could not open: %s\n", file);
+        goto ENDPROC;
+    }
+
+    /* 情報ヘッダを読み込む */
+    rc++;
+    if (sizeof(dh) != fread(&dh, 1, sizeof(dh), fpR)) {
+        fprintf(stderr, "ERROR: Invalid file header.\n");
+        goto ENDPROC;
+    }
+
+    /* 形式チェック */
+    rc++;
+    if (0 != strncmp(dh.riff, "RIFF", 4)) {
+        fprintf(stderr, "ERROR: Not RIFF format.\n");
+        goto ENDPROC;
+    }
+    rc++;
+    if (0 != strncmp(dh.wave, "WAVE", 4)) {
+        fprintf(stderr, "ERROR: Not WAVE format.\n");
+        goto ENDPROC;
+    }
+    rc++;
+    if (0 != strncmp(dh.fmt, "fmt ", 4)) {
+        fprintf(stderr, "ERROR: Invalid format.\n");
+        goto ENDPROC;
+    }
+    rc++;
+    if (0 != strncmp(dh.data, "data", 4)) {
+        fprintf(stderr, "ERROR: Invalid data.\n");
+        goto ENDPROC;
+    }
+
+#if 0
+    printf("Header of %s:\n", file);
+    printf(" - Format: %d\n", dh.fid);
+    printf(" - Channel: %dch\n", dh.ch);
+    printf(" - Sample: %dHz\n", dh.sample);
+    printf(" - Transform: %dbps\n", dh.bps);
+    printf(" - Block-size: %dbyte\n", (int)dh.bsize);
+    printf(" - Bit-rate: %dbit\n", (int)dh.bits);
+    printf(" - PCM: %dbyte\n", (int)dh.dsize);
+#endif
+
+    rc++;
+    if (22050 != dh.sample) {
+        fprintf(stderr, "ERROR: Sampling rate is not 22050Hz.\n");
+        goto ENDPROC;
+    }
+    rc++;
+    if (1 != dh.ch) {
+        fprintf(stderr, "ERROR: Sampling channel is not 1(mono).\n");
+        goto ENDPROC;
+    }
+    rc++;
+    if (16 != dh.bits) {
+        fprintf(stderr, "ERROR: Sampling bit rate is not 16bit.\n");
+        goto ENDPROC;
+    }
+    rc++;
+    if (dh.sample * 2 != dh.bps) {
+        fprintf(stderr, "ERROR: Invalid transform-rate(byte/sec).\n");
+        goto ENDPROC;
+    }
+
+    /* 波形データを読む込む領域を確保する */
+    rc++;
+    if (NULL == (data = (char*)malloc(dh.dsize))) {
+        fprintf(stderr, "ERROR: Memory allocation error.\n");
+        goto ENDPROC;
+    }
+
+    /* 波形データを読み込む */
+    rc++;
+    if (dh.dsize != fread(data, 1, dh.dsize, fpR)) {
+        fprintf(stderr, "ERROR: Could not read PCM data.\n");
+        goto ENDPROC;
+    }
+
+    /* 波形データをLZ4で圧縮して書き込む */
+    rc = compressAndWrite(fpW, data, dh.dsize);
+
+ENDPROC:
+    if (data) {
+        free(data);
+    }
+    if (fpR) {
+        fclose(fpR);
+    }
+    return rc;
 }
 
 int main(int argc, char* argv[])
