@@ -2,9 +2,30 @@
 
 ※まだ開発途中です
 
-SUZUKI PLAN - Video Game System - 8bit (VGS8) は, 現代向けに再設計された新しい8bitゲーム機です。
-このリポジトリでは, VGS8コアシステムのエミュレータをプラットフォーム非依存な形式（HALを省略した形）で提供します。
-VGS8の基礎アーキテクチャは, 任天堂のファミリーコンピュータ（ファミコン）から着想を得て設計していますが, ファミコンとの互換性はありません。
+- SUZUKI PLAN - Video Game System - 8bit (VGS8) は, 現代向けに再設計された新しい8bitゲーム機です
+- このリポジトリでは, VGS8コアシステムのエミュレータ（HALを省略した形）とVGS用ゲーム開発に必要なSDKを提供します
+- VGS8の基礎アーキテクチャは, 任天堂のファミリーコンピュータ（ファミコン）から着想を得て設計していますが, ファミコンとの互換性はありません
+
+## Setup
+
+### Pre requests
+
+- GNU make
+- CLANG
+- cc65
+
+### Setup
+
+```
+git clone https://github.com/suzukiplan/vgs8
+cd vgs8
+git submodule update --init --recursive
+make
+```
+
+- 上記を実行することで, ROMをリンクするツール（romlink）の生成とVGS8コアのテストが実行されます
+- 各自が実装するHALには [src](src) ディレクトリ以下のモジュールを取り込んで使用します
+
 
 ## Features
 
@@ -33,8 +54,8 @@ VGS8の基礎アーキテクチャは, 任天堂のファミリーコンピュ�
 |$0100〜$01FF|Stack|
 |$0200〜$4FFF|RAM|
 |$5000〜$53FF|Sprite OAM (4x256)|
-|$5400|I/O port: Program Bank of $8000〜$BFFF|
-|$5401|I/O port: Program Bank of $8000〜$BFFF|
+|$5400|I/O port (RW): PRG Bank of $8000〜$BFFF|
+|$5401|I/O port (RW): PRG Bank of $C000〜$FFFF|
 |$5402〜$5FFF|other I/O ports (WIP)|
 |$6000〜$63FF|BG nametable 0 (LT; 左上)|
 |$6400〜$67FF|BG nametable 1 (RT; 右上)|

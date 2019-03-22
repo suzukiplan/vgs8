@@ -1,0 +1,6 @@
+[submodule "tools/vgs-mml-compiler"]
+	path = tools/vgs-mml-compiler
+	url = https://github.com/suzukiplan/vgs-mml-compiler.git
+[submodule "tools/lz4"]
+	path = tools/lz4
+	url = https://github.com/suzukiplan/lz4.git
