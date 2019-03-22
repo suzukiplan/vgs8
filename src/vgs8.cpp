@@ -13,7 +13,18 @@ VirtualMachine::VirtualMachine(const void* rom, size_t size)
 VirtualMachine::~VirtualMachine()
 {
     delete apu;
+    apu = NULL;
     delete ppu;
+    ppu = NULL;
     delete cpu;
+    cpu = NULL;
     delete bank;
+    bank = NULL;
+}
+
+void VirtualMachine::tick()
+{
+    if (!cpu) return;
+    cpu->execute(); // VRAM update request が発生するまでの間CPUを回す
+    ppu->execute(); // VRAMを更新
 }

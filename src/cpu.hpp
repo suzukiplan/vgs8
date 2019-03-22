@@ -19,12 +19,12 @@ class CPU
 {
   private:
     VGS8::VirtualMachine* vm;
+    bool vramUpdateRequest;
 
     inline void checkLDA(unsigned short addr, unsigned char value)
     {
         switch (addr) {
-            case 0x5400: reg.a = reg.prg8000; break;
-            case 0x5401: reg.a = reg.prgC000; break;
+            case 0x5405: vramUpdateRequest = true; break;
         }
     }
 
@@ -33,6 +33,9 @@ class CPU
         switch (addr) {
             case 0x5400: changeProgramBank8000(reg.a); break;
             case 0x5401: changeProgramBankC000(reg.a); break;
+            case 0x5402: vm->ppu->reg.cbank[0] = reg.a; break;
+            case 0x5403: vm->ppu->reg.cbank[1] = reg.a; break;
+            case 0x5404: vm->ppu->reg.cmap = reg.a; break;
         }
     }
 
@@ -190,20 +193,23 @@ class CPU
         changeProgramBankC000(1);
     }
 
-    inline void execute()
+    void execute()
     {
         // TODO: デシマルモードを除く6502の全命令を実装予定
-        switch (ram[reg.pc]) {
-            case 0x8A: txa(); break;
-            case 0xAA: tax(); break;
-            case 0xA5: lda_zero(); break;
-            case 0xA9: lda_immediate(); break;
-            case 0xAD: lda_absolute(); break;
-            case 0xB5: lda_zero_x(); break;
-            case 0xBD: lda_absolute_x(); break;
-            case 0xB9: lda_absolute_y(); break;
-            case 0xA1: lda_indirect_x(); break;
-            case 0xB1: lda_indirect_y(); break;
+        vramUpdateRequest = false;
+        while (!vramUpdateRequest) {
+            switch (ram[reg.pc]) {
+                case 0x8A: txa(); break;
+                case 0xAA: tax(); break;
+                case 0xA5: lda_zero(); break;
+                case 0xA9: lda_immediate(); break;
+                case 0xAD: lda_absolute(); break;
+                case 0xB5: lda_zero_x(); break;
+                case 0xBD: lda_absolute_x(); break;
+                case 0xB9: lda_absolute_y(); break;
+                case 0xA1: lda_indirect_x(); break;
+                case 0xB1: lda_indirect_y(); break;
+            }
         }
     }
 };
