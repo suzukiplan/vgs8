@@ -1,0 +1,115 @@
+// Copyright 2019, SUZUKI PLAN (MIT license)
+#ifndef INCLUDE_VGS8_H
+#define INCLUDE_VGS8_H
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+namespace VGS8
+{
+
+class VirtualMachine;
+#include "cpu.hpp"
+#include "ppu.hpp"
+#include "apu.hpp"
+
+class VirtualMachine
+{
+  private:
+    unsigned char p1key; // 1コンのキー入力状態
+    unsigned char p2key; // 2コンのキー入力状態
+
+  public:
+    CPU* cpu; // Central Processing Unit
+    APU* apu; // Audio Processing Unit
+    PPU* ppu; // Picture Processing Unit
+
+    /**
+     * コンストラクタ（VMを新規生成）
+     * @param rom [I] このVMで用いるROMを指定
+     * @param size [I] romのサイズ
+     * @param code [I] ゲーム識別名（nullable）
+     * @note 1VM/1ROMの制約を課す（※ROMを入れ替える場合VMを再生成すること）
+     * @note romの領域はVM生成後に破棄しても良い
+     */
+    VirtualMachine(const void* rom, size_t size);
+
+    /**
+     * デストラクタ（VMを破棄）
+     */
+    ~VirtualMachine();
+
+    /**
+     * ジョイパッド（コントローラ）の入力状態を設定
+     * @param number [I] プレイヤ番号（1コン=0, 2コン=1）
+     * @param up [I] 上ボタン
+     * @param down [I] 下ボタン
+     * @param left [I] 左ボタン
+     * @param right [I] 右ボタン
+     * @param a [I] Aボタン
+     * @param b [I] Bボタン
+     * @param select [I] セレクトボタン
+     * @param start [I] スタートボタン
+     */
+    void setJoyPad(int number,
+                   bool up,
+                   bool down,
+                   bool left,
+                   bool right,
+                   bool a,
+                   bool b,
+                   bool select,
+                   bool start);
+
+    /**
+     * リセット
+     */
+    void reset();
+
+    /**
+     * CPUを1フレーム回す
+     */
+    void tick();
+
+    /**
+     * ディスプレイ表示内容（RGB565形式）を取得（主にAndroid, Windows用）
+     * @param size [O] 出力データサイズ
+     * @return 240x224ピクセル分（非可視領域クロップ済み）の画像バッファ
+     */
+    unsigned short* getDisplay565(size_t* size);
+
+    /**
+     * ディスプレイ表示内容（RGB555形式）を取得（主にiOS, macOS用）
+     * @param size [O] 出力データサイズ
+     * @return 240x224ピクセル分（非可視領域クロップ済み）の画像バッファ
+     */
+    unsigned short* getDisplay555(size_t* size);
+
+    /**
+     * スピーカ出力内容（PCM）を取得
+     * @param samples [I] 出力サンプリング周波数（推奨: 32000Hz）
+     * @param bits [I] 出力ビットレート（推奨: 8bit）
+     * @param ch [I] チャンネル数（推奨: 1/mono）
+     * @param buffer [I/O] 出力バッファ
+     * @param size [I] バッファサイズ
+     */
+    void getPCM(int samples, int bits, int ch, void* buffer, size_t size);
+
+    /**
+     * クイックセーブ
+     * @param size セーブデータのサイズ
+     * @return セーブデータ
+     */
+    void* save(size_t* size);
+
+    /**
+     * クイックロード
+     * @param state ロードするセーブデータ
+     * @param size ロードするセーブデータのサイズ
+     * @return true = 成功, false = 失敗
+     */
+    bool load(void* state, size_t size);
+};
+
+};     // namespace VGS8
+#endif // INCLUDE_VGS8_H
