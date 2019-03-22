@@ -323,8 +323,8 @@ static int linkEFF(FILE* fpW, const char* file)
         goto ENDPROC;
     }
 
-    /* 波形データをLZ4で圧縮して書き込む */
-    rc = compressAndWrite(fpW, data, dh.dsize);
+    /* 波形データを書き込む（LZ4で圧縮しても小さくならない可能性が高いのでそのまま書き込む） */
+    rc = writeRom(fpW, data, dh.dsize);
 
 ENDPROC:
     if (data) {

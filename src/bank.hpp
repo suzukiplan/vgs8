@@ -7,6 +7,7 @@ class Bank
     void* chr[256];
     void* bgm[256];
     void* eff[256];
+    int pal[256];
 
     Bank(const void* rom, size_t size)
     {
@@ -35,9 +36,43 @@ class Bank
             idx += sz;
         }
 
-        // TODO: extract CHR banks
-        // TODO: extract BGM banks
-        // TODO: extract EFF banks
+        // extract CHR banks
+        for (int i = 0; i < chrN; i++) {
+            int sz;
+            const size_t max = 0x4000; // 領域は常に16KB固定
+            memcpy(&sz, &rp[idx], 4);
+            idx += 4;
+            if (NULL != (chr[i] = malloc(max))) {
+                memset(chr[i], 0, max);
+                LZ4_decompress_safe((const char*)chr[i], (char*)&rp[idx], sz, max);
+            }
+            idx += sz;
+        }
+
+        // extract BGM banks
+        for (int i = 0; i < bgmN; i++) {
+            int sz;
+            memcpy(&sz, &rp[idx], 4);
+            idx += 4;
+            if (NULL != (bgm[i] = malloc(sz))) {
+                memcpy(bgm[i], &rp[idx], sz);
+            }
+            idx += sz;
+        }
+
+        // extract EFF banks
+        for (int i = 0; i < effN; i++) {
+            int sz;
+            memcpy(&sz, &rp[idx], 4);
+            idx += 4;
+            if (NULL != (eff[i] = malloc(sz))) {
+                memcpy(eff[i], &rp[idx], sz);
+            }
+            idx += sz;
+        }
+
+        // extract palette data
+        memcpy(pal, rp, 1024);
     }
 
     ~Bank()
