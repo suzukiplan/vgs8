@@ -1,5 +1,4 @@
 // Copyright 2019, SUZUKI PLAN (GPLv3 license)
-#include "lz4.h"
 
 class Bank
 {
@@ -29,9 +28,9 @@ class Bank
             const size_t max = 0x4000; // 領域は常に16KB固定 (バンク切り替えを高速化することを優先)
             memcpy(&sz, &rp[idx], 4);
             idx += 4;
-            if (prg[i] = malloc(max)) {
+            if (NULL != (prg[i] = malloc(max))) {
                 memset(prg[i], 0, max);
-                ::LZ4_decompress_safe((const char*)prg[i], (char*)&rp[idx], sz, max);
+                LZ4_decompress_safe((const char*)prg[i], (char*)&rp[idx], sz, max);
             }
             idx += sz;
         }
