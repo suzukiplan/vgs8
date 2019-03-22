@@ -5,6 +5,24 @@
 #include "vgs-mml-compiler/src/vgsmml.h"
 #include "lz4/lib/lz4.h"
 
+/* Bitmap情報ヘッダ */
+struct BmpHead {
+    int isize;             /* 情報ヘッダサイズ */
+    int width;             /* 幅 */
+    int height;            /* 高さ */
+    unsigned short planes; /* プレーン数 */
+    unsigned short bits;   /* 色ビット数 */
+    unsigned int ctype;    /* 圧縮形式 */
+    unsigned int gsize;    /* 画像データサイズ */
+    int xppm;              /* X方向解像度 */
+    int yppm;              /* Y方向解像度 */
+    unsigned int cnum;     /* 使用色数 */
+    unsigned int inum;     /* 重要色数 */
+};
+
+unsigned char palette_data[1024];
+int palette_loaded;
+
 static int writeRom(FILE* fpW, void* data, int dataSize)
 {
     // 最初にサイズを書く
@@ -84,7 +102,102 @@ static int linkBIN(FILE* fpW, const char* file)
 
 static int linkCHR(FILE* fpW, const char* file)
 {
-    return -1; // TODO: not implemented
+    int rc = 0;
+    FILE* fpR = NULL;
+    char fh[14];
+    unsigned char pal[1024];
+    struct BmpHead dh;
+    int i, j, n, y, x, a;
+    char bmp[16384];
+    char chr[16384];
+
+    /* 読み込みファイルをオープン */
+    rc++;
+    if (NULL == (fpR = fopen(file, "rb"))) {
+        fprintf(stderr, "I/O error");
+        goto ENDPROC;
+    }
+
+    /* ファイルヘッダを読み込む */
+    rc++;
+    if (sizeof(fh) != fread(fh, 1, sizeof(fh), fpR)) {
+        fprintf(stderr, "ERROR: invalid file header.\n");
+        goto ENDPROC;
+    }
+
+    /* 先頭2バイトだけ読む */
+    rc++;
+    if (strncmp(fh, "BM", 2)) {
+        fprintf(stderr, "ERROR: inuput file is not bitmap.\n");
+        goto ENDPROC;
+    }
+
+    /* 情報ヘッダを読み込む */
+    rc++;
+    if (sizeof(dh) != fread(&dh, 1, sizeof(dh), fpR)) {
+        fprintf(stderr, "ERROR: invalid bitmap file header.\n");
+        goto ENDPROC;
+    }
+
+    /* 128x128でなければエラー扱い */
+    rc++;
+    if (128 != dh.width || 128 != dh.height) {
+        fprintf(stderr, "ERROR: invalid input bitmap size. (128x128 only)");
+        goto ENDPROC;
+    }
+
+    /* 8ビットカラー以外は弾く */
+    rc++;
+    if (8 != dh.bits) {
+        fprintf(stderr, "ERROR: invalid color format. (8bit color only)\n");
+        goto ENDPROC;
+    }
+
+    /* 無圧縮以外は弾く */
+    rc++;
+    if (dh.ctype) {
+        fprintf(stderr, "ERROR: invalid compress type.\n");
+        goto ENDPROC;
+    }
+
+    /* パレットを読み込む */
+    rc++;
+    if (sizeof(pal) != fread(pal, 1, sizeof(pal), fpR)) {
+        fprintf(stderr, "ERROR: Could not read palette data.\n");
+        goto ENDPROC;
+    }
+    if (!palette_loaded) {
+        palette_loaded = 1;
+        memcpy(palette_data, pal, sizeof(pal));
+    }
+
+    /* 画像データを上下反転しながら読み込む */
+    rc++;
+    for (i = 127; 0 <= i; i--) {
+        if (128 != fread(&bmp[i * 128], 1, 128, fpR)) {
+            fprintf(stderr, "ERROR: Could not read graphic data.\n");
+            goto ENDPROC;
+        }
+    }
+
+    /* Bitmap を CHR に変換 */
+    for (n = 0; n < 256; n++) {
+        x = n % 16 * 8;
+        y = (n / 16) * 8;
+        a = y * 128 + x;
+        for (i = 0; i < 8; i++) {
+            for (j = 0; j < 8; j++) {
+                chr[n * 64 + i * 8 + j] = bmp[a + i * 128 + j];
+            }
+        }
+    }
+
+    // LZ4で圧縮して書き込む
+    rc = compressAndWrite(fpW, chr, sizeof(chr));
+
+ENDPROC:
+    fclose(fpR);
+    return rc;
 }
 
 static int linkBGM(FILE* fpW, const char* file)

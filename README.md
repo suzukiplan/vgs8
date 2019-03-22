@@ -56,7 +56,8 @@ make
 |$5000〜$53FF|Sprite OAM (4x256)|
 |$5400|I/O port (RW): PRG Bank of $8000〜$BFFF|
 |$5401|I/O port (RW): PRG Bank of $C000〜$FFFF|
-|$5402〜$5FFF|other I/O ports (WIP)|
+|$5402〜$5BFF|other I/O ports (WIP)|
+|$5C00〜$5FFF|Palette|
 |$6000〜$63FF|BG nametable 0 (LT; 左上)|
 |$6400〜$67FF|BG nametable 1 (RT; 右上)|
 |$6800〜$6BFF|BG nametable 2 (LB; 左下)|
