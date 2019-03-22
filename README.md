@@ -66,8 +66,8 @@ make
 |$7400〜$77FF|FG nametable 1 (RT; 右上)|
 |$7800〜$7BFF|FG nametable 2 (LB; 左下)|
 |$7C00〜$7FFF|FG nametable 3 (RB; 右下)|
-|$8000〜$BFFF|Program1|
-|$C000〜$FFFF|Program2|
+|$8000〜$BFFF|Program 0|
+|$C000〜$FFFF|Program 1|
 
 ファミコンの仕様を部分的に流用しつつ, よりプログラミングがしやすいレイアウトになっている筈。
 
