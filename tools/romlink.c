@@ -469,8 +469,15 @@ int main(int argc, char* argv[])
         if (linkEFF(fpW, eff[i])) {
             printf("ERROR: cannot link EFF: %s\n", eff[i]);
             fclose(fpW);
-            return 5;
+            return 6;
         }
+    }
+
+    // 最後にパレットデータを書き込む
+    if (sizeof(palette_data) != fwrite(palette_data, 1, sizeof(palette_data), fpW)) {
+        printf("ERROR: cannot write file: %s\n", argv[1]);
+        fclose(fpW);
+        return 7;
     }
 
     fclose(fpW);
