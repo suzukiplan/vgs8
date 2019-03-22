@@ -1,6 +1,7 @@
 // ROM LINK
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include "vgs-mml-compiler/src/vgsmml.h"
 #include "lz4/lib/lz4.h"
 
@@ -65,7 +66,7 @@ static int linkBIN(FILE* fpW, const char* file)
         return -1;
     }
     if (fileSize != fread(fileData, 1, fileSize, fpR)) {
-        printf("file read error (%ld)\n", ferror(fpR));
+        printf("file read error (%d)\n", ferror(fpR));
         fclose(fpR);
         free(fileData);
         return -1;
@@ -123,10 +124,10 @@ int main(int argc, char* argv[])
     if (argc < 3) {
         puts("usage: romlink output.rom input_file1 [input_file2 [...input_fileN]]");
         puts("input extras:");
-        puts("- .bin: PRG bank data (assembled binary file)");
-        puts("- .bmp: CHR bank data (128x128 of 8bit color bitmap)");
-        puts("- .mml: BGM bank data (VGS mml text)");
-        puts("- .wav: EFF bank data (22050Hz/16bi/1ch wav file)");
+        puts("- *.bin: PRG bank data (assembled binary file)");
+        puts("- *.bmp: CHR bank data (128x128 of 8bit color bitmap)");
+        puts("- *.mml: BGM bank data (VGS mml text)");
+        puts("- *.wav: EFF bank data (22050Hz/16bi/1ch wav file)");
         return 1;
     }
 
