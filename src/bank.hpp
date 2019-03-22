@@ -6,7 +6,8 @@ class Bank
     void* prg[256];
     void* chr[256];
     void* bgm[256];
-    void* eff[256];
+    short* eff[256];
+    int effSize[256];
     unsigned char pal[1024];
 
     Bank(const void* rom, size_t size)
@@ -62,13 +63,13 @@ class Bank
 
         // extract EFF banks
         for (int i = 0; i < effN; i++) {
-            int sz;
-            memcpy(&sz, &rp[idx], 4);
+            memcpy(&effSize[idx], &rp[idx], 4);
             idx += 4;
-            if (NULL != (eff[i] = malloc(sz))) {
-                memcpy(eff[i], &rp[idx], sz);
+            if (NULL != (eff[i] = (short*)malloc(effSize[idx]))) {
+                memcpy(eff[i], &rp[idx], effSize[idx]);
             }
-            idx += sz;
+            idx += effSize[idx];
+            effSize[idx] /= 2;
         }
 
         // extract palette data
