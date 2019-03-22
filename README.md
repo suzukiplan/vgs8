@@ -58,14 +58,8 @@ make
 |$5401|I/O port (RW): PRG Bank of $C000〜$FFFF|
 |$5402〜$5BFF|other I/O ports (WIP)|
 |$5C00〜$5FFF|Palette|
-|$6000〜$63FF|BG nametable 0 (LT; 左上)|
-|$6400〜$67FF|BG nametable 1 (RT; 右上)|
-|$6800〜$6BFF|BG nametable 2 (LB; 左下)|
-|$6C00〜$6FFF|BG nametable 3 (RB; 右下)|
-|$7000〜$73FF|FG nametable 0 (LT; 左上)|
-|$7400〜$77FF|FG nametable 1 (RT; 右上)|
-|$7800〜$7BFF|FG nametable 2 (LB; 左下)|
-|$7C00〜$7FFF|FG nametable 3 (RB; 右下)|
+|$6000〜$6FFF|BG nametable (64x64)|
+|$7000〜$7FFF|FG nametable (64x64)|
 |$8000〜$BFFF|Program 0|
 |$C000〜$FFFF|Program 1|
 
