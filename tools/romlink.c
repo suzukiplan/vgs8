@@ -139,28 +139,28 @@ int main(int argc, char* argv[])
             return 1;
         }
         if (0 == strcasecmp(ext, ".bin")) {
-            if (255 < prgIdx) {
+            if (255 <= prgIdx) {
                 printf("ERROR: too meny prg banks");
                 return 1;
             }
             prg[prgIdx++] = argv[i];
         }
         if (0 == strcasecmp(ext, ".bmp")) {
-            if (255 < chrIdx) {
+            if (255 <= chrIdx) {
                 printf("ERROR: too meny CHR banks");
                 return 1;
             }
             chr[chrIdx++] = argv[i];
         }
         if (0 == strcasecmp(ext, ".mml")) {
-            if (255 < bgmIdx) {
+            if (255 <= bgmIdx) {
                 printf("too meny BGM banks");
                 return 1;
             }
             bgm[bgmIdx++] = argv[i];
         }
         if (0 == strcasecmp(ext, ".wav")) {
-            if (255 < prgIdx) {
+            if (255 <= prgIdx) {
                 printf("too meny EFF banks");
                 return 1;
             }

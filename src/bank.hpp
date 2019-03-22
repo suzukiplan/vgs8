@@ -11,6 +11,13 @@ class Bank
     Bank(const void* rom, size_t size)
     {
         clear();
+        if (size < 8) return;
+        if (strncmp((const char*)rom, "VGS8", 4)) return;
+        int idx = 4;
+        unsigned char prgN = ((unsigned char*)rom)[idx++];
+        unsigned char chrN = ((unsigned char*)rom)[idx++];
+        unsigned char bgmN = ((unsigned char*)rom)[idx++];
+        unsigned char effN = ((unsigned char*)rom)[idx++];
     }
 
     ~Bank()
