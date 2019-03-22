@@ -5,6 +5,21 @@
 #include "vgs-mml-compiler/src/vgsmml.h"
 #include "lz4/lib/lz4.h"
 
+static int writeRom(FILE* fpW, void* data, int dataSize)
+{
+    // 最初にサイズを書く
+    if (4 != fwrite(&dataSize, 1, 4, fpW)) {
+        printf("file write error (%d)\n", ferror(fpW));
+        return -1;
+    }
+    // 次にデータ本体を書く
+    if (dataSize != fwrite(data, 1, dataSize, fpW)) {
+        printf("file write error (%d)\n", ferror(fpW));
+        return -1;
+    }
+    return 0;
+}
+
 static int compressAndWrite(FILE* fpW, void* data, size_t dataSize)
 {
     // LZ4で圧縮
@@ -26,18 +41,7 @@ static int compressAndWrite(FILE* fpW, void* data, size_t dataSize)
         free(result);
         return -1;
     }
-    // 最初にサイズを書く
-    if (4 != fwrite(&resultSize, 1, 4, fpW)) {
-        printf("file write error (%d)\n", ferror(fpW));
-        free(result);
-        return -1;
-    }
-    // 次にデータ本体を書く
-    if (resultSize != fwrite(result, 1, resultSize, fpW)) {
-        printf("file write error (%d)\n", ferror(fpW));
-        free(result);
-        return -1;
-    }
+    int ret = writeRom(fpW, result, resultSize);
     free(result);
     return 0;
 }
@@ -92,8 +96,8 @@ static int linkBGM(FILE* fpW, const char* file)
         printf("mml compile error (code=%d, line=%d, msg=%s)\n", err.code, err.line, err.message);
         return -1;
     }
-    // LZ4で圧縮して書き込む
-    int ret = compressAndWrite(fpW, data->data, data->size);
+    // LZ4で圧縮せずに書き込む（VGSMMLでminizに圧縮済みなので多重圧縮しない）
+    int ret = writeRom(fpW, data->data, data->size);
     vgsmml_free_bgm_data(data);
     return ret;
 }
