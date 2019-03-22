@@ -33,9 +33,9 @@ class CPU
         switch (addr) {
             case 0x5400: changeProgramBank8000(reg.a); break;
             case 0x5401: changeProgramBankC000(reg.a); break;
-            case 0x5402: vm->ppu->reg.cbank[0] = reg.a; break;
-            case 0x5403: vm->ppu->reg.cbank[1] = reg.a; break;
-            case 0x5404: vm->ppu->reg.cmap = reg.a; break;
+            case 0x5402: vm->setChrBank(0, reg.a); break;
+            case 0x5403: vm->setChrBank(0, reg.a); break;
+            case 0x5404: vm->setChrMap(reg.a); break;
         }
     }
 

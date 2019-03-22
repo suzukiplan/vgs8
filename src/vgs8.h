@@ -110,6 +110,10 @@ class VirtualMachine
      * @return true = 成功, false = 失敗
      */
     bool load(void* state, size_t size);
+
+    /* 以下、内部関数 */
+    void setChrBank(int cn, unsigned char bn);
+    void setChrMap(unsigned char n);
 };
 
 #include "bank.hpp"
