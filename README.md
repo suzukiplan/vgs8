@@ -33,7 +33,9 @@ VGS8の基礎アーキテクチャは, 任天堂のファミリーコンピュ�
 |$0100〜$01FF|Stack|
 |$0200〜$4FFF|RAM|
 |$5000〜$53FF|Sprite OAM (4x256)|
-|$5400〜$5FFF|I/O ports (WIP)|
+|$5400|I/O port: Program Bank of $8000〜$BFFF|
+|$5401|I/O port: Program Bank of $8000〜$BFFF|
+|$5402〜$5FFF|other I/O ports (WIP)|
 |$6000〜$63FF|BG nametable 0 (LT; 左上)|
 |$6400〜$67FF|BG nametable 1 (RT; 右上)|
 |$6800〜$6BFF|BG nametable 2 (LB; 左下)|

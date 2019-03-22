@@ -2,7 +2,18 @@
 #include "vgs8.h"
 using namespace VGS8;
 
-VGS8::VirtualMachine(const void* rom, size_t size)
+VirtualMachine::VirtualMachine(const void* rom, size_t size)
 {
-    this->cpu = new CPU(this, rom, size);
+    this->bank = new Bank(rom, size);
+    this->cpu = new CPU(this);
+    this->ppu = new PPU(this);
+    this->apu = new APU(this);
+}
+
+VirtualMachine::~VirtualMachine()
+{
+    delete apu;
+    delete ppu;
+    delete cpu;
+    delete bank;
 }

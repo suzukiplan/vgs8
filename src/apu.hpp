@@ -2,4 +2,8 @@
 
 class APU
 {
+  public:
+    APU(VirtualMachine* vm)
+    {
+    }
 };

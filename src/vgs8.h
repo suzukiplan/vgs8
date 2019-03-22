@@ -2,16 +2,16 @@
 #ifndef INCLUDE_VGS8_H
 #define INCLUDE_VGS8_H
 #include <stdio.h>
+#include <stddef.h>
 #include <string.h>
 #include <stdlib.h>
 
 namespace VGS8
 {
-
-class VirtualMachine;
-#include "cpu.hpp"
-#include "ppu.hpp"
-#include "apu.hpp"
+class Bank;
+class CPU;
+class APU;
+class PPU;
 
 class VirtualMachine
 {
@@ -20,15 +20,15 @@ class VirtualMachine
     unsigned char p2key; // 2コンのキー入力状態
 
   public:
-    CPU* cpu; // Central Processing Unit
-    APU* apu; // Audio Processing Unit
-    PPU* ppu; // Picture Processing Unit
+    Bank* bank; // Bank
+    CPU* cpu;   // Central Processing Unit
+    APU* apu;   // Audio Processing Unit
+    PPU* ppu;   // Picture Processing Unit
 
     /**
      * コンストラクタ（VMを新規生成）
      * @param rom [I] このVMで用いるROMを指定
      * @param size [I] romのサイズ
-     * @param code [I] ゲーム識別名（nullable）
      * @note 1VM/1ROMの制約を課す（※ROMを入れ替える場合VMを再生成すること）
      * @note romの領域はVM生成後に破棄しても良い
      */
@@ -110,6 +110,11 @@ class VirtualMachine
      */
     bool load(void* state, size_t size);
 };
+
+#include "bank.hpp"
+#include "cpu.hpp"
+#include "ppu.hpp"
+#include "apu.hpp"
 
 };     // namespace VGS8
 #endif // INCLUDE_VGS8_H

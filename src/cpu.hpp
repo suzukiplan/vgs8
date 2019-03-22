@@ -1,15 +1,18 @@
 // Copyright 2019, SUZUKI PLAN (GPLv3 license)
-class VGS8::VirtualMachine;
 
 class Register
 {
   public:
+    // 6502標準レジスタ
     char a;
     unsigned char x;
     unsigned char y;
     unsigned char p;
     unsigned char s;
     unsigned short pc;
+    // VGS8専用レジスタ
+    unsigned char prg8000;
+    unsigned char prgC000;
 };
 
 class CPU
@@ -17,12 +20,19 @@ class CPU
   private:
     VGS8::VirtualMachine* vm;
 
-    inline void checkLD(unsigned short addr, unsigned char value)
+    inline void checkLDA(unsigned short addr, unsigned char value)
     {
-        // TODO: 以下のようにI/Oポートの場合はPPUへload
         switch (addr) {
-            case 0x5400: vm->ppu->load(addr, value); break;
-            case 0x5401: vm->ppu->load(addr, value); break;
+            case 0x5400: reg.a = reg.prg8000; break;
+            case 0x5401: reg.a = reg.prgC000; break;
+        }
+    }
+
+    inline void checkSTA(unsigned short addr, unsigned char value)
+    {
+        switch (addr) {
+            case 0x5400: changeProgramBank8000(reg.a); break;
+            case 0x5401: changeProgramBankC000(reg.a); break;
         }
     }
 
@@ -44,7 +54,7 @@ class CPU
         reg.p |= reg.a ? 2 : 0; // set zero
         reg.pc++;               // increment pc
         clocks += 3;            // tick the clock
-        checkLD(addr, reg.a);   // I/O check
+        checkLDA(addr, reg.a);  // I/O check
     }
 
     inline void lda_zero_x()
@@ -56,7 +66,7 @@ class CPU
         reg.p |= reg.a ? 2 : 0;       // set zero
         reg.pc++;                     // increment pc
         clocks += 4;                  // tick the clock
-        checkLD(addr, reg.a);         // I/O check
+        checkLDA(addr, reg.a);        // I/O check
     }
 
     inline void lda_absolute()
@@ -69,7 +79,7 @@ class CPU
         reg.p |= reg.a ? 2 : 0;              // set zero
         reg.pc++;                            // increment pc
         clocks += 4;                         // tick the clock
-        checkLD(addr, reg.a);                // I/O check
+        checkLDA(addr, reg.a);               // I/O check
     }
 
     inline void lda_absolute_x()
@@ -81,7 +91,7 @@ class CPU
         reg.p |= reg.a ? 2 : 0;              // set zero
         reg.pc++;                            // increment pc
         clocks += 4;                         // tick the clock
-        checkLD(addr, reg.a);                // I/O check
+        checkLDA(addr, reg.a);               // I/O check
     }
 
     inline void lda_absolute_y()
@@ -93,7 +103,7 @@ class CPU
         reg.p |= reg.a ? 2 : 0;              // set zero
         reg.pc++;                            // increment pc
         clocks += 4;                         // tick the clock
-        checkLD(addr, reg.a);                // I/O check
+        checkLDA(addr, reg.a);               // I/O check
     }
 
     inline void lda_indirect_x()
@@ -106,7 +116,7 @@ class CPU
         reg.p |= reg.a ? 2 : 0;           // set zero
         reg.pc++;                         // increment pc
         clocks += 6;                      // tick the clock
-        checkLD(addr, reg.a);             // I/O check
+        checkLDA(addr, reg.a);            // I/O check
     }
 
     inline void lda_indirect_y()
@@ -119,7 +129,7 @@ class CPU
         reg.p |= reg.a ? 2 : 0;           // set zero
         reg.pc++;                         // increment pc
         clocks += 5;                      // tick the clock
-        checkLD(addr, reg.a);             // I/O check
+        checkLDA(addr, reg.a);            // I/O check
     }
 
     inline void tax()
@@ -140,18 +150,44 @@ class CPU
         clocks += 2;            // tick the clock
     }
 
+    void changeProgramBank8000(unsigned char n)
+    {
+        reg.prg8000 = n;
+        if (vm->bank && vm->bank->prg[n]) {
+            memcpy(&ram[0x8000], vm->bank->prg[n], 0x4000);
+        } else {
+            memset(&ram[0x8000], 0, 0x4000);
+        }
+    }
+
+    void changeProgramBankC000(unsigned char n)
+    {
+        reg.prgC000 = n;
+        if (vm->bank && vm->bank->prg[n]) {
+            memcpy(&ram[0xC000], vm->bank->prg[n], 0x4000);
+        } else {
+            memset(&ram[0xC000], 0, 0x4000);
+        }
+    }
+
   public:
     unsigned int clocks;
     unsigned char ram[65536];
-    Register reg;
+    VGS8::Register reg;
 
-    CPU(VGS8::VirtualMachine* vm, const void* rom, size_t size)
+    CPU(VGS8::VirtualMachine* vm)
     {
         this->vm = vm;
         memset(ram, 0, sizeof(ram));
         memset(&reg, 0, sizeof(reg));
-        // TODO: ROM mapping
+        reset();
+    }
+
+    void reset()
+    {
         reg.pc = 0x8000;
+        changeProgramBank8000(0);
+        changeProgramBankC000(1);
     }
 
     inline void execute()

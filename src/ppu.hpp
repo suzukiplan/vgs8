@@ -3,7 +3,7 @@
 class PPU
 {
   public:
-    PPU()
+    PPU(VirtualMachine* vm)
     {
     }
 
