@@ -1,4 +1,5 @@
 // Copyright 2019, SUZUKI PLAN (GPLv3 license)
+#include "lz4.h"
 
 class Bank
 {
@@ -11,13 +12,33 @@ class Bank
     Bank(const void* rom, size_t size)
     {
         clear();
+        unsigned char* rp = (unsigned char*)rom;
         if (size < 8) return;
-        if (strncmp((const char*)rom, "VGS8", 4)) return;
+        if (strncmp((const char*)rp, "VGS8", 4)) return;
         int idx = 4;
-        unsigned char prgN = ((unsigned char*)rom)[idx++];
-        unsigned char chrN = ((unsigned char*)rom)[idx++];
-        unsigned char bgmN = ((unsigned char*)rom)[idx++];
-        unsigned char effN = ((unsigned char*)rom)[idx++];
+
+        // 各バンクサイズを取得
+        unsigned char prgN = rp[idx++];
+        unsigned char chrN = rp[idx++];
+        unsigned char bgmN = rp[idx++];
+        unsigned char effN = rp[idx++];
+
+        // extract PRG banks
+        for (int i = 0; i < prgN; i++) {
+            int sz;
+            const size_t max = 0x4000; // 領域は常に16KB固定 (バンク切り替えを高速化することを優先)
+            memcpy(&sz, &rp[idx], 4);
+            idx += 4;
+            if (prg[i] = malloc(max)) {
+                memset(prg[i], 0, max);
+                ::LZ4_decompress_safe((const char*)prg[i], (char*)&rp[idx], sz, max);
+            }
+            idx += sz;
+        }
+
+        // TODO: extract CHR banks
+        // TODO: extract BGM banks
+        // TODO: extract EFF banks
     }
 
     ~Bank()
