@@ -43,6 +43,7 @@ class CPU
 
     inline void updateNZ(unsigned char value)
     {
+        reg.p &= 0b01111101;    // clear N, Z
         reg.p |= value & 0x80;  // set negative
         reg.p |= value ? 2 : 0; // set zero
     }
@@ -1146,6 +1147,27 @@ class CPU
         clocks += 2; // tick the clock
     }
 
+    inline void bit(unsigned char v)
+    {
+        reg.p &= 0b00111101;        // clear N, V, Z
+        reg.p |= v & 0xC0;          // set negative and overflow
+        reg.p |= v & reg.a ? 2 : 0; // set zero
+    }
+
+    inline void bit_zero()
+    {
+        bit(ram[ram[++reg.pc]]); // update p
+        reg.pc++;                // increment pc
+        clocks += 3;             // tick the clock
+    }
+
+    inline void bit_absolute()
+    {
+        bit(ram[absolute()]); // update p
+        reg.pc++;             // increment pc
+        clocks += 3;          // tick the clock
+    }
+
     void changeProgramBank8000(unsigned char n)
     {
         reg.prg8000 = n;
@@ -1335,6 +1357,9 @@ class CPU
                 case 0xDE: dec_absolute_x(); break;
                 case 0xCA: dex(); break;
                 case 0x88: dey(); break;
+                // BIT
+                case 0x24: bit_zero(); break;
+                case 0x2C: bit_absolute(); break;
             }
         }
     }
