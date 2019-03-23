@@ -8,6 +8,7 @@
 
 ## WIP status
 
+- [x] [BANK(ROMのメモリマッパ)を実装](src/bank.hpp)
 - [x] [CPUを実装](src/cpu.hpp)
 - [x] [PPUを実装](src/ppu.hpp)
 - [ ] [APUを実装](src/apu.hpp)
