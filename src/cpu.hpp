@@ -405,6 +405,42 @@ class CPU
         clocks += 2;            // tick the clock
     }
 
+    inline void tay()
+    {
+        reg.y = reg.a;          // transfer a to y
+        reg.p |= reg.y & 0x80;  // set negative
+        reg.p |= reg.y ? 2 : 0; // set zero
+        reg.pc++;               // increment pc
+        clocks += 2;            // tick the clock
+    }
+
+    inline void tya()
+    {
+        reg.a = reg.y;          // transfer y to a
+        reg.p |= reg.a & 0x80;  // set negative
+        reg.p |= reg.a ? 2 : 0; // set zero
+        reg.pc++;               // increment pc
+        clocks += 2;            // tick the clock
+    }
+
+    inline void tsx()
+    {
+        reg.x = reg.s;          // transfer s to x
+        reg.p |= reg.x & 0x80;  // set negative
+        reg.p |= reg.x ? 2 : 0; // set zero
+        reg.pc++;               // increment pc
+        clocks += 2;            // tick the clock
+    }
+
+    inline void txs()
+    {
+        reg.s = reg.x;          // transfer x to s
+        reg.p |= reg.s & 0x80;  // set negative
+        reg.p |= reg.s ? 2 : 0; // set zero
+        reg.pc++;               // increment pc
+        clocks += 2;            // tick the clock
+    }
+
     void changeProgramBank8000(unsigned char n)
     {
         reg.prg8000 = n;
@@ -452,8 +488,12 @@ class CPU
         while (!vramUpdateRequest) {
             switch (ram[reg.pc]) {
                 // TRANSFER
-                case 0x8A: txa(); break;
                 case 0xAA: tax(); break;
+                case 0xA8: tay(); break;
+                case 0xBA: tsx(); break;
+                case 0x8A: txa(); break;
+                case 0x9A: txs(); break;
+                case 0x98: tya(); break;
                 // LDA
                 case 0xA9: lda_immediate(); break;
                 case 0xA5: lda_zero(); break;
