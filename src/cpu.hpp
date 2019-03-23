@@ -613,6 +613,87 @@ class CPU
         clocks += 5;                       // tick the clock
     }
 
+    inline void andA(unsigned char v)
+    {
+        reg.a &= v;
+        updateNZ(reg.a);
+    }
+
+    inline void and_immediate()
+    {
+        andA(ram[++reg.pc]); // and
+        reg.pc++;            // increment pc
+        clocks += 2;         // tick the clock
+    }
+
+    inline void and_zero()
+    {
+        unsigned short addr;
+        addr = ram[++reg.pc]; // calculate address
+        andA(ram[addr]);      // and
+        reg.pc++;             // increment pc
+        clocks += 3;          // tick the clock
+    }
+
+    inline void and_zero_x()
+    {
+        unsigned short addr;
+        addr = ram[++reg.pc] + reg.x; // calculate address
+        andA(ram[addr]);              // and
+        reg.pc++;                     // increment pc
+        clocks += 4;                  // tick the clock
+    }
+
+    inline void and_absolute()
+    {
+        unsigned short addr = ram[++reg.pc]; // get addr (HIGH)
+        addr <<= 8;                          // addr *= 256
+        addr |= ram[++reg.pc];               // get addr (LOW)
+        andA(ram[addr]);                     // and
+        reg.pc++;                            // increment pc
+        clocks += 4;                         // tick the clock
+    }
+
+    inline void and_absolute_x()
+    {
+        unsigned short addr = ram[++reg.pc]; // get addr (HIGH)
+        addr <<= 8;                          // addr *= 256
+        addr |= ram[++reg.pc];               // get addr (LOW)
+        andA(ram[(addr + reg.x) & 0xFFFF]);  // and
+        reg.pc++;                            // increment pc
+        clocks += 4;                         // tick the clock
+    }
+
+    inline void and_absolute_y()
+    {
+        unsigned short addr = ram[++reg.pc]; // get addr (HIGH)
+        addr <<= 8;                          // addr *= 256
+        addr |= ram[++reg.pc];               // get addr (LOW)
+        andA(ram[(addr + reg.y) & 0xFFFF]);  // and
+        reg.pc++;                            // increment pc
+        clocks += 4;                         // tick the clock
+    }
+
+    inline void and_indirect_x()
+    {
+        unsigned short ptr = ram[++reg.pc] + reg.x;
+        unsigned short addr = ram[ptr++]; // get addr (LOW)
+        addr |= ram[ptr] * 256;           // get addr (HIGH)
+        andA(ram[addr]);                  // and
+        reg.pc++;                         // increment pc
+        clocks += 6;                      // tick the clock
+    }
+
+    inline void and_indirect_y()
+    {
+        unsigned short ptr = ram[++reg.pc];
+        unsigned short addr = ram[ptr++];   // get addr (LOW)
+        addr |= ram[ptr] * 256;             // get addr (HIGH)
+        andA(ram[(addr + reg.y) & 0xFFFF]); // and
+        reg.pc++;                           // increment pc
+        clocks += 5;                        // tick the clock
+    }
+
     void changeProgramBank8000(unsigned char n)
     {
         reg.prg8000 = n;
@@ -721,6 +802,15 @@ class CPU
                 case 0xF9: sbc_absolute_y(); break;
                 case 0xE1: sbc_indirect_x(); break;
                 case 0xF1: sbc_indirect_y(); break;
+                // AND
+                case 0x29: and_immediate(); break;
+                case 0x25: and_zero(); break;
+                case 0x35: and_zero_x(); break;
+                case 0x2D: and_absolute(); break;
+                case 0x3D: and_absolute_x(); break;
+                case 0x39: and_absolute_y(); break;
+                case 0x21: and_indirect_x(); break;
+                case 0x31: and_indirect_y(); break;
             }
         }
     }
