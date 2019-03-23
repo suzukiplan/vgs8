@@ -787,6 +787,71 @@ class CPU
         clocks += 5;           // tick the clock
     }
 
+    inline void compare(unsigned char t, unsigned char v)
+    {
+        reg.p &= 0b01111100;      // clear N, Z, C
+        int r = t - (int)v;       // calcurate
+        if (r < 0) reg.p |= 0x80; // set N if negative
+        if (0 == r) reg.p |= 2;   // set Z if zero
+        if (t >= v) reg.p |= 1;   // set C
+    }
+
+    inline void cmp_immediate()
+    {
+        compare(reg.a, ram[++reg.pc]); // compare
+        reg.pc++;                      // increment pc
+        clocks += 2;                   // tick the clock
+    }
+
+    inline void cmp_zero()
+    {
+        compare(reg.a, ram[ram[++reg.pc]]); // comapre
+        reg.pc++;                           // increment pc
+        clocks += 3;                        // tick the clock
+    }
+
+    inline void cmp_zero_x()
+    {
+        compare(reg.a, ram[ram[++reg.pc] + reg.x]); // compare
+        reg.pc++;                                   // increment pc
+        clocks += 4;                                // tick the clock
+    }
+
+    inline void cmp_absolute()
+    {
+        compare(reg.a, ram[absolute()]); // compare
+        reg.pc++;                        // increment pc
+        clocks += 4;                     // tick the clock
+    }
+
+    inline void cmp_absolute_x()
+    {
+        compare(reg.a, ram[absolute(reg.x)]); // compare
+        reg.pc++;                             // increment pc
+        clocks += 4;                          // tick the clock
+    }
+
+    inline void cmp_absolute_y()
+    {
+        compare(reg.a, ram[absolute(reg.y)]); // compare
+        reg.pc++;                             // increment pc
+        clocks += 4;                          // tick the clock
+    }
+
+    inline void cmp_indirect_x()
+    {
+        compare(reg.a, ram[indirectX()]); // compare
+        reg.pc++;                         // increment pc
+        clocks += 6;                      // tick the clock
+    }
+
+    inline void cmp_indirect_y()
+    {
+        compare(reg.a, ram[indirectY()]); // compare
+        reg.pc++;                         // increment pc
+        clocks += 5;                      // tick the clock
+    }
+
     void changeProgramBank8000(unsigned char n)
     {
         reg.prg8000 = n;
@@ -922,6 +987,15 @@ class CPU
                 case 0x59: eor_absolute_y(); break;
                 case 0x41: eor_indirect_x(); break;
                 case 0x51: eor_indirect_y(); break;
+                // CMP
+                case 0xC9: cmp_immediate(); break;
+                case 0xC5: cmp_zero(); break;
+                case 0xD5: cmp_zero_x(); break;
+                case 0xCD: cmp_absolute(); break;
+                case 0xDD: cmp_absolute_x(); break;
+                case 0xD9: cmp_absolute_y(); break;
+                case 0xC1: cmp_indirect_x(); break;
+                case 0xD1: cmp_indirect_y(); break;
             }
         }
     }
