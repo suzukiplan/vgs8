@@ -1,24 +1,25 @@
 // Copyright 2019, SUZUKI PLAN (GPLv3 license)
 
-class Register
-{
-  public:
-    // 6502標準レジスタ
-    char a;
-    unsigned char x;
-    unsigned char y;
-    unsigned char p;
-    unsigned char s;
-    unsigned short pc;
-    // VGS8専用レジスタ
-    unsigned char prg8000;
-    unsigned char prgC000;
-};
-
 class CPU
 {
+    class Register
+    {
+      public:
+        // 6502標準レジスタ
+        char a;
+        unsigned char x;
+        unsigned char y;
+        unsigned char p;
+        unsigned char s;
+        unsigned short pc;
+        // VGS8専用レジスタ
+        unsigned char prg8000;
+        unsigned char prgC000;
+    };
+
   private:
     VGS8::VirtualMachine* vm;
+    Register reg;
     bool vramUpdateRequest;
 
     inline void checkLD(unsigned short addr, unsigned char* value)
@@ -982,7 +983,6 @@ class CPU
   public:
     unsigned int clocks;
     unsigned char ram[65536];
-    VGS8::Register reg;
 
     CPU(VGS8::VirtualMachine* vm)
     {
