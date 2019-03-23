@@ -6,6 +6,16 @@
 - このリポジトリでは, VGS8コアシステムのエミュレータ（HALを省略した形）とVGS用ゲーム開発に必要なSDKを提供します
 - VGS8の基礎アーキテクチャは, 任天堂のファミリーコンピュータ（ファミコン）から着想を得て設計していますが, ファミコンとの互換性はありません
 
+## WIP status
+
+- [x] [CPUを実装](src/cpu.hpp)
+- [x] [PPUを実装](src/ppu.hpp)
+- [ ] [APUを実装](src/apu.hpp)
+- [ ] macOSでテストできるCocoaAppを作成
+- [ ] examplesを色々と追加しながらテスト
+- [ ] [ファミコン版Battle Marine](https://github.com/suzukiplan/battle-marine-fc)をVGS8に移植して最終テスト
+- [ ] 開発者向けのマニュアルを纏める（基本[コレ](https://github.com/suzukiplan/mgp-fc)みたいな感じになる予定）
+
 ## Setup
 
 ### Pre requests
