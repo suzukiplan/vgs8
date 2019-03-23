@@ -1,5 +1,7 @@
 // Copyright 2019, SUZUKI PLAN (GPLv3 license)
 
+#define CPU_CLOCKS_PER_FRAME 139810 /* 8MHz / 60 */
+
 class CPU
 {
     class Register
@@ -1340,6 +1342,7 @@ class CPU
     {
         // TODO: デシマルモードを除く6502の全命令を実装予定
         vramUpdateRequest = false;
+        clocks = 0;
         while (!vramUpdateRequest) {
             switch (ram[reg.pc]) {
                 // TRANSFER
@@ -1520,6 +1523,11 @@ class CPU
                 case 0xB8: status(0x40, false); break; // CLV (V; overflow)
                 case 0x00: brk(); break;
                 case 0xEA: nop(); break;
+            }
+            // 1フレームで処理可能なクロック数を超えた場合に強制的にVRAM更新リクエストを発生させる
+            if (CPU_CLOCKS_PER_FRAME <= clocks) {
+                vramUpdateRequest = true;
+                break;
             }
         }
     }
