@@ -775,6 +775,87 @@ class CPU
         clocks += 5;                       // tick the clock
     }
 
+    inline void eor(unsigned char v)
+    {
+        reg.a ^= v;
+        updateNZ(reg.a);
+    }
+
+    inline void eor_immediate()
+    {
+        eor(ram[++reg.pc]); // eor
+        reg.pc++;           // increment pc
+        clocks += 2;        // tick the clock
+    }
+
+    inline void eor_zero()
+    {
+        unsigned short addr;
+        addr = ram[++reg.pc]; // calculate address
+        eor(ram[addr]);       // eor
+        reg.pc++;             // increment pc
+        clocks += 3;          // tick the clock
+    }
+
+    inline void eor_zero_x()
+    {
+        unsigned short addr;
+        addr = ram[++reg.pc] + reg.x; // calculate address
+        eor(ram[addr]);               // eor
+        reg.pc++;                     // increment pc
+        clocks += 4;                  // tick the clock
+    }
+
+    inline void eor_absolute()
+    {
+        unsigned short addr = ram[++reg.pc]; // get addr (HIGH)
+        addr <<= 8;                          // addr *= 256
+        addr |= ram[++reg.pc];               // get addr (LOW)
+        eor(ram[addr]);                      // eor
+        reg.pc++;                            // increment pc
+        clocks += 4;                         // tick the clock
+    }
+
+    inline void eor_absolute_x()
+    {
+        unsigned short addr = ram[++reg.pc]; // get addr (HIGH)
+        addr <<= 8;                          // addr *= 256
+        addr |= ram[++reg.pc];               // get addr (LOW)
+        eor(ram[(addr + reg.x) & 0xFFFF]);   // eor
+        reg.pc++;                            // increment pc
+        clocks += 4;                         // tick the clock
+    }
+
+    inline void eor_absolute_y()
+    {
+        unsigned short addr = ram[++reg.pc]; // get addr (HIGH)
+        addr <<= 8;                          // addr *= 256
+        addr |= ram[++reg.pc];               // get addr (LOW)
+        eor(ram[(addr + reg.y) & 0xFFFF]);   // eor
+        reg.pc++;                            // increment pc
+        clocks += 4;                         // tick the clock
+    }
+
+    inline void eor_indirect_x()
+    {
+        unsigned short ptr = ram[++reg.pc] + reg.x;
+        unsigned short addr = ram[ptr++]; // get addr (LOW)
+        addr |= ram[ptr] * 256;           // get addr (HIGH)
+        eor(ram[addr]);                   // eor
+        reg.pc++;                         // increment pc
+        clocks += 6;                      // tick the clock
+    }
+
+    inline void eor_indirect_y()
+    {
+        unsigned short ptr = ram[++reg.pc];
+        unsigned short addr = ram[ptr++];  // get addr (LOW)
+        addr |= ram[ptr] * 256;            // get addr (HIGH)
+        eor(ram[(addr + reg.y) & 0xFFFF]); // eor
+        reg.pc++;                          // increment pc
+        clocks += 5;                       // tick the clock
+    }
+
     void changeProgramBank8000(unsigned char n)
     {
         reg.prg8000 = n;
@@ -901,6 +982,15 @@ class CPU
                 case 0x19: ora_absolute_y(); break;
                 case 0x01: ora_indirect_x(); break;
                 case 0x11: ora_indirect_y(); break;
+                // EOR
+                case 0x49: eor_immediate(); break;
+                case 0x45: eor_zero(); break;
+                case 0x55: eor_zero_x(); break;
+                case 0x4D: eor_absolute(); break;
+                case 0x5D: eor_absolute_x(); break;
+                case 0x59: eor_absolute_y(); break;
+                case 0x41: eor_indirect_x(); break;
+                case 0x51: eor_indirect_y(); break;
             }
         }
     }
