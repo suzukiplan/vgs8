@@ -212,4 +212,38 @@ class CPU
             }
         }
     }
+
+    size_t save(char* buffer)
+    {
+        int index = 0;
+        memcpy(buffer, &reg, sizeof(reg));
+        index += sizeof(reg);
+        const int maxCompressedSize = LZ4_compressBound(0x8000);
+        char zram[maxCompressedSize];
+        const int compressedSize = LZ4_compress_default((const char*)ram,
+                                                        zram,
+                                                        0x8000,
+                                                        maxCompressedSize);
+        memcpy(buffer + index, &compressedSize, 4);
+        index += 4;
+        memcpy(buffer + index, zram, compressedSize);
+        index += compressedSize;
+        return index;
+    }
+
+    size_t load(char* buffer)
+    {
+        int index = 0;
+        memcpy(&reg, buffer, sizeof(reg));
+        index += sizeof(reg);
+        const int maxCompressedSize = LZ4_compressBound(0x8000);
+        int compressedSize;
+        memcpy(&compressedSize, buffer + index, 4);
+        index += 4;
+        LZ4_decompress_safe((const char*)buffer + index, (char*)ram, compressedSize, 0x8000);
+        index += compressedSize;
+        changeProgramBank8000(reg.prg8000);
+        changeProgramBankC000(reg.prgC000);
+        return index;
+    }
 };

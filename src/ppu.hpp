@@ -129,4 +129,16 @@ class PPU
             }
         }
     }
+
+    size_t save(char* buffer)
+    {
+        memcpy(buffer, &reg, sizeof(reg));
+        return sizeof(reg);
+    }
+
+    size_t load(char* buffer)
+    {
+        memcpy(&reg, buffer, sizeof(reg));
+        return sizeof(reg);
+    }
 };

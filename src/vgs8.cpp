@@ -29,6 +29,28 @@ void VirtualMachine::tick()
     ppu->execute(); // VRAMを更新
 }
 
+void* VirtualMachine::save(size_t* size)
+{
+    savePtr = 0;
+    savePtr += cpu->save(saveBuffer + savePtr);
+    savePtr += ppu->save(saveBuffer + savePtr);
+    savePtr += apu->save(saveBuffer + savePtr);
+    *size = savePtr;
+    return saveBuffer;
+}
+
+bool VirtualMachine::load(void* state, size_t size)
+{
+    if (!state || size < 1 || sizeof(saveBuffer) <= size) return false;
+    memset(saveBuffer, 0, sizeof(saveBuffer));
+    memcpy(saveBuffer, state, size);
+    savePtr = 0;
+    savePtr += cpu->load(saveBuffer + savePtr);
+    savePtr += ppu->load(saveBuffer + savePtr);
+    savePtr += apu->load(saveBuffer + savePtr);
+    return true;
+}
+
 void VirtualMachine::setChrBank(int cn, unsigned char bn)
 {
     ppu->reg.cbank[cn & 1] = bn;

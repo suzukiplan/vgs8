@@ -19,6 +19,9 @@ class VirtualMachine
   private:
     unsigned char p1key; // 1コンのキー入力状態
     unsigned char p2key; // 2コンのキー入力状態
+    unsigned short displayBuffer[240 * 240];
+    char saveBuffer[65536]; // max = register + 32KB
+    int savePtr;
 
   public:
     Bank* bank; // Bank
@@ -75,21 +78,21 @@ class VirtualMachine
     /**
      * ディスプレイ表示内容（RGB565形式）を取得（主にAndroid, Windows用）
      * @param size [O] 出力データサイズ
-     * @return 240x224ピクセル分（非可視領域クロップ済み）の画像バッファ
+     * @return 240x240ピクセル分（非可視領域クロップ済み）の画像バッファ
      */
     unsigned short* getDisplay565(size_t* size);
 
     /**
      * ディスプレイ表示内容（RGB555形式）を取得（主にiOS, macOS用）
      * @param size [O] 出力データサイズ
-     * @return 240x224ピクセル分（非可視領域クロップ済み）の画像バッファ
+     * @return 240x240ピクセル分（非可視領域クロップ済み）の画像バッファ
      */
     unsigned short* getDisplay555(size_t* size);
 
     /**
      * スピーカ出力内容（PCM）を取得
-     * @param samples [I] 出力サンプリング周波数（推奨: 32000Hz）
-     * @param bits [I] 出力ビットレート（推奨: 8bit）
+     * @param samples [I] 出力サンプリング周波数（推奨: 22050）
+     * @param bits [I] 出力ビットレート（推奨: 16bit）
      * @param ch [I] チャンネル数（推奨: 1/mono）
      * @param buffer [I/O] 出力バッファ
      * @param size [I] バッファサイズ
