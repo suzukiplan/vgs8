@@ -874,11 +874,15 @@ class CPU
         clocks += 4;                     // tick the clock
     }
 
-    inline void asl(unsigned char* v)
+    inline void shift(bool isLeft, unsigned char* v)
     {
-        reg.p &= 0b01111100;            // clear N, Z, C
-        int a = *v;                     // store to work area
-        a <<= 1;                        // left shift 1 bit
+        reg.p &= 0b01111100; // clear N, Z, C
+        int a = *v;
+        if (isLeft) {
+            a <<= 1;
+        } else {
+            a >>= 1;
+        }
         *v = a & 0xFF;                  // store to result
         if (a & 0x80) reg.p |= 0x80;    // set N if negative
         if (0 == *v) reg.p |= 2;        // set Z if zero
@@ -887,37 +891,72 @@ class CPU
 
     inline void asl_a()
     {
-        asl((unsigned char*)&reg.a); // left shift
-        reg.pc++;                    // increment pc
-        clocks += 2;                 // tick the clock
+        shift(true, (unsigned char*)&reg.a); // left shift
+        reg.pc++;                            // increment pc
+        clocks += 2;                         // tick the clock
     }
 
     inline void asl_zero()
     {
-        asl(&ram[ram[++reg.pc]]); // left shift
-        reg.pc++;                 // increment pc
-        clocks += 5;              // tick the clock
+        shift(true, &ram[ram[++reg.pc]]); // left shift
+        reg.pc++;                         // increment pc
+        clocks += 5;                      // tick the clock
     }
 
     inline void asl_zero_x()
     {
-        asl(&ram[ram[++reg.pc] + reg.x]); // left shift
-        reg.pc++;                         // increment pc
-        clocks += 6;                      // tick the clock
+        shift(true, &ram[ram[++reg.pc] + reg.x]); // left shift
+        reg.pc++;                                 // increment pc
+        clocks += 6;                              // tick the clock
     }
 
     inline void asl_absolute()
     {
-        asl(&ram[absolute()]); // left shift
-        reg.pc++;              // increment pc
-        clocks += 6;           // tick the clock
+        shift(true, &ram[absolute()]); // left shift
+        reg.pc++;                      // increment pc
+        clocks += 6;                   // tick the clock
     }
 
     inline void asl_absolute_x()
     {
-        asl(&ram[absolute(reg.x)]); // left shift
-        reg.pc++;                   // increment pc
-        clocks += 7;                // tick the clock
+        shift(true, &ram[absolute(reg.x)]); // left shift
+        reg.pc++;                           // increment pc
+        clocks += 7;                        // tick the clock
+    }
+
+    inline void lsr_a()
+    {
+        shift(false, (unsigned char*)&reg.a); // right shift
+        reg.pc++;                             // increment pc
+        clocks += 2;                          // tick the clock
+    }
+
+    inline void lsr_zero()
+    {
+        shift(false, &ram[ram[++reg.pc]]); // right shift
+        reg.pc++;                          // increment pc
+        clocks += 5;                       // tick the clock
+    }
+
+    inline void lsr_zero_x()
+    {
+        shift(false, &ram[ram[++reg.pc] + reg.x]); // right shift
+        reg.pc++;                                  // increment pc
+        clocks += 6;                               // tick the clock
+    }
+
+    inline void lsr_absolute()
+    {
+        shift(false, &ram[absolute()]); // right shift
+        reg.pc++;                       // increment pc
+        clocks += 6;                    // tick the clock
+    }
+
+    inline void lsr_absolute_x()
+    {
+        shift(false, &ram[absolute(reg.x)]); // right shift
+        reg.pc++;                            // increment pc
+        clocks += 7;                         // tick the clock
     }
 
     void changeProgramBank8000(unsigned char n)
@@ -1078,6 +1117,12 @@ class CPU
                 case 0x16: asl_zero_x(); break;
                 case 0x0E: asl_absolute(); break;
                 case 0x1E: asl_absolute_x(); break;
+                // LSR
+                case 0x4A: lsr_a(); break;
+                case 0x46: lsr_zero(); break;
+                case 0x56: lsr_zero_x(); break;
+                case 0x4E: lsr_absolute(); break;
+                case 0x5E: lsr_absolute_x(); break;
             }
         }
     }
