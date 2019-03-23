@@ -1253,6 +1253,24 @@ class CPU
         clocks += 6;                           // tick the clock
     }
 
+    inline void branch(unsigned char s, bool isNot)
+    {
+        clocks += 2;
+        char relative = (char)ram[reg.pc + 1];
+        if (reg.p & reg.s) {
+            if (!isNot) {
+                reg.pc += relative;
+                return;
+            }
+        } else {
+            if (isNot) {
+                reg.pc += relative;
+                return;
+            }
+        }
+        reg.pc += 2;
+    }
+
     void changeProgramBank8000(unsigned char n)
     {
         reg.prg8000 = n;
@@ -1458,6 +1476,15 @@ class CPU
                 case 0x60: rts(); break;
                 // RTI
                 case 0x40: rti(); break;
+                // branch (note: P is [N.V.R.B.D.I.Z.C])
+                case 0xB0: branch(0x01, true);  // BCS (C; carry)
+                case 0x90: branch(0x01, false); // BCC (C; carry)
+                case 0xF0: branch(0x02, true);  // BEQ (Z; zero)
+                case 0xD0: branch(0x02, false); // BNE (Z; zero)
+                case 0x70: branch(0x40, true);  // BVS (V; overflow)
+                case 0x50: branch(0x40, false); // BVC (V; overflow)
+                case 0x30: branch(0x80, true);  // BMI (N; negative)
+                case 0x10: branch(0x80, false); // BPL (N; negative)
             }
         }
     }
