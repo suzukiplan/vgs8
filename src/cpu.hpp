@@ -4,9 +4,7 @@
 
 class CPU
 {
-    class Register
-    {
-      public:
+    struct Register {
         // 6502標準レジスタ
         char a;
         unsigned char x;
@@ -21,7 +19,7 @@ class CPU
 
   private:
     VGS8::VirtualMachine* vm;
-    Register reg;
+    struct Register reg;
     bool vramUpdateRequest;
 
     inline void checkLD(unsigned short addr, unsigned char* value)

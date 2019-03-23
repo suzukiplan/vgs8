@@ -7,6 +7,7 @@ class Bank
     void* chr[256];
     void* bgm[256];
     short* eff[256];
+    int bgmSize[256];
     int effSize[256];
     unsigned char pal[1024];
 
@@ -52,24 +53,23 @@ class Bank
 
         // extract BGM banks
         for (int i = 0; i < bgmN; i++) {
-            int sz;
-            memcpy(&sz, &rp[idx], 4);
+            memcpy(&bgmSize[i], &rp[idx], 4);
             idx += 4;
-            if (NULL != (bgm[i] = malloc(sz))) {
-                memcpy(bgm[i], &rp[idx], sz);
+            if (NULL != (bgm[i] = malloc(bgmSize[i]))) {
+                memcpy(bgm[i], &rp[idx], bgmSize[i]);
             }
-            idx += sz;
+            idx += bgmSize[i];
         }
 
         // extract EFF banks
         for (int i = 0; i < effN; i++) {
-            memcpy(&effSize[idx], &rp[idx], 4);
+            memcpy(&effSize[i], &rp[idx], 4);
             idx += 4;
-            if (NULL != (eff[i] = (short*)malloc(effSize[idx]))) {
-                memcpy(eff[i], &rp[idx], effSize[idx]);
+            if (NULL != (eff[i] = (short*)malloc(effSize[i]))) {
+                memcpy(eff[i], &rp[idx], effSize[i]);
             }
-            idx += effSize[idx];
-            effSize[idx] /= 2;
+            idx += effSize[i];
+            effSize[i] /= 2;
         }
 
         // extract palette data

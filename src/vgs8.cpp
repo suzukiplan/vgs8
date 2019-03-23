@@ -27,6 +27,7 @@ void VirtualMachine::tick()
     if (!cpu) return;
     cpu->execute(); // VRAM update request が発生するまでの間CPUを回す
     ppu->execute(); // VRAMを更新
+    apu->execute(); // 音声を更新
 }
 
 void* VirtualMachine::save(size_t* size)

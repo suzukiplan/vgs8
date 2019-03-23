@@ -1,4 +1,4 @@
-all: vgs8.o bin bin/romlink
+all: vgs8.o vgs2tone.o vgsdec.o bin bin/romlink
 
 clean:
 	rm -rf *.o
@@ -6,6 +6,12 @@ clean:
 
 vgs8.o: src/vgs8.cpp src/vgs8.h src/apu.hpp src/bank.hpp src/cpu.hpp src/ppu.hpp
 	clang -c src/vgs8.cpp
+
+vgs2tone.o: src/vgs2tone.c
+	clang -c src/vgs2tone.c
+
+vgsdec.o: src/vgsdec.c
+	clang -c src/vgsdec.c
 
 bin:
 	mkdir bin

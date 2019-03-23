@@ -6,6 +6,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "lz4.h"
+#include "vgsdec.h"
 
 namespace VGS8
 {

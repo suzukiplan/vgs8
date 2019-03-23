@@ -11,7 +11,7 @@
 - [x] [BANK(ROMのメモリマッパ)を実装](src/bank.hpp)
 - [x] [CPUを実装](src/cpu.hpp)
 - [x] [PPUを実装](src/ppu.hpp)
-- [ ] [APUを実装](src/apu.hpp)
+- [x] [APUを実装](src/apu.hpp)
 - [ ] [VGS8仮想マシンを実装](src/vgs8.h)
 - [ ] macOSでテストできるCocoaAppを作成
 - [ ] examplesを色々と追加しながらテスト
