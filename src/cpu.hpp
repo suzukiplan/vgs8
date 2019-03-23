@@ -1191,7 +1191,7 @@ class CPU
     {
         reg.a = pull();
         reg.pc++;
-        clocks += 3;
+        clocks += 4;
     }
 
     inline void php()
@@ -1205,7 +1205,7 @@ class CPU
     {
         reg.p = pull();
         reg.pc++;
-        clocks += 3;
+        clocks += 4;
     }
 
     void changeProgramBank8000(unsigned char n)
