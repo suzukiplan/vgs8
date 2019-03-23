@@ -694,6 +694,87 @@ class CPU
         clocks += 5;                        // tick the clock
     }
 
+    inline void ora(unsigned char v)
+    {
+        reg.a |= v;
+        updateNZ(reg.a);
+    }
+
+    inline void ora_immediate()
+    {
+        ora(ram[++reg.pc]); // or
+        reg.pc++;           // increment pc
+        clocks += 2;        // tick the clock
+    }
+
+    inline void ora_zero()
+    {
+        unsigned short addr;
+        addr = ram[++reg.pc]; // calculate address
+        ora(ram[addr]);       // or
+        reg.pc++;             // increment pc
+        clocks += 3;          // tick the clock
+    }
+
+    inline void ora_zero_x()
+    {
+        unsigned short addr;
+        addr = ram[++reg.pc] + reg.x; // calculate address
+        ora(ram[addr]);               // or
+        reg.pc++;                     // increment pc
+        clocks += 4;                  // tick the clock
+    }
+
+    inline void ora_absolute()
+    {
+        unsigned short addr = ram[++reg.pc]; // get addr (HIGH)
+        addr <<= 8;                          // addr *= 256
+        addr |= ram[++reg.pc];               // get addr (LOW)
+        ora(ram[addr]);                      // or
+        reg.pc++;                            // increment pc
+        clocks += 4;                         // tick the clock
+    }
+
+    inline void ora_absolute_x()
+    {
+        unsigned short addr = ram[++reg.pc]; // get addr (HIGH)
+        addr <<= 8;                          // addr *= 256
+        addr |= ram[++reg.pc];               // get addr (LOW)
+        ora(ram[(addr + reg.x) & 0xFFFF]);   // or
+        reg.pc++;                            // increment pc
+        clocks += 4;                         // tick the clock
+    }
+
+    inline void ora_absolute_y()
+    {
+        unsigned short addr = ram[++reg.pc]; // get addr (HIGH)
+        addr <<= 8;                          // addr *= 256
+        addr |= ram[++reg.pc];               // get addr (LOW)
+        ora(ram[(addr + reg.y) & 0xFFFF]);   // or
+        reg.pc++;                            // increment pc
+        clocks += 4;                         // tick the clock
+    }
+
+    inline void ora_indirect_x()
+    {
+        unsigned short ptr = ram[++reg.pc] + reg.x;
+        unsigned short addr = ram[ptr++]; // get addr (LOW)
+        addr |= ram[ptr] * 256;           // get addr (HIGH)
+        ora(ram[addr]);                   // or
+        reg.pc++;                         // increment pc
+        clocks += 6;                      // tick the clock
+    }
+
+    inline void ora_indirect_y()
+    {
+        unsigned short ptr = ram[++reg.pc];
+        unsigned short addr = ram[ptr++];  // get addr (LOW)
+        addr |= ram[ptr] * 256;            // get addr (HIGH)
+        ora(ram[(addr + reg.y) & 0xFFFF]); // or
+        reg.pc++;                          // increment pc
+        clocks += 5;                       // tick the clock
+    }
+
     void changeProgramBank8000(unsigned char n)
     {
         reg.prg8000 = n;
@@ -811,6 +892,15 @@ class CPU
                 case 0x39: and_absolute_y(); break;
                 case 0x21: and_indirect_x(); break;
                 case 0x31: and_indirect_y(); break;
+                // ORA
+                case 0x09: ora_immediate(); break;
+                case 0x05: ora_zero(); break;
+                case 0x15: ora_zero_x(); break;
+                case 0x0D: ora_absolute(); break;
+                case 0x1D: ora_absolute_x(); break;
+                case 0x19: ora_absolute_y(); break;
+                case 0x01: ora_indirect_x(); break;
+                case 0x11: ora_indirect_y(); break;
             }
         }
     }
