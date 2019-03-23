@@ -40,31 +40,34 @@ class CPU
         }
     }
 
+    inline void updateNZ(unsigned char value)
+    {
+        reg.p |= value & 0x80;  // set negative
+        reg.p |= value ? 2 : 0; // set zero
+    }
+
     inline void lda_immediate()
     {
-        reg.a = ram[++reg.pc];  // a = immediate value
-        reg.p |= reg.a & 0x80;  // set negative
-        reg.p |= reg.a ? 2 : 0; // set zero
-        reg.pc++;               // increment pc
-        clocks += 2;            // tick the clock
+        reg.a = ram[++reg.pc]; // a = immediate value
+        updateNZ(reg.a);       // update p
+        reg.pc++;              // increment pc
+        clocks += 2;           // tick the clock
     }
 
     inline void ldx_immediate()
     {
-        reg.x = ram[++reg.pc];  // x = immediate value
-        reg.p |= reg.x & 0x80;  // set negative
-        reg.p |= reg.x ? 2 : 0; // set zero
-        reg.pc++;               // increment pc
-        clocks += 2;            // tick the clock
+        reg.x = ram[++reg.pc]; // x = immediate value
+        updateNZ(reg.x);       // update p
+        reg.pc++;              // increment pc
+        clocks += 2;           // tick the clock
     }
 
     inline void ldy_immediate()
     {
-        reg.y = ram[++reg.pc];  // y = immediate value
-        reg.p |= reg.y & 0x80;  // set negative
-        reg.p |= reg.y ? 2 : 0; // set zero
-        reg.pc++;               // increment pc
-        clocks += 2;            // tick the clock
+        reg.y = ram[++reg.pc]; // y = immediate value
+        updateNZ(reg.y);       // update p
+        reg.pc++;              // increment pc
+        clocks += 2;           // tick the clock
     }
 
     inline void lda_zero()
@@ -72,8 +75,7 @@ class CPU
         unsigned short addr;
         addr = ram[++reg.pc];                  // calculate address
         reg.a = ram[addr];                     // a = zero page value
-        reg.p |= reg.a & 0x80;                 // set negative
-        reg.p |= reg.a ? 2 : 0;                // set zero
+        updateNZ(reg.a);                       // update p
         reg.pc++;                              // increment pc
         clocks += 3;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.a); // I/O check
@@ -84,8 +86,7 @@ class CPU
         unsigned short addr;
         addr = ram[++reg.pc];                  // calculate address
         reg.x = ram[addr];                     // x = zero page value
-        reg.p |= reg.x & 0x80;                 // set negative
-        reg.p |= reg.x ? 2 : 0;                // set zero
+        updateNZ(reg.x);                       // update p
         reg.pc++;                              // increment pc
         clocks += 3;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.x); // I/O check
@@ -96,8 +97,7 @@ class CPU
         unsigned short addr;
         addr = ram[++reg.pc];                  // calculate address
         reg.y = ram[addr];                     // y = zero page value
-        reg.p |= reg.y & 0x80;                 // set negative
-        reg.p |= reg.y ? 2 : 0;                // set zero
+        updateNZ(reg.y);                       // update p
         reg.pc++;                              // increment pc
         clocks += 3;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.y); // I/O check
@@ -138,8 +138,7 @@ class CPU
         unsigned short addr;
         addr = ram[++reg.pc] + reg.x;          // calculate address
         reg.a = ram[addr];                     // a = zero page value
-        reg.p |= reg.a & 0x80;                 // set negative
-        reg.p |= reg.a ? 2 : 0;                // set zero
+        updateNZ(reg.a);                       // update p
         reg.pc++;                              // increment pc
         clocks += 4;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.a); // I/O check
@@ -150,8 +149,7 @@ class CPU
         unsigned short addr;
         addr = ram[++reg.pc] + reg.y;          // calculate address
         reg.x = ram[addr];                     // x = zero page value
-        reg.p |= reg.x & 0x80;                 // set negative
-        reg.p |= reg.x ? 2 : 0;                // set zero
+        updateNZ(reg.x);                       // update p
         reg.pc++;                              // increment pc
         clocks += 4;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.x); // I/O check
@@ -162,8 +160,7 @@ class CPU
         unsigned short addr;
         addr = ram[++reg.pc] + reg.x;          // calculate address
         reg.y = ram[addr];                     // y = zero page value
-        reg.p |= reg.y & 0x80;                 // set negative
-        reg.p |= reg.y ? 2 : 0;                // set zero
+        updateNZ(reg.y);                       // update p
         reg.pc++;                              // increment pc
         clocks += 4;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.y); // I/O check
@@ -205,8 +202,7 @@ class CPU
         addr <<= 8;                            // addr *= 256
         addr |= ram[++reg.pc];                 // get addr (LOW)
         reg.a = ram[addr];                     // a = any page value
-        reg.p |= reg.a & 0x80;                 // set negative
-        reg.p |= reg.a ? 2 : 0;                // set zero
+        updateNZ(reg.a);                       // update p
         reg.pc++;                              // increment pc
         clocks += 4;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.a); // I/O check
@@ -218,8 +214,7 @@ class CPU
         addr <<= 8;                            // addr *= 256
         addr |= ram[++reg.pc];                 // get addr (LOW)
         reg.x = ram[addr];                     // x = any page value
-        reg.p |= reg.x & 0x80;                 // set negative
-        reg.p |= reg.x ? 2 : 0;                // set zero
+        updateNZ(reg.x);                       // update p
         reg.pc++;                              // increment pc
         clocks += 4;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.x); // I/O check
@@ -231,8 +226,7 @@ class CPU
         addr <<= 8;                            // addr *= 256
         addr |= ram[++reg.pc];                 // get addr (LOW)
         reg.y = ram[addr];                     // y = any page value
-        reg.p |= reg.y & 0x80;                 // set negative
-        reg.p |= reg.y ? 2 : 0;                // set zero
+        updateNZ(reg.y);                       // update p
         reg.pc++;                              // increment pc
         clocks += 4;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.y); // I/O check
@@ -276,8 +270,7 @@ class CPU
         unsigned short addr = ram[++reg.pc];   // get addr (LOW)
         addr |= ram[++reg.pc] * 256;           // get addr (HIGH)
         reg.a = ram[(addr + reg.x) & 0xFFFF];  // a = any page value
-        reg.p |= reg.a & 0x80;                 // set negative
-        reg.p |= reg.a ? 2 : 0;                // set zero
+        updateNZ(reg.a);                       // update p
         reg.pc++;                              // increment pc
         clocks += 4;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.a); // I/O check
@@ -288,8 +281,7 @@ class CPU
         unsigned short addr = ram[++reg.pc];   // get addr (LOW)
         addr |= ram[++reg.pc] * 256;           // get addr (HIGH)
         reg.a = ram[(addr + reg.y) & 0xFFFF];  // a = any page value
-        reg.p |= reg.a & 0x80;                 // set negative
-        reg.p |= reg.a ? 2 : 0;                // set zero
+        updateNZ(reg.a);                       // update p
         reg.pc++;                              // increment pc
         clocks += 4;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.a); // I/O check
@@ -320,8 +312,7 @@ class CPU
         unsigned short addr = ram[++reg.pc];   // get addr (LOW)
         addr |= ram[++reg.pc] * 256;           // get addr (HIGH)
         reg.x = ram[(addr + reg.y) & 0xFFFF];  // x = any page value
-        reg.p |= reg.x & 0x80;                 // set negative
-        reg.p |= reg.x ? 2 : 0;                // set zero
+        updateNZ(reg.x);                       // update p
         reg.pc++;                              // increment pc
         clocks += 4;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.x); // I/O check
@@ -332,8 +323,7 @@ class CPU
         unsigned short addr = ram[++reg.pc];   // get addr (LOW)
         addr |= ram[++reg.pc] * 256;           // get addr (HIGH)
         reg.y = ram[(addr + reg.x) & 0xFFFF];  // y = any page value
-        reg.p |= reg.y & 0x80;                 // set negative
-        reg.p |= reg.y ? 2 : 0;                // set zero
+        updateNZ(reg.y);                       // update p
         reg.pc++;                              // increment pc
         clocks += 4;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.y); // I/O check
@@ -345,8 +335,7 @@ class CPU
         unsigned short addr = ram[ptr++];      // get addr (LOW)
         addr |= ram[ptr] * 256;                // get addr (HIGH)
         reg.a = ram[addr];                     // a = any page value
-        reg.p |= reg.a & 0x80;                 // set negative
-        reg.p |= reg.a ? 2 : 0;                // set zero
+        updateNZ(reg.a);                       // update p
         reg.pc++;                              // increment pc
         clocks += 6;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.a); // I/O check
@@ -358,8 +347,7 @@ class CPU
         unsigned short addr = ram[ptr++];      // get addr (LOW)
         addr |= ram[ptr] * 256;                // get addr (HIGH)
         reg.a = ram[(addr + reg.y) & 0xFFFF];  // a = any page value
-        reg.p |= reg.a & 0x80;                 // set negative
-        reg.p |= reg.a ? 2 : 0;                // set zero
+        updateNZ(reg.a);                       // update p
         reg.pc++;                              // increment pc
         clocks += 5;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.a); // I/O check
@@ -389,56 +377,50 @@ class CPU
 
     inline void tax()
     {
-        reg.x = reg.a;          // transfer a to x
-        reg.p |= reg.x & 0x80;  // set negative
-        reg.p |= reg.x ? 2 : 0; // set zero
-        reg.pc++;               // increment pc
-        clocks += 2;            // tick the clock
+        reg.x = reg.a;   // transfer a to x
+        updateNZ(reg.x); // update p
+        reg.pc++;        // increment pc
+        clocks += 2;     // tick the clock
     }
 
     inline void txa()
     {
-        reg.a = reg.x;          // transfer x to a
-        reg.p |= reg.a & 0x80;  // set negative
-        reg.p |= reg.a ? 2 : 0; // set zero
-        reg.pc++;               // increment pc
-        clocks += 2;            // tick the clock
+        reg.a = reg.x;   // transfer x to a
+        updateNZ(reg.a); // update p
+        reg.pc++;        // increment pc
+        clocks += 2;     // tick the clock
     }
 
     inline void tay()
     {
-        reg.y = reg.a;          // transfer a to y
-        reg.p |= reg.y & 0x80;  // set negative
-        reg.p |= reg.y ? 2 : 0; // set zero
-        reg.pc++;               // increment pc
-        clocks += 2;            // tick the clock
+        reg.y = reg.a;   // transfer a to y
+        updateNZ(reg.y); // update p
+        reg.pc++;        // increment pc
+        clocks += 2;     // tick the clock
     }
 
     inline void tya()
     {
-        reg.a = reg.y;          // transfer y to a
-        reg.p |= reg.a & 0x80;  // set negative
-        reg.p |= reg.a ? 2 : 0; // set zero
-        reg.pc++;               // increment pc
-        clocks += 2;            // tick the clock
+        reg.a = reg.y;   // transfer y to a
+        updateNZ(reg.a); // update p
+        reg.pc++;        // increment pc
+        clocks += 2;     // tick the clock
     }
 
     inline void tsx()
     {
-        reg.x = reg.s;          // transfer s to x
-        reg.p |= reg.x & 0x80;  // set negative
-        reg.p |= reg.x ? 2 : 0; // set zero
-        reg.pc++;               // increment pc
-        clocks += 2;            // tick the clock
+        reg.x = reg.s;   // transfer s to x
+        updateNZ(reg.x); // update p
+        reg.pc++;        // increment pc
+        clocks += 2;     // tick the clock
     }
 
     inline void txs()
     {
-        reg.s = reg.x;          // transfer x to s
-        reg.p |= reg.s & 0x80;  // set negative
-        reg.p |= reg.s ? 2 : 0; // set zero
-        reg.pc++;               // increment pc
-        clocks += 2;            // tick the clock
+        reg.s = reg.x;   // transfer x to s
+        updateNZ(reg.s); // update p
+        reg.pc++;        // increment pc
+        clocks += 2;     // tick the clock
     }
 
     void changeProgramBank8000(unsigned char n)
@@ -531,6 +513,15 @@ class CPU
                 case 0x84: sty_zero(); break;
                 case 0x94: sty_zero_x(); break;
                 case 0x8C: sty_absolute(); break;
+                // ADC
+                case 0x69: adc_immediate(); break;
+                case 0x65: adc_zero(); break;
+                case 0x75: adc_zero_x(); break;
+                case 0x6D: adc_absolute(); break;
+                case 0x7D: adc_absolute_x(); break;
+                case 0x79: adc_absolute_y(); break;
+                case 0x61: adc_indirect_x(); break;
+                case 0x71: adc_indirect_y(); break;
             }
         }
     }
