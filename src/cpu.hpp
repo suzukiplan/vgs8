@@ -1228,6 +1228,23 @@ class CPU
         clocks += 5;
     }
 
+    inline void jsr()
+    {
+        unsigned short to = absolute();     // get jump to address
+        push(((unsigned char*)&reg.pc)[0]); // push return address minus 1 of H
+        push(((unsigned char*)&reg.pc)[1]); // push return address minus 1 of L
+        reg.pc = to;                        // change program counter (jump to)
+        clocks += 6;                        // tick the clock
+    }
+
+    inline void rts()
+    {
+        ((unsigned char*)&reg.pc)[1] = pull(); // pull return address of L
+        ((unsigned char*)&reg.pc)[0] = pull(); // pull return address of H
+        reg.pc++;                              // increment program counter
+        clocks += 6;                           // tick the clock
+    }
+
     void changeProgramBank8000(unsigned char n)
     {
         reg.prg8000 = n;
@@ -1428,6 +1445,9 @@ class CPU
                 // JMP
                 case 0x4c: jmp_absolute(); break;
                 case 0x6c: jmp_indirect(); break;
+                // JSR/RTS
+                case 0x20: jsr(); break;
+                case 0x60: rts(); break;
             }
         }
     }
