@@ -1168,6 +1168,46 @@ class CPU
         clocks += 3;          // tick the clock
     }
 
+    inline void push(unsigned char v)
+    {
+        ram[0x100 + reg.s] = v;
+        reg.s--;
+    }
+
+    inline unsigned char pull()
+    {
+        reg.s++;
+        return ram[0x100 + reg.s];
+    }
+
+    inline void pha()
+    {
+        push(reg.a);
+        reg.pc++;
+        clocks += 3;
+    }
+
+    inline void pla()
+    {
+        reg.a = pull();
+        reg.pc++;
+        clocks += 3;
+    }
+
+    inline void php()
+    {
+        push(reg.p);
+        reg.pc++;
+        clocks += 3;
+    }
+
+    inline void plp()
+    {
+        reg.p = pull();
+        reg.pc++;
+        clocks += 3;
+    }
+
     void changeProgramBank8000(unsigned char n)
     {
         reg.prg8000 = n;
@@ -1360,6 +1400,11 @@ class CPU
                 // BIT
                 case 0x24: bit_zero(); break;
                 case 0x2C: bit_absolute(); break;
+                // PHA/PLA/PHP/PLP
+                case 0x48: pha(); break;
+                case 0x08: pla(); break;
+                case 0x68: php(); break;
+                case 0x28: plp(); break;
             }
         }
     }
