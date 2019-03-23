@@ -431,24 +431,34 @@ class CPU
         clocks += 2;     // tick the clock
     }
 
+    inline void adc(unsigned char v)
+    {
+        int a = (unsigned char)reg.a;
+        reg.p &= 0xBF; // clear overflow
+        unsigned char prev = v & 0x80;
+        if (a & 0x80 == prev) {
+            a += v + (reg.p & 1);
+            if (a & 0x80 != prev) {
+                reg.p |= 0x40; // set overflow
+            }
+        } else {
+            a += v + (reg.p & 1);
+        }
+        updateCNZ(a); // update p and a
+    }
+
     inline void adc_immediate()
     {
-        int result = (unsigned char)reg.a;
-        result += reg.p & 1;     // add carry
-        result += ram[++reg.pc]; // add immediate value
-        updateCNZ(result);       // update p and a
-        reg.pc++;                // increment pc
-        clocks += 2;             // tick the clock
+        adc(ram[++reg.pc]); // add with carry
+        reg.pc++;           // increment pc
+        clocks += 2;        // tick the clock
     }
 
     inline void adc_zero()
     {
         unsigned short addr;
-        int result = (unsigned char)reg.a;
-        result += reg.p & 1;  // add carry
         addr = ram[++reg.pc]; // calculate address
-        result += ram[addr];  // add zero page value
-        updateCNZ(result);    // update p and a
+        adc(ram[addr]);       // add with carry
         reg.pc++;             // increment pc
         clocks += 3;          // tick the clock
     }
@@ -456,80 +466,60 @@ class CPU
     inline void adc_zero_x()
     {
         unsigned short addr;
-        int result = (unsigned char)reg.a;
-        result += reg.p & 1;          // add carry
         addr = ram[++reg.pc] + reg.x; // calculate address
-        result += ram[addr];          // add zero page
-        updateCNZ(result);            // update p and a
+        adc(ram[addr]);               // add with carry
         reg.pc++;                     // increment pc
         clocks += 4;                  // tick the clock
     }
 
     inline void adc_absolute()
     {
-        int result = (unsigned char)reg.a;
-        result += reg.p & 1;                 // add carry
         unsigned short addr = ram[++reg.pc]; // get addr (HIGH)
         addr <<= 8;                          // addr *= 256
         addr |= ram[++reg.pc];               // get addr (LOW)
-        result += ram[addr];                 // a += any page
-        updateCNZ(result);                   // update p and a
+        adc(ram[addr]);                      // add with carry
         reg.pc++;                            // increment pc
         clocks += 4;                         // tick the clock
     }
 
     inline void adc_absolute_x()
     {
-        int result = (unsigned char)reg.a;
-        result += reg.p & 1;                    // add carry
-        unsigned short addr = ram[++reg.pc];    // get addr (HIGH)
-        addr <<= 8;                             // addr *= 256
-        addr |= ram[++reg.pc];                  // get addr (LOW)
-        result += ram[(addr + reg.x) & 0xFFFF]; // a += any page
-        updateCNZ(result);                      // update p and a
-        reg.pc++;                               // increment pc
-        clocks += 4;                            // tick the clock
+        unsigned short addr = ram[++reg.pc]; // get addr (HIGH)
+        addr <<= 8;                          // addr *= 256
+        addr |= ram[++reg.pc];               // get addr (LOW)
+        adc(ram[(addr + reg.x) & 0xFFFF]);   // add with carry
+        reg.pc++;                            // increment pc
+        clocks += 4;                         // tick the clock
     }
 
     inline void adc_absolute_y()
     {
-        int result = (unsigned char)reg.a;
-        result += reg.p & 1;                    // add carry
-        unsigned short addr = ram[++reg.pc];    // get addr (HIGH)
-        addr <<= 8;                             // addr *= 256
-        addr |= ram[++reg.pc];                  // get addr (LOW)
-        result += ram[(addr + reg.y) & 0xFFFF]; // a += any page
-        updateCNZ(result);                      // update p and a
-        reg.pc++;                               // increment pc
-        clocks += 4;                            // tick the clock
+        unsigned short addr = ram[++reg.pc]; // get addr (HIGH)
+        addr <<= 8;                          // addr *= 256
+        addr |= ram[++reg.pc];               // get addr (LOW)
+        adc(ram[(addr + reg.y) & 0xFFFF]);   // add with carry
+        reg.pc++;                            // increment pc
+        clocks += 4;                         // tick the clock
     }
 
     inline void adc_indirect_x()
     {
-        int result = (unsigned char)reg.a;
-        result += reg.p & 1; // add carry
         unsigned short ptr = ram[++reg.pc] + reg.x;
-        unsigned short addr = ram[ptr++];      // get addr (LOW)
-        addr |= ram[ptr] * 256;                // get addr (HIGH)
-        result += ram[addr];                   // a += any page value
-        updateCNZ(result);                     // update p
-        reg.pc++;                              // increment pc
-        clocks += 6;                           // tick the clock
-        checkLD(addr, (unsigned char*)&reg.a); // I/O check
+        unsigned short addr = ram[ptr++]; // get addr (LOW)
+        addr |= ram[ptr] * 256;           // get addr (HIGH)
+        adc(ram[addr]);                   // add with carry
+        reg.pc++;                         // increment pc
+        clocks += 6;                      // tick the clock
     }
 
     inline void adc_indirect_y()
     {
-        int result = (unsigned char)reg.a;
-        result += reg.p & 1; // add carry
         unsigned short ptr = ram[++reg.pc];
-        unsigned short addr = ram[ptr++];       // get addr (LOW)
-        addr |= ram[ptr] * 256;                 // get addr (HIGH)
-        result += ram[(addr + reg.y) & 0xFFFF]; // a+ = any page value
-        updateCNZ(result);                      // update p
-        reg.pc++;                               // increment pc
-        clocks += 5;                            // tick the clock
-        checkLD(addr, (unsigned char*)&reg.a);  // I/O check
+        unsigned short addr = ram[ptr++];  // get addr (LOW)
+        addr |= ram[ptr] * 256;            // get addr (HIGH)
+        adc(ram[(addr + reg.y) & 0xFFFF]); // add with carry
+        reg.pc++;                          // increment pc
+        clocks += 5;                       // tick the clock
     }
 
     void changeProgramBank8000(unsigned char n)
