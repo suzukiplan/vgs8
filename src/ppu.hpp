@@ -39,14 +39,18 @@ class PPU
     PPU(VirtualMachine* vm)
     {
         this->vm = vm;
-        memset(&this->reg, 0, sizeof(this->reg));
-        memset(vram, 0, sizeof(vram));
-        // 初期パレットをRAMへ展開
-        memcpy(&vm->cpu->ram[0x5C00], vm->bank->pal, 1024);
+        reset();
     }
 
     ~PPU()
     {
+    }
+
+    void reset()
+    {
+        memset(&this->reg, 0, sizeof(this->reg));
+        memset(vram, 0, sizeof(vram));
+        memcpy(&vm->cpu->ram[0x5C00], vm->bank->pal, 1024);
     }
 
     /**

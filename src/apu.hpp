@@ -23,13 +23,18 @@ class APU
     {
         this->vm = vm;
         vgsdec = vgsdec_create_context();
-        memset(&reg, 0, sizeof(reg));
+        reset();
     }
 
     ~APU()
     {
         vgsdec_release_context(vgsdec);
         vgsdec = NULL;
+    }
+
+    void reset()
+    {
+        memset(&reg, 0, sizeof(reg));
     }
 
     void playBgm(unsigned char n)

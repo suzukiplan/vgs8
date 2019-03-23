@@ -22,6 +22,13 @@ VirtualMachine::~VirtualMachine()
     bank = NULL;
 }
 
+void VirtualMachine::reset()
+{
+    cpu->reset();
+    ppu->reset();
+    apu->reset();
+}
+
 void VirtualMachine::tick()
 {
     if (!cpu) return;
