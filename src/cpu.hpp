@@ -874,6 +874,52 @@ class CPU
         clocks += 4;                     // tick the clock
     }
 
+    inline void asl(unsigned char* v)
+    {
+        reg.p &= 0b01111100;            // clear N, Z, C
+        int a = *v;                     // store to work area
+        a <<= 1;                        // left shift 1 bit
+        *v = a & 0xFF;                  // store to result
+        if (a & 0x80) reg.p |= 0x80;    // set N if negative
+        if (0 == *v) reg.p |= 2;        // set Z if zero
+        if (a & 0xFFFFFF00) reg.p |= 1; // set carry
+    }
+
+    inline void asl_a()
+    {
+        asl((unsigned char*)&reg.a); // left shift
+        reg.pc++;                    // increment pc
+        clocks += 2;                 // tick the clock
+    }
+
+    inline void asl_zero()
+    {
+        asl(&ram[ram[++reg.pc]]); // left shift
+        reg.pc++;                 // increment pc
+        clocks += 5;              // tick the clock
+    }
+
+    inline void asl_zero_x()
+    {
+        asl(&ram[ram[++reg.pc] + reg.x]); // left shift
+        reg.pc++;                         // increment pc
+        clocks += 6;                      // tick the clock
+    }
+
+    inline void asl_absolute()
+    {
+        asl(&ram[absolute()]); // left shift
+        reg.pc++;              // increment pc
+        clocks += 6;           // tick the clock
+    }
+
+    inline void asl_absolute_x()
+    {
+        asl(&ram[absolute(reg.x)]); // left shift
+        reg.pc++;                   // increment pc
+        clocks += 7;                // tick the clock
+    }
+
     void changeProgramBank8000(unsigned char n)
     {
         reg.prg8000 = n;
@@ -1026,6 +1072,12 @@ class CPU
                 case 0xC0: cpy_immediate(); break;
                 case 0xC4: cpy_zero(); break;
                 case 0xCC: cpy_absolute(); break;
+                // ASL
+                case 0x0A: asl_a(); break;
+                case 0x06: asl_zero(); break;
+                case 0x16: asl_zero_x(); break;
+                case 0x0E: asl_absolute(); break;
+                case 0x1E: asl_absolute_x(); break;
             }
         }
     }
