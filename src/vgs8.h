@@ -91,14 +91,11 @@ class VirtualMachine
     unsigned short* getDisplay555(size_t* size);
 
     /**
-     * スピーカ出力内容（PCM）を取得
-     * @param samples [I] 出力サンプリング周波数（推奨: 22050）
-     * @param bits [I] 出力ビットレート（推奨: 16bit）
-     * @param ch [I] チャンネル数（推奨: 1/mono）
+     * スピーカ出力内容（PCM）を取得 (波形は22050Hz/16bit/1ch固定)
      * @param buffer [I/O] 出力バッファ
      * @param size [I] バッファサイズ
      */
-    void getPCM(int samples, int bits, int ch, void* buffer, size_t size);
+    void getPCM(void* buffer, size_t size);
 
     /**
      * クイックセーブ
