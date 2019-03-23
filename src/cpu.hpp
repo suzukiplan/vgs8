@@ -1271,6 +1271,32 @@ class CPU
         reg.pc += 2;
     }
 
+    inline void status(unsigned char s, bool isSet)
+    {
+        if (isSet) {
+            reg.p |= s;
+        } else {
+            s ^= 0xFF;
+            reg.p &= s;
+        }
+        reg.pc += 1;
+        clocks += 2;
+    }
+
+    inline void brk()
+    {
+        // VGSの場合, vramUpdateRequestを発生させる (非推奨のやり方)
+        vramUpdateRequest = true;
+        reg.pc += 1;
+        clocks += 7;
+    }
+
+    inline void nop()
+    {
+        reg.pc += 1;
+        clocks += 2;
+    }
+
     void changeProgramBank8000(unsigned char n)
     {
         reg.prg8000 = n;
@@ -1476,15 +1502,24 @@ class CPU
                 case 0x60: rts(); break;
                 // RTI
                 case 0x40: rti(); break;
-                // branch (note: P is [N.V.R.B.D.I.Z.C])
-                case 0xB0: branch(0x01, true);  // BCS (C; carry)
-                case 0x90: branch(0x01, false); // BCC (C; carry)
-                case 0xF0: branch(0x02, true);  // BEQ (Z; zero)
-                case 0xD0: branch(0x02, false); // BNE (Z; zero)
-                case 0x70: branch(0x40, true);  // BVS (V; overflow)
-                case 0x50: branch(0x40, false); // BVC (V; overflow)
-                case 0x30: branch(0x80, true);  // BMI (N; negative)
-                case 0x10: branch(0x80, false); // BPL (N; negative)
+                // other operands (note: P is [N.V.R.B.D.I.Z.C])
+                case 0xB0: branch(0x01, true); break;  // BCS (C; carry)
+                case 0x90: branch(0x01, false); break; // BCC (C; carry)
+                case 0xF0: branch(0x02, true); break;  // BEQ (Z; zero)
+                case 0xD0: branch(0x02, false); break; // BNE (Z; zero)
+                case 0x70: branch(0x40, true); break;  // BVS (V; overflow)
+                case 0x50: branch(0x40, false); break; // BVC (V; overflow)
+                case 0x30: branch(0x80, true); break;  // BMI (N; negative)
+                case 0x10: branch(0x80, false); break; // BPL (N; negative)
+                case 0x38: status(0x01, true); break;  // SEC (C; carry)
+                case 0x18: status(0x01, false); break; // CLC (C; carry)
+                case 0x78: status(0x04, true); break;  // SEI (I; interrupt)
+                case 0x58: status(0x04, false); break; // CLI (I; interrupt)
+                case 0xF8: status(0x08, true); break;  // SED (D; decimal) *VGS8では使えない
+                case 0xD8: status(0x08, false); break; // CLD (D; decimal) *VGS8では使えない
+                case 0xB8: status(0x40, false); break; // CLV (V; overflow)
+                case 0x00: brk(); break;
+                case 0xEA: nop(); break;
             }
         }
     }
