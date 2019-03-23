@@ -1245,6 +1245,14 @@ class CPU
         clocks += 6;                           // tick the clock
     }
 
+    inline void rti()
+    {
+        reg.p = pull();                        // pull p
+        ((unsigned char*)&reg.pc)[1] = pull(); // pull return address of L
+        ((unsigned char*)&reg.pc)[0] = pull(); // pull return address of H
+        clocks += 6;                           // tick the clock
+    }
+
     void changeProgramBank8000(unsigned char n)
     {
         reg.prg8000 = n;
@@ -1448,6 +1456,8 @@ class CPU
                 // JSR/RTS
                 case 0x20: jsr(); break;
                 case 0x60: rts(); break;
+                // RTI
+                case 0x40: rti(); break;
             }
         }
     }
