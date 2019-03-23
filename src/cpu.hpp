@@ -103,6 +103,36 @@ class CPU
         checkLD(addr, (unsigned char*)&reg.y); // I/O check
     }
 
+    inline void sta_zero()
+    {
+        unsigned short addr;
+        addr = ram[++reg.pc];                // calculate address
+        ram[addr] = reg.a;                   // store a to zero page
+        reg.pc++;                            // increment pc
+        clocks += 3;                         // tick the clock
+        checkST(addr, (unsigned char)reg.a); // I/O check
+    }
+
+    inline void stx_zero()
+    {
+        unsigned short addr;
+        addr = ram[++reg.pc];                // calculate address
+        ram[addr] = reg.x;                   // store x to zero page
+        reg.pc++;                            // increment pc
+        clocks += 3;                         // tick the clock
+        checkST(addr, (unsigned char)reg.x); // I/O check
+    }
+
+    inline void sty_zero()
+    {
+        unsigned short addr;
+        addr = ram[++reg.pc];                // calculate address
+        ram[addr] = reg.y;                   // store y to zero page
+        reg.pc++;                            // increment pc
+        clocks += 3;                         // tick the clock
+        checkST(addr, (unsigned char)reg.y); // I/O check
+    }
+
     inline void lda_zero_x()
     {
         unsigned short addr;
@@ -137,6 +167,36 @@ class CPU
         reg.pc++;                              // increment pc
         clocks += 4;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.y); // I/O check
+    }
+
+    inline void sta_zero_x()
+    {
+        unsigned short addr;
+        addr = ram[++reg.pc] + reg.x;        // calculate address
+        ram[addr] = reg.a;                   // store a to zero page
+        reg.pc++;                            // increment pc
+        clocks += 4;                         // tick the clock
+        checkST(addr, (unsigned char)reg.a); // I/O check
+    }
+
+    inline void stx_zero_y()
+    {
+        unsigned short addr;
+        addr = ram[++reg.pc] + reg.y;        // calculate address
+        ram[addr] = reg.x;                   // store x to zero page
+        reg.pc++;                            // increment pc
+        clocks += 4;                         // tick the clock
+        checkST(addr, (unsigned char)reg.x); // I/O check
+    }
+
+    inline void sty_zero_x()
+    {
+        unsigned short addr;
+        addr = ram[++reg.pc] + reg.x;        // calculate address
+        ram[addr] = reg.y;                   // store y to zero page
+        reg.pc++;                            // increment pc
+        clocks += 4;                         // tick the clock
+        checkST(addr, (unsigned char)reg.y); // I/O check
     }
 
     inline void lda_absolute()
@@ -178,6 +238,39 @@ class CPU
         checkLD(addr, (unsigned char*)&reg.y); // I/O check
     }
 
+    inline void sta_absolute()
+    {
+        unsigned short addr = ram[++reg.pc]; // get addr (HIGH)
+        addr <<= 8;                          // addr *= 256
+        addr |= ram[++reg.pc];               // get addr (LOW)
+        ram[addr] = reg.a;                   // store a to any page
+        reg.pc++;                            // increment pc
+        clocks += 4;                         // tick the clock
+        checkST(addr, (unsigned char)reg.a); // I/O check
+    }
+
+    inline void stx_absolute()
+    {
+        unsigned short addr = ram[++reg.pc]; // get addr (HIGH)
+        addr <<= 8;                          // addr *= 256
+        addr |= ram[++reg.pc];               // get addr (LOW)
+        ram[addr] = reg.x;                   // store x to any page
+        reg.pc++;                            // increment pc
+        clocks += 4;                         // tick the clock
+        checkST(addr, (unsigned char)reg.x); // I/O check
+    }
+
+    inline void sty_absolute()
+    {
+        unsigned short addr = ram[++reg.pc]; // get addr (HIGH)
+        addr <<= 8;                          // addr *= 256
+        addr |= ram[++reg.pc];               // get addr (LOW)
+        ram[addr] = reg.y;                   // store y to any page
+        reg.pc++;                            // increment pc
+        clocks += 4;                         // tick the clock
+        checkST(addr, (unsigned char)reg.y); // I/O check
+    }
+
     inline void lda_absolute_x()
     {
         unsigned short addr = ram[++reg.pc];   // get addr (LOW)
@@ -200,6 +293,26 @@ class CPU
         reg.pc++;                              // increment pc
         clocks += 4;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.a); // I/O check
+    }
+
+    inline void sta_absolute_x()
+    {
+        unsigned short addr = ram[++reg.pc]; // get addr (LOW)
+        addr |= ram[++reg.pc] * 256;         // get addr (HIGH)
+        ram[addr + reg.x] = reg.a;           // store a to any page
+        reg.pc++;                            // increment pc
+        clocks += 5;                         // tick the clock
+        checkST(addr, (unsigned char)reg.a); // I/O check
+    }
+
+    inline void sta_absolute_y()
+    {
+        unsigned short addr = ram[++reg.pc]; // get addr (LOW)
+        addr |= ram[++reg.pc] * 256;         // get addr (HIGH)
+        ram[addr + reg.y] = reg.a;           // store a to any page
+        reg.pc++;                            // increment pc
+        clocks += 5;                         // tick the clock
+        checkST(addr, (unsigned char)reg.a); // I/O check
     }
 
     inline void ldx_absolute_y()
@@ -250,6 +363,28 @@ class CPU
         reg.pc++;                              // increment pc
         clocks += 5;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.a); // I/O check
+    }
+
+    inline void sta_indirect_x()
+    {
+        unsigned short ptr = ram[++reg.pc] + reg.x;
+        unsigned short addr = ram[ptr++];    // get addr (LOW)
+        addr |= ram[ptr] * 256;              // get addr (HIGH)
+        ram[addr] = reg.a;                   // store a to any page
+        reg.pc++;                            // increment pc
+        clocks += 6;                         // tick the clock
+        checkST(addr, (unsigned char)reg.a); // I/O check
+    }
+
+    inline void sta_indirect_y()
+    {
+        unsigned short ptr = ram[++reg.pc];
+        unsigned short addr = ram[ptr++];    // get addr (LOW)
+        addr |= ram[ptr] * 256;              // get addr (HIGH)
+        ram[addr + reg.y] = reg.a;           // store a to any page
+        reg.pc++;                            // increment pc
+        clocks += 5;                         // tick the clock
+        checkST(addr, (unsigned char)reg.a); // I/O check
     }
 
     inline void tax()
@@ -320,10 +455,10 @@ class CPU
                 case 0x8A: txa(); break;
                 case 0xAA: tax(); break;
                 // LDA
-                case 0xA5: lda_zero(); break;
                 case 0xA9: lda_immediate(); break;
-                case 0xAD: lda_absolute(); break;
+                case 0xA5: lda_zero(); break;
                 case 0xB5: lda_zero_x(); break;
+                case 0xAD: lda_absolute(); break;
                 case 0xBD: lda_absolute_x(); break;
                 case 0xB9: lda_absolute_y(); break;
                 case 0xA1: lda_indirect_x(); break;
@@ -340,6 +475,22 @@ class CPU
                 case 0xB4: ldy_zero_x(); break;
                 case 0xAC: ldy_absolute(); break;
                 case 0xBC: ldy_absolute_x(); break;
+                // STA
+                case 0x85: sta_zero(); break;
+                case 0x95: sta_zero_x(); break;
+                case 0x8D: sta_absolute(); break;
+                case 0x9D: sta_absolute_x(); break;
+                case 0x99: sta_absolute_y(); break;
+                case 0x81: sta_indirect_x(); break;
+                case 0x91: sta_indirect_y(); break;
+                // STX
+                case 0x86: stx_zero(); break;
+                case 0x96: stx_zero_y(); break;
+                case 0x8E: stx_absolute(); break;
+                // STY
+                case 0x84: sty_zero(); break;
+                case 0x94: sty_zero_x(); break;
+                case 0x8C: sty_absolute(); break;
             }
         }
     }
