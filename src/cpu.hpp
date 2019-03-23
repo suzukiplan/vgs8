@@ -522,6 +522,97 @@ class CPU
         clocks += 5;                       // tick the clock
     }
 
+    inline void sbc(unsigned char v)
+    {
+        int a = (unsigned char)reg.a;
+        reg.p &= 0xBF; // clear overflow
+        unsigned char prev = v & 0x80;
+        if (a & 0x80 == prev) {
+            a -= v + (reg.p & 1 ? 0 : 1);
+            if (a & 0x80 != prev) {
+                reg.p |= 0x40; // set overflow
+            }
+        } else {
+            a -= v + (reg.p & 1 ? 0 : 1);
+        }
+        updateCNZ(a); // update p and a
+    }
+
+    inline void sbc_immediate()
+    {
+        sbc(ram[++reg.pc]); // sub with carry
+        reg.pc++;           // increment pc
+        clocks += 2;        // tick the clock
+    }
+
+    inline void sbc_zero()
+    {
+        unsigned short addr;
+        addr = ram[++reg.pc]; // calculate address
+        sbc(ram[addr]);       // sub with carry
+        reg.pc++;             // increment pc
+        clocks += 3;          // tick the clock
+    }
+
+    inline void sbc_zero_x()
+    {
+        unsigned short addr;
+        addr = ram[++reg.pc] + reg.x; // calculate address
+        sbc(ram[addr]);               // sub with carry
+        reg.pc++;                     // increment pc
+        clocks += 4;                  // tick the clock
+    }
+
+    inline void sbc_absolute()
+    {
+        unsigned short addr = ram[++reg.pc]; // get addr (HIGH)
+        addr <<= 8;                          // addr *= 256
+        addr |= ram[++reg.pc];               // get addr (LOW)
+        sbc(ram[addr]);                      // sub with carry
+        reg.pc++;                            // increment pc
+        clocks += 4;                         // tick the clock
+    }
+
+    inline void sbc_absolute_x()
+    {
+        unsigned short addr = ram[++reg.pc]; // get addr (HIGH)
+        addr <<= 8;                          // addr *= 256
+        addr |= ram[++reg.pc];               // get addr (LOW)
+        sbc(ram[(addr + reg.x) & 0xFFFF]);   // sub with carry
+        reg.pc++;                            // increment pc
+        clocks += 4;                         // tick the clock
+    }
+
+    inline void sbc_absolute_y()
+    {
+        unsigned short addr = ram[++reg.pc]; // get addr (HIGH)
+        addr <<= 8;                          // addr *= 256
+        addr |= ram[++reg.pc];               // get addr (LOW)
+        sbc(ram[(addr + reg.y) & 0xFFFF]);   // sub with carry
+        reg.pc++;                            // increment pc
+        clocks += 4;                         // tick the clock
+    }
+
+    inline void sbc_indirect_x()
+    {
+        unsigned short ptr = ram[++reg.pc] + reg.x;
+        unsigned short addr = ram[ptr++]; // get addr (LOW)
+        addr |= ram[ptr] * 256;           // get addr (HIGH)
+        sbc(ram[addr]);                   // sub with carry
+        reg.pc++;                         // increment pc
+        clocks += 6;                      // tick the clock
+    }
+
+    inline void sbc_indirect_y()
+    {
+        unsigned short ptr = ram[++reg.pc];
+        unsigned short addr = ram[ptr++];  // get addr (LOW)
+        addr |= ram[ptr] * 256;            // get addr (HIGH)
+        sbc(ram[(addr + reg.y) & 0xFFFF]); // sub with carry
+        reg.pc++;                          // increment pc
+        clocks += 5;                       // tick the clock
+    }
+
     void changeProgramBank8000(unsigned char n)
     {
         reg.prg8000 = n;
@@ -621,6 +712,15 @@ class CPU
                 case 0x79: adc_absolute_y(); break;
                 case 0x61: adc_indirect_x(); break;
                 case 0x71: adc_indirect_y(); break;
+                // SBC
+                case 0xE9: sbc_immediate(); break;
+                case 0xE5: sbc_zero(); break;
+                case 0xF5: sbc_zero_x(); break;
+                case 0xED: sbc_absolute(); break;
+                case 0xFD: sbc_absolute_x(); break;
+                case 0xF9: sbc_absolute_y(); break;
+                case 0xE1: sbc_indirect_x(); break;
+                case 0xF1: sbc_indirect_y(); break;
             }
         }
     }
