@@ -462,20 +462,16 @@ class CPU
 
     inline void adc_zero()
     {
-        unsigned short addr;
-        addr = ram[++reg.pc]; // calculate address
-        adc(ram[addr]);       // add with carry
-        reg.pc++;             // increment pc
-        clocks += 3;          // tick the clock
+        adc(ram[ram[++reg.pc]]); // add with carry
+        reg.pc++;                // increment pc
+        clocks += 3;             // tick the clock
     }
 
     inline void adc_zero_x()
     {
-        unsigned short addr;
-        addr = ram[++reg.pc] + reg.x; // calculate address
-        adc(ram[addr]);               // add with carry
-        reg.pc++;                     // increment pc
-        clocks += 4;                  // tick the clock
+        adc(ram[ram[++reg.pc] + reg.x]); // add with carry
+        reg.pc++;                        // increment pc
+        clocks += 4;                     // tick the clock
     }
 
     inline void adc_absolute()
@@ -538,20 +534,16 @@ class CPU
 
     inline void sbc_zero()
     {
-        unsigned short addr;
-        addr = ram[++reg.pc]; // calculate address
-        sbc(ram[addr]);       // sub with carry
-        reg.pc++;             // increment pc
-        clocks += 3;          // tick the clock
+        sbc(ram[ram[++reg.pc]]); // sub with carry
+        reg.pc++;                // increment pc
+        clocks += 3;             // tick the clock
     }
 
     inline void sbc_zero_x()
     {
-        unsigned short addr;
-        addr = ram[++reg.pc] + reg.x; // calculate address
-        sbc(ram[addr]);               // sub with carry
-        reg.pc++;                     // increment pc
-        clocks += 4;                  // tick the clock
+        sbc(ram[ram[++reg.pc] + reg.x]); // sub with carry
+        reg.pc++;                        // increment pc
+        clocks += 4;                     // tick the clock
     }
 
     inline void sbc_absolute()
@@ -604,20 +596,16 @@ class CPU
 
     inline void and_zero()
     {
-        unsigned short addr;
-        addr = ram[++reg.pc]; // calculate address
-        andA(ram[addr]);      // and
-        reg.pc++;             // increment pc
-        clocks += 3;          // tick the clock
+        andA(ram[ram[++reg.pc]]); // and
+        reg.pc++;                 // increment pc
+        clocks += 3;              // tick the clock
     }
 
     inline void and_zero_x()
     {
-        unsigned short addr;
-        addr = ram[++reg.pc] + reg.x; // calculate address
-        andA(ram[addr]);              // and
-        reg.pc++;                     // increment pc
-        clocks += 4;                  // tick the clock
+        andA(ram[ram[++reg.pc] + reg.x]); // and
+        reg.pc++;                         // increment pc
+        clocks += 4;                      // tick the clock
     }
 
     inline void and_absolute()
@@ -670,20 +658,16 @@ class CPU
 
     inline void ora_zero()
     {
-        unsigned short addr;
-        addr = ram[++reg.pc]; // calculate address
-        ora(ram[addr]);       // or
-        reg.pc++;             // increment pc
-        clocks += 3;          // tick the clock
+        ora(ram[ram[++reg.pc]]); // or
+        reg.pc++;                // increment pc
+        clocks += 3;             // tick the clock
     }
 
     inline void ora_zero_x()
     {
-        unsigned short addr;
-        addr = ram[++reg.pc] + reg.x; // calculate address
-        ora(ram[addr]);               // or
-        reg.pc++;                     // increment pc
-        clocks += 4;                  // tick the clock
+        ora(ram[ram[++reg.pc] + reg.x]); // or
+        reg.pc++;                        // increment pc
+        clocks += 4;                     // tick the clock
     }
 
     inline void ora_absolute()
@@ -736,20 +720,16 @@ class CPU
 
     inline void eor_zero()
     {
-        unsigned short addr;
-        addr = ram[++reg.pc]; // calculate address
-        eor(ram[addr]);       // eor
-        reg.pc++;             // increment pc
-        clocks += 3;          // tick the clock
+        eor(ram[ram[++reg.pc]]); // eor
+        reg.pc++;                // increment pc
+        clocks += 3;             // tick the clock
     }
 
     inline void eor_zero_x()
     {
-        unsigned short addr;
-        addr = ram[++reg.pc] + reg.x; // calculate address
-        eor(ram[addr]);               // eor
-        reg.pc++;                     // increment pc
-        clocks += 4;                  // tick the clock
+        eor(ram[ram[++reg.pc] + reg.x]); // eor
+        reg.pc++;                        // increment pc
+        clocks += 4;                     // tick the clock
     }
 
     inline void eor_absolute()
