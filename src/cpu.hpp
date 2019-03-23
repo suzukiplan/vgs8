@@ -1012,7 +1012,7 @@ class CPU
     {
         rotate(true, &ram[absolute(reg.x)]); // left rotate
         reg.pc++;                            // increment pc
-        clocks += 6;                         // tick the clock
+        clocks += 7;                         // tick the clock
     }
 
     inline void ror_a()
@@ -1048,6 +1048,102 @@ class CPU
         rotate(false, &ram[absolute(reg.x)]); // right rotate
         reg.pc++;                             // increment pc
         clocks += 7;                          // tick the clock
+    }
+
+    inline void inc(unsigned char* v)
+    {
+        (*v)++;
+        updateNZ(*v);
+    }
+
+    inline void inc_zero()
+    {
+        inc(&ram[ram[++reg.pc]]); // increment
+        reg.pc++;                 // increment pc
+        clocks += 5;              // tick the clock
+    }
+
+    inline void inc_zero_x()
+    {
+        inc(&ram[ram[++reg.pc] + reg.x]); // increment
+        reg.pc++;                         // increment pc
+        clocks += 6;                      // tick the clock
+    }
+
+    inline void inc_absolute()
+    {
+        inc(&ram[absolute()]); // increment
+        reg.pc++;              // increment pc
+        clocks += 6;           // tick the clock
+    }
+
+    inline void inc_absolute_x()
+    {
+        inc(&ram[absolute(reg.x)]); // increment
+        reg.pc++;                   // increment pc
+        clocks += 7;                // tick the clock
+    }
+
+    inline void inx()
+    {
+        inc(&reg.x); // increment
+        reg.pc++;    // increment pc
+        clocks += 2; // tick the clock
+    }
+
+    inline void iny()
+    {
+        inc(&reg.y); // increment
+        reg.pc++;    // increment pc
+        clocks += 2; // tick the clock
+    }
+
+    inline void dec(unsigned char* v)
+    {
+        (*v)--;
+        updateNZ(*v);
+    }
+
+    inline void dec_zero()
+    {
+        dec(&ram[ram[++reg.pc]]); // decrement
+        reg.pc++;                 // increment pc
+        clocks += 5;              // tick the clock
+    }
+
+    inline void dec_zero_x()
+    {
+        dec(&ram[ram[++reg.pc] + reg.x]); // decrement
+        reg.pc++;                         // increment pc
+        clocks += 6;                      // tick the clock
+    }
+
+    inline void dec_absolute()
+    {
+        dec(&ram[absolute()]); // decrement
+        reg.pc++;              // increment pc
+        clocks += 6;           // tick the clock
+    }
+
+    inline void dec_absolute_x()
+    {
+        dec(&ram[absolute(reg.x)]); // decrement
+        reg.pc++;                   // increment pc
+        clocks += 7;                // tick the clock
+    }
+
+    inline void dex()
+    {
+        dec(&reg.x); // decrement
+        reg.pc++;    // increment pc
+        clocks += 2; // tick the clock
+    }
+
+    inline void dey()
+    {
+        dec(&reg.y); // decrement
+        reg.pc++;    // increment pc
+        clocks += 2; // tick the clock
     }
 
     void changeProgramBank8000(unsigned char n)
@@ -1225,6 +1321,20 @@ class CPU
                 case 0x76: ror_zero_x(); break;
                 case 0x6E: ror_absolute(); break;
                 case 0x7E: ror_absolute_x(); break;
+                // INC/INX/INY
+                case 0xE6: inc_zero(); break;
+                case 0xF6: inc_zero_x(); break;
+                case 0xEE: inc_absolute(); break;
+                case 0xFE: inc_absolute_x(); break;
+                case 0xE8: inx(); break;
+                case 0xC8: iny(); break;
+                // DEC/DEX/DEY
+                case 0xC6: dec_zero(); break;
+                case 0xD6: dec_zero_x(); break;
+                case 0xCE: dec_absolute(); break;
+                case 0xDE: dec_absolute_x(); break;
+                case 0xCA: dex(); break;
+                case 0x88: dey(); break;
             }
         }
     }
