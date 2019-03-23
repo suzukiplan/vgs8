@@ -275,7 +275,7 @@ class CPU
     {
         unsigned short addr = ram[++reg.pc];   // get addr (LOW)
         addr |= ram[++reg.pc] * 256;           // get addr (HIGH)
-        reg.a = ram[addr + reg.x];             // a = any page value
+        reg.a = ram[(addr + reg.x) & 0xFFFF];  // a = any page value
         reg.p |= reg.a & 0x80;                 // set negative
         reg.p |= reg.a ? 2 : 0;                // set zero
         reg.pc++;                              // increment pc
@@ -287,7 +287,7 @@ class CPU
     {
         unsigned short addr = ram[++reg.pc];   // get addr (LOW)
         addr |= ram[++reg.pc] * 256;           // get addr (HIGH)
-        reg.a = ram[addr + reg.y];             // a = any page value
+        reg.a = ram[(addr + reg.y) & 0xFFFF];  // a = any page value
         reg.p |= reg.a & 0x80;                 // set negative
         reg.p |= reg.a ? 2 : 0;                // set zero
         reg.pc++;                              // increment pc
@@ -297,29 +297,29 @@ class CPU
 
     inline void sta_absolute_x()
     {
-        unsigned short addr = ram[++reg.pc]; // get addr (LOW)
-        addr |= ram[++reg.pc] * 256;         // get addr (HIGH)
-        ram[addr + reg.x] = reg.a;           // store a to any page
-        reg.pc++;                            // increment pc
-        clocks += 5;                         // tick the clock
-        checkST(addr, (unsigned char)reg.a); // I/O check
+        unsigned short addr = ram[++reg.pc];  // get addr (LOW)
+        addr |= ram[++reg.pc] * 256;          // get addr (HIGH)
+        ram[(addr + reg.x) & 0xFFFF] = reg.a; // store a to any page
+        reg.pc++;                             // increment pc
+        clocks += 5;                          // tick the clock
+        checkST(addr, (unsigned char)reg.a);  // I/O check
     }
 
     inline void sta_absolute_y()
     {
-        unsigned short addr = ram[++reg.pc]; // get addr (LOW)
-        addr |= ram[++reg.pc] * 256;         // get addr (HIGH)
-        ram[addr + reg.y] = reg.a;           // store a to any page
-        reg.pc++;                            // increment pc
-        clocks += 5;                         // tick the clock
-        checkST(addr, (unsigned char)reg.a); // I/O check
+        unsigned short addr = ram[++reg.pc];  // get addr (LOW)
+        addr |= ram[++reg.pc] * 256;          // get addr (HIGH)
+        ram[(addr + reg.y) & 0xFFFF] = reg.a; // store a to any page
+        reg.pc++;                             // increment pc
+        clocks += 5;                          // tick the clock
+        checkST(addr, (unsigned char)reg.a);  // I/O check
     }
 
     inline void ldx_absolute_y()
     {
         unsigned short addr = ram[++reg.pc];   // get addr (LOW)
         addr |= ram[++reg.pc] * 256;           // get addr (HIGH)
-        reg.x = ram[addr + reg.y];             // x = any page value
+        reg.x = ram[(addr + reg.y) & 0xFFFF];  // x = any page value
         reg.p |= reg.x & 0x80;                 // set negative
         reg.p |= reg.x ? 2 : 0;                // set zero
         reg.pc++;                              // increment pc
@@ -331,7 +331,7 @@ class CPU
     {
         unsigned short addr = ram[++reg.pc];   // get addr (LOW)
         addr |= ram[++reg.pc] * 256;           // get addr (HIGH)
-        reg.y = ram[addr + reg.x];             // y = any page value
+        reg.y = ram[(addr + reg.x) & 0xFFFF];  // y = any page value
         reg.p |= reg.y & 0x80;                 // set negative
         reg.p |= reg.y ? 2 : 0;                // set zero
         reg.pc++;                              // increment pc
@@ -357,7 +357,7 @@ class CPU
         unsigned short ptr = ram[++reg.pc];
         unsigned short addr = ram[ptr++];      // get addr (LOW)
         addr |= ram[ptr] * 256;                // get addr (HIGH)
-        reg.a = ram[addr + reg.y];             // a = any page value
+        reg.a = ram[(addr + reg.y) & 0xFFFF];  // a = any page value
         reg.p |= reg.a & 0x80;                 // set negative
         reg.p |= reg.a ? 2 : 0;                // set zero
         reg.pc++;                              // increment pc
@@ -379,12 +379,12 @@ class CPU
     inline void sta_indirect_y()
     {
         unsigned short ptr = ram[++reg.pc];
-        unsigned short addr = ram[ptr++];    // get addr (LOW)
-        addr |= ram[ptr] * 256;              // get addr (HIGH)
-        ram[addr + reg.y] = reg.a;           // store a to any page
-        reg.pc++;                            // increment pc
-        clocks += 5;                         // tick the clock
-        checkST(addr, (unsigned char)reg.a); // I/O check
+        unsigned short addr = ram[ptr++];     // get addr (LOW)
+        addr |= ram[ptr] * 256;               // get addr (HIGH)
+        ram[(addr + reg.y) & 0xFFFF] = reg.a; // store a to any page
+        reg.pc++;                             // increment pc
+        clocks += 5;                          // tick the clock
+        checkST(addr, (unsigned char)reg.a);  // I/O check
     }
 
     inline void tax()
