@@ -960,6 +960,96 @@ class CPU
         clocks += 7;                         // tick the clock
     }
 
+    inline void rotate(bool isLeft, unsigned char* v)
+    {
+        reg.p &= 0b01111100; // clear N, Z, C
+        int a = *v;
+        unsigned char lsb = a & 1;
+        unsigned char msb = a & 0x80;
+        if (isLeft) {
+            a <<= 1;           // left shift
+            *v = a & 0xFE;     // store to result without LSB
+            *v |= msb ? 1 : 0; // store LSB if previous MSB has set
+        } else {
+            a >>= 1;              // right shift
+            *v = a & 0x7F;        // store to result without MSB
+            *v |= lsb ? 0x80 : 0; // store MSB if previous LSB has set
+        }
+        if (a & 0x80) reg.p |= 0x80;    // set N if negative
+        if (0 == *v) reg.p |= 2;        // set Z if zero
+        if (a & 0xFFFFFF00) reg.p |= 1; // set carry
+    }
+
+    inline void rol_a()
+    {
+        rotate(true, (unsigned char*)&reg.a); // left rotate
+        reg.pc++;                             // increment pc
+        clocks += 2;                          // tick the clock
+    }
+
+    inline void rol_zero()
+    {
+        rotate(true, &ram[ram[++reg.pc]]); // left rotate
+        reg.pc++;                          // increment pc
+        clocks += 5;                       // tick the clock
+    }
+
+    inline void rol_zero_x()
+    {
+        rotate(true, &ram[ram[++reg.pc] + reg.x]); // left rotate
+        reg.pc++;                                  // increment pc
+        clocks += 6;                               // tick the clock
+    }
+
+    inline void rol_absolute()
+    {
+        rotate(true, &ram[absolute()]); // left rotate
+        reg.pc++;                       // increment pc
+        clocks += 6;                    // tick the clock
+    }
+
+    inline void rol_absolute_x()
+    {
+        rotate(true, &ram[absolute(reg.x)]); // left rotate
+        reg.pc++;                            // increment pc
+        clocks += 6;                         // tick the clock
+    }
+
+    inline void ror_a()
+    {
+        rotate(false, (unsigned char*)&reg.a); // right rotate
+        reg.pc++;                              // increment pc
+        clocks += 2;                           // tick the clock
+    }
+
+    inline void ror_zero()
+    {
+        rotate(false, &ram[ram[++reg.pc]]); // right rotate
+        reg.pc++;                           // increment pc
+        clocks += 5;                        // tick the clock
+    }
+
+    inline void ror_zero_x()
+    {
+        rotate(false, &ram[ram[++reg.pc] + reg.x]); // right rotate
+        reg.pc++;                                   // increment pc
+        clocks += 6;                                // tick the clock
+    }
+
+    inline void ror_absolute()
+    {
+        rotate(false, &ram[absolute()]); // right rotate
+        reg.pc++;                        // increment pc
+        clocks += 6;                     // tick the clock
+    }
+
+    inline void ror_absolute_x()
+    {
+        rotate(false, &ram[absolute(reg.x)]); // right rotate
+        reg.pc++;                             // increment pc
+        clocks += 7;                          // tick the clock
+    }
+
     void changeProgramBank8000(unsigned char n)
     {
         reg.prg8000 = n;
@@ -1123,6 +1213,18 @@ class CPU
                 case 0x56: lsr_zero_x(); break;
                 case 0x4E: lsr_absolute(); break;
                 case 0x5E: lsr_absolute_x(); break;
+                // ROL
+                case 0x2A: rol_a(); break;
+                case 0x26: rol_zero(); break;
+                case 0x36: rol_zero_x(); break;
+                case 0x2E: rol_absolute(); break;
+                case 0x3E: rol_absolute_x(); break;
+                // ROR
+                case 0x6A: ror_a(); break;
+                case 0x66: ror_zero(); break;
+                case 0x76: ror_zero_x(); break;
+                case 0x6E: ror_absolute(); break;
+                case 0x7E: ror_absolute_x(); break;
             }
         }
     }
