@@ -442,9 +442,9 @@ class CPU
         int a = (unsigned char)reg.a;
         reg.p &= 0xBF; // clear overflow
         unsigned char prev = v & 0x80;
-        if (a & 0x80 == prev) {
+        if ((a & 0x80) == prev) {
             a += v + (reg.p & 1);
-            if (a & 0x80 != prev) {
+            if ((a & 0x80) != prev) {
                 reg.p |= 0x40; // set overflow
             }
         } else {
@@ -514,9 +514,9 @@ class CPU
         int a = (unsigned char)reg.a;
         reg.p &= 0xBF; // clear overflow
         unsigned char prev = v & 0x80;
-        if (a & 0x80 == prev) {
+        if ((a & 0x80) == prev) {
             a -= v + (reg.p & 1 ? 0 : 1);
-            if (a & 0x80 != prev) {
+            if ((a & 0x80) != prev) {
                 reg.p |= 0x40; // set overflow
             }
         } else {
@@ -832,6 +832,48 @@ class CPU
         clocks += 5;                      // tick the clock
     }
 
+    inline void cpx_immediate()
+    {
+        compare(reg.x, ram[++reg.pc]); // compare
+        reg.pc++;                      // increment pc
+        clocks += 2;                   // tick the clock
+    }
+
+    inline void cpx_zero()
+    {
+        compare(reg.x, ram[ram[++reg.pc]]); // comapre
+        reg.pc++;                           // increment pc
+        clocks += 3;                        // tick the clock
+    }
+
+    inline void cpx_absolute()
+    {
+        compare(reg.x, ram[absolute()]); // compare
+        reg.pc++;                        // increment pc
+        clocks += 4;                     // tick the clock
+    }
+
+    inline void cpy_immediate()
+    {
+        compare(reg.y, ram[++reg.pc]); // compare
+        reg.pc++;                      // increment pc
+        clocks += 2;                   // tick the clock
+    }
+
+    inline void cpy_zero()
+    {
+        compare(reg.y, ram[ram[++reg.pc]]); // comapre
+        reg.pc++;                           // increment pc
+        clocks += 3;                        // tick the clock
+    }
+
+    inline void cpy_absolute()
+    {
+        compare(reg.y, ram[absolute()]); // compare
+        reg.pc++;                        // increment pc
+        clocks += 4;                     // tick the clock
+    }
+
     void changeProgramBank8000(unsigned char n)
     {
         reg.prg8000 = n;
@@ -976,6 +1018,14 @@ class CPU
                 case 0xD9: cmp_absolute_y(); break;
                 case 0xC1: cmp_indirect_x(); break;
                 case 0xD1: cmp_indirect_y(); break;
+                // CPX
+                case 0xE0: cpx_immediate(); break;
+                case 0xE4: cpx_zero(); break;
+                case 0xEC: cpx_absolute(); break;
+                // CPY
+                case 0xC0: cpy_immediate(); break;
+                case 0xC4: cpy_zero(); break;
+                case 0xCC: cpy_absolute(); break;
             }
         }
     }
