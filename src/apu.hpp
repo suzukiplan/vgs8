@@ -91,6 +91,12 @@ class APU
     size_t load(char* buffer)
     {
         memcpy(&reg, buffer, sizeof(reg));
+        if (reg.bgmPlaying) {
+            playBgm(reg.bgmCursor);
+            if (reg.bgmPlaying) {
+                vgsdec_set_value(vgsdec, VGSDEC_REG_TIME, reg.bgmCurrentTime);
+            }
+        }
         return sizeof(reg);
     }
 };
