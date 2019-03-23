@@ -71,6 +71,14 @@ class CPU
         return addr;
     }
 
+    inline unsigned short indirect()
+    {
+        unsigned short ptr = ram[++reg.pc];
+        unsigned short addr = ram[ptr++]; // get addr (LOW)
+        addr |= ram[ptr] * 256;           // get addr (HIGH)
+        return addr;
+    }
+
     inline unsigned short indirectX()
     {
         unsigned short ptr = ram[++reg.pc] + reg.x;
@@ -1208,6 +1216,18 @@ class CPU
         clocks += 4;
     }
 
+    inline void jmp_absolute()
+    {
+        reg.pc = absolute();
+        clocks += 3;
+    }
+
+    inline void jmp_indirect()
+    {
+        reg.pc = indirect();
+        clocks += 5;
+    }
+
     void changeProgramBank8000(unsigned char n)
     {
         reg.prg8000 = n;
@@ -1405,6 +1425,9 @@ class CPU
                 case 0x08: pla(); break;
                 case 0x68: php(); break;
                 case 0x28: plp(); break;
+                // JMP
+                case 0x4c: jmp_absolute(); break;
+                case 0x6c: jmp_indirect(); break;
             }
         }
     }
