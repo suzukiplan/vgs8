@@ -41,7 +41,7 @@ void emu_vsync()
     if (!vm) return;
     vm->tick();
     size_t size;
-    memcpy(emu_vram, vm->getDisplay555(&size), sizeof(emu_vram));
+    memcpy(emu_vram, vm->getDisplay565(&size), sizeof(emu_vram));
 }
 
 /**
