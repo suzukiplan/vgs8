@@ -14,7 +14,11 @@
 - [x] [APUを実装](src/apu.hpp)
 - [x] [VGS8仮想マシンを実装](src/vgs8.h)
 - [x] I/Oポートマップを完成させる (完全には完成していないが一旦最低限揃える)
-- [x] macOSでテストできるCocoaAppを作成 (サウンド系は現時点では未実装)
+- [ ] macOSでテストできるCocoaAppを作成
+  - [x] [CPU](src/cpu.hpp)を動作させるHALを実装
+  - [x] [PPU](src/ppu.hpp)を動作させるHALを実装
+  - [ ] [APU](src/apu.hpp)を動作させるHALを実装
+  - [ ] 固定のROMファイル（test.rom）ではなく起動時に任意ROMを選択できるようにする
 - [ ] コマンドライン・デバッガ作成
 - [ ] examplesを色々と追加しながら一通りの命令+機能をテスト
   - [x] [Hello, World](examples/hello)
