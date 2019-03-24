@@ -1,7 +1,7 @@
 .setcpu     "6502"
 .autoimport on
 
-.segment "PROGRAM0"
+.segment "STARTUP"
     ; init CMAP register
     lda #%00000000
     sta $5404
