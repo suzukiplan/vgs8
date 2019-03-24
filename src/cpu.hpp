@@ -1336,7 +1336,8 @@ class CPU
     inline void branch(unsigned char s, bool isSet)
     {
         clocks += 2;
-        char relative = (char)ram[reg.pc + 1];
+        short relative = (char)ram[++reg.pc];
+        reg.pc++;
         if (reg.p & s) {
             if (isSet) {
                 reg.pc += relative;
@@ -1348,7 +1349,6 @@ class CPU
                 return;
             }
         }
-        reg.pc += 2;
     }
 
     inline void status(unsigned char s, bool isSet)
