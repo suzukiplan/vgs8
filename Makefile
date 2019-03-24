@@ -1,4 +1,5 @@
 all: vgs8.o vgs2tone.o vgsdec.o bin bin/romlink
+	cd examples/hello && make
 
 clean:
 	rm -rf *.o

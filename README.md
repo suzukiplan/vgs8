@@ -15,9 +15,26 @@
 - [x] [VGS8仮想マシンを実装](src/vgs8.h)
 - [x] I/Oポートマップを完成させる (完全には完成していないが一旦最低限揃える)
 - [x] macOSでテストできるCocoaAppを作成 (サウンド系は現時点では未実装)
-- [ ] examplesを色々と追加しながらテスト __(今ココ)__
-- [ ] [ファミコン版Battle Marine](https://github.com/suzukiplan/battle-marine-fc)をVGS8に移植して最終テスト
-- [ ] 開発者向けのマニュアルを纏める（基本[コレ](https://github.com/suzukiplan/mgp-fc)みたいな感じになる予定）
+- [ ] コマンドライン・デバッガ作成
+- [ ] examplesを色々と追加しながら一通りの命令+機能をテスト
+  - [x] [Hello, World](examples/hello)
+  - [ ] FGを使ったサンプル
+  - [ ] スクロールのサンプル
+  - [ ] スプライト + JoyPadを使ったサンプル
+  - [ ] 音声を使ったサンプル
+  - [ ] CHRバンク切り替えのサンプル
+  - [ ] PRGバンク切り替えのサンプル
+  - [ ] [COSMIC SHOOTER](https://github.com/suzukiplan/stg-for-nes)をVGS8に移植
+  - [ ] [ファミコン版Battle Marine](https://github.com/suzukiplan/battle-marine-fc)をVGS8に移植
+- [x] リファレンスマニュアル作成（[コレ](https://github.com/suzukiplan/mgp-fc)のリファレンス編のVGS8版）
+
+> _以下、やるかやらないかまだ分からないextra (やるとしても恐らくWIP外した後)_
+
+- [ ] Windows用HALを作成
+- [ ] Linux用HALを作成
+- [ ] iOS用HALを作成
+- [ ] Android用HALを作成
+- [ ] 6502マシン語ゲームプログラミング（VGS8版）の本を執筆
 
 ## Setup
 
