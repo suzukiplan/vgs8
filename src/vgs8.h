@@ -18,16 +18,16 @@ class PPU;
 class VirtualMachine
 {
   private:
-    unsigned char keys[2]; // キー入力状態
     unsigned short displayBuffer[240 * 240];
     char saveBuffer[65536]; // max = register + 32KB
     int savePtr;
 
   public:
-    Bank* bank; // Bank
-    CPU* cpu;   // Central Processing Unit
-    APU* apu;   // Audio Processing Unit
-    PPU* ppu;   // Picture Processing Unit
+    unsigned char keys[2]; // キー入力状態
+    Bank* bank;            // Bank
+    CPU* cpu;              // Central Processing Unit
+    APU* apu;              // Audio Processing Unit
+    PPU* ppu;              // Picture Processing Unit
 
     /**
      * コンストラクタ（VMを新規生成）

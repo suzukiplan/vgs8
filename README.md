@@ -121,6 +121,8 @@ VGS8ではプログラマが意識する必要があるPPUのメモリマップ�
 |$5601|APU I/O port (W): pause BGM|
 |$5602|APU I/O port (W): resume BGM|
 |$5603|APU I/O port (R): BGM playing status|
+|$5700|JoyPad I/O port (R): read 1P JoyPad status|
+|$5701|JoyPad I/O port (R): read 2P JoyPad status|
 |$5BFF|CPU I/O port (R): update VRAM request|
 |$5C00〜$5FFF|Palette|
 |$6000〜$6FFF|BG nametable (64x64)|
@@ -255,6 +257,22 @@ STA $540D   ; BGを下スクロール
 - $5601 に 任意の値 を store することで, BGMの再生を停止（ポーズ）します
 - $5602 に 任意の値 を stroe することで, BGMの再生を再開（レジューム）します
 - $5603 を load することで, BGMが再生中がチェックできます ($00: 停止中, $01: 再生中)
+
+### read JoyPad status ($5700, $5701)
+
+- $5700 を load することで, プレイヤ1のジョイパッドの入力状態を取得できます
+- $5701 を load することで, プレイヤ2のジョイパッドの入力状態を取得できます
+
+取得した値のbit配列: `UDLRABES`
+
+- `U` : 方向キーの上
+- `D` : 方向キーの下
+- `L` : 方向キーの左
+- `R` : 方向キーの右
+- `A` : Aボタン
+- `B` : Bボタン
+- `E` : SELECTボタン
+- `S` : STARTボタン
 
 ### update VRAM request ($5BFF)
 

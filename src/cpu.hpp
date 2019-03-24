@@ -88,6 +88,8 @@ class CPU
     {
         switch (addr) {
             case 0x5603: *value = vm->_isBgmPlaying() ? 1 : 0; break;
+            case 0x5700: *value = vm->keys[0]; break;
+            case 0x5701: *value = vm->keys[1]; break;
             case 0x5BFF: vramUpdateRequest = true; return;
             default: return;
         }
