@@ -11,6 +11,7 @@
 		1D163C18224742CD00BBC2FD /* vgs8.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1D163C11224742CD00BBC2FD /* vgs8.cpp */; };
 		1D163C19224742CD00BBC2FD /* vgs2tone.c in Sources */ = {isa = PBXBuildFile; fileRef = 1D163C12224742CD00BBC2FD /* vgs2tone.c */; };
 		1D163C1A224742CD00BBC2FD /* vgsdec.c in Sources */ = {isa = PBXBuildFile; fileRef = 1D163C16224742CD00BBC2FD /* vgsdec.c */; };
+		1D163C1C224754D300BBC2FD /* test.rom in Resources */ = {isa = PBXBuildFile; fileRef = 1D163C1B224754D300BBC2FD /* test.rom */; };
 		94D1AB2A21D86ADC00DC595E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 94D1AB2921D86ADC00DC595E /* AppDelegate.m */; };
 		94D1AB2D21D86ADC00DC595E /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94D1AB2C21D86ADC00DC595E /* ViewController.m */; };
 		94D1AB2F21D86ADD00DC595E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 94D1AB2E21D86ADD00DC595E /* Assets.xcassets */; };
@@ -36,6 +37,7 @@
 		1D163C14224742CD00BBC2FD /* vgsdec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vgsdec.h; path = ../../../../src/vgsdec.h; sourceTree = "<group>"; };
 		1D163C15224742CD00BBC2FD /* apu.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = apu.hpp; path = ../../../../src/apu.hpp; sourceTree = "<group>"; };
 		1D163C16224742CD00BBC2FD /* vgsdec.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vgsdec.c; path = ../../../../src/vgsdec.c; sourceTree = "<group>"; };
+		1D163C1B224754D300BBC2FD /* test.rom */ = {isa = PBXFileReference; lastKnownFileType = file; path = test.rom; sourceTree = "<group>"; };
 		94D1AB2521D86ADC00DC595E /* EmuBoard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EmuBoard.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		94D1AB2821D86ADC00DC595E /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		94D1AB2921D86ADC00DC595E /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -108,6 +110,7 @@
 		94D1AB2721D86ADC00DC595E /* EmuBoard */ = {
 			isa = PBXGroup;
 			children = (
+				1D163C1B224754D300BBC2FD /* test.rom */,
 				1D163C09224742AA00BBC2FD /* core */,
 				94D1AB4221D8767900DC595E /* constants.h */,
 				94D1AB2821D86ADC00DC595E /* AppDelegate.h */,
@@ -195,6 +198,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				94D1AB2F21D86ADD00DC595E /* Assets.xcassets in Resources */,
+				1D163C1C224754D300BBC2FD /* test.rom in Resources */,
 				94D1AB3221D86ADD00DC595E /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

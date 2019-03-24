@@ -19,7 +19,10 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    emu_init(); // TODO: テストROMを指定する
+    NSString* romFile = [[NSBundle mainBundle] pathForResource:@"test" ofType:@"rom"];
+    NSData* rom = [NSData dataWithContentsOfFile:romFile];
+    NSLog(@"test.rom: %ld bytes", rom.length);
+    emu_init(rom.bytes, rom.length);
     self.view.frame = CGRectMake(0, 0, VRAM_VIEW_WIDTH * 1.5, VRAM_VIEW_HEIGHT * 1.5);
     CALayer *layer = [CALayer layer];
     [layer setBackgroundColor:CGColorCreateGenericRGB(0.0, 0.0, 0.0, 1.0)];
