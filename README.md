@@ -1,6 +1,6 @@
 # SUZUKI PLAN - Video Game System - 8bit (WIP)
 
-※まだ開発途中です
+※まだ開発途中です（絶賛テスト中なので, まだバグが結構沢山ある筈です）
 
 - SUZUKI PLAN - Video Game System - 8bit (VGS8) は, 現代向けに再設計された新しい8bitゲーム機です
 - このリポジトリでは, VGS8コアシステムのエミュレータ（HALを省略した形）とVGS用ゲーム開発に必要なSDKを提供します
@@ -14,8 +14,8 @@
 - [x] [APUを実装](src/apu.hpp)
 - [x] [VGS8仮想マシンを実装](src/vgs8.h)
 - [x] I/Oポートマップを完成させる (完全には完成していないが一旦最低限揃える)
-- [ ] macOSでテストできるCocoaAppを作成
-- [ ] examplesを色々と追加しながらテスト
+- [x] macOSでテストできるCocoaAppを作成 (サウンド系は現時点では未実装)
+- [ ] examplesを色々と追加しながらテスト __(今ココ)__
 - [ ] [ファミコン版Battle Marine](https://github.com/suzukiplan/battle-marine-fc)をVGS8に移植して最終テスト
 - [ ] 開発者向けのマニュアルを纏める（基本[コレ](https://github.com/suzukiplan/mgp-fc)みたいな感じになる予定）
 
