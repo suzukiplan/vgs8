@@ -101,6 +101,17 @@ class APU
         }
     }
 
+    short* getBuffer(size_t* size)
+    {
+        if (soundBufferA) {
+            *size = sizeof(soundBuffer1);
+            return soundBuffer1;
+        } else {
+            *size = sizeof(soundBuffer2);
+            return soundBuffer2;
+        }
+    }
+
     size_t save(char* buffer)
     {
         memcpy(buffer, &reg, sizeof(reg));

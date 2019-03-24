@@ -79,6 +79,11 @@ unsigned short* VirtualMachine::getDisplay555(size_t* size)
     return displayBuffer;
 }
 
+short* VirtualMachine::getPCM(size_t* size)
+{
+    return apu->getBuffer(size);
+}
+
 void* VirtualMachine::save(size_t* size)
 {
     savePtr = 0;

@@ -91,11 +91,11 @@ class VirtualMachine
     unsigned short* getDisplay555(size_t* size);
 
     /**
-     * スピーカ出力内容（PCM）を取得 (波形は22050Hz/16bit/1ch固定)
-     * @param buffer [I/O] 出力バッファ
-     * @param size [I] バッファサイズ
+     * スピーカ出力内容（PCM）を取得
+     * @param size [O] 出力データサイズ
+     * @return PCMデータバッファ (波形は22050Hz/16bit/1ch固定)
      */
-    void getPCM(void* buffer, size_t size);
+    short* getPCM(size_t* size);
 
     /**
      * クイックセーブ
