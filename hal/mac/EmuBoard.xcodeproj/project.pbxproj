@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1D163C17224742CD00BBC2FD /* lz4.c in Sources */ = {isa = PBXBuildFile; fileRef = 1D163C0A224742CD00BBC2FD /* lz4.c */; };
+		1D163C18224742CD00BBC2FD /* vgs8.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1D163C11224742CD00BBC2FD /* vgs8.cpp */; };
+		1D163C19224742CD00BBC2FD /* vgs2tone.c in Sources */ = {isa = PBXBuildFile; fileRef = 1D163C12224742CD00BBC2FD /* vgs2tone.c */; };
+		1D163C1A224742CD00BBC2FD /* vgsdec.c in Sources */ = {isa = PBXBuildFile; fileRef = 1D163C16224742CD00BBC2FD /* vgsdec.c */; };
 		94D1AB2A21D86ADC00DC595E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 94D1AB2921D86ADC00DC595E /* AppDelegate.m */; };
 		94D1AB2D21D86ADC00DC595E /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94D1AB2C21D86ADC00DC595E /* ViewController.m */; };
 		94D1AB2F21D86ADD00DC595E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 94D1AB2E21D86ADD00DC595E /* Assets.xcassets */; };
@@ -19,6 +23,19 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1D163C0A224742CD00BBC2FD /* lz4.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lz4.c; path = ../../../../src/lz4.c; sourceTree = "<group>"; };
+		1D163C0B224742CD00BBC2FD /* miniz.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = miniz.h; path = ../../../../src/miniz.h; sourceTree = "<group>"; };
+		1D163C0C224742CD00BBC2FD /* cpu.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = cpu.hpp; path = ../../../../src/cpu.hpp; sourceTree = "<group>"; };
+		1D163C0D224742CD00BBC2FD /* vgs8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vgs8.h; path = ../../../../src/vgs8.h; sourceTree = "<group>"; };
+		1D163C0E224742CD00BBC2FD /* lz4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lz4.h; path = ../../../../src/lz4.h; sourceTree = "<group>"; };
+		1D163C0F224742CD00BBC2FD /* ppu.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = ppu.hpp; path = ../../../../src/ppu.hpp; sourceTree = "<group>"; };
+		1D163C10224742CD00BBC2FD /* bank.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = bank.hpp; path = ../../../../src/bank.hpp; sourceTree = "<group>"; };
+		1D163C11224742CD00BBC2FD /* vgs8.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = vgs8.cpp; path = ../../../../src/vgs8.cpp; sourceTree = "<group>"; };
+		1D163C12224742CD00BBC2FD /* vgs2tone.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vgs2tone.c; path = ../../../../src/vgs2tone.c; sourceTree = "<group>"; };
+		1D163C13224742CD00BBC2FD /* vgsdec_internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vgsdec_internal.h; path = ../../../../src/vgsdec_internal.h; sourceTree = "<group>"; };
+		1D163C14224742CD00BBC2FD /* vgsdec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vgsdec.h; path = ../../../../src/vgsdec.h; sourceTree = "<group>"; };
+		1D163C15224742CD00BBC2FD /* apu.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = apu.hpp; path = ../../../../src/apu.hpp; sourceTree = "<group>"; };
+		1D163C16224742CD00BBC2FD /* vgsdec.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vgsdec.c; path = ../../../../src/vgsdec.c; sourceTree = "<group>"; };
 		94D1AB2521D86ADC00DC595E /* EmuBoard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EmuBoard.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		94D1AB2821D86ADC00DC595E /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		94D1AB2921D86ADC00DC595E /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -51,6 +68,26 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1D163C09224742AA00BBC2FD /* core */ = {
+			isa = PBXGroup;
+			children = (
+				1D163C15224742CD00BBC2FD /* apu.hpp */,
+				1D163C10224742CD00BBC2FD /* bank.hpp */,
+				1D163C0C224742CD00BBC2FD /* cpu.hpp */,
+				1D163C0A224742CD00BBC2FD /* lz4.c */,
+				1D163C0E224742CD00BBC2FD /* lz4.h */,
+				1D163C0B224742CD00BBC2FD /* miniz.h */,
+				1D163C0F224742CD00BBC2FD /* ppu.hpp */,
+				1D163C12224742CD00BBC2FD /* vgs2tone.c */,
+				1D163C11224742CD00BBC2FD /* vgs8.cpp */,
+				1D163C0D224742CD00BBC2FD /* vgs8.h */,
+				1D163C13224742CD00BBC2FD /* vgsdec_internal.h */,
+				1D163C16224742CD00BBC2FD /* vgsdec.c */,
+				1D163C14224742CD00BBC2FD /* vgsdec.h */,
+			);
+			path = core;
+			sourceTree = "<group>";
+		};
 		94D1AB1C21D86ADC00DC595E = {
 			isa = PBXGroup;
 			children = (
@@ -71,6 +108,7 @@
 		94D1AB2721D86ADC00DC595E /* EmuBoard */ = {
 			isa = PBXGroup;
 			children = (
+				1D163C09224742AA00BBC2FD /* core */,
 				94D1AB4221D8767900DC595E /* constants.h */,
 				94D1AB2821D86ADC00DC595E /* AppDelegate.h */,
 				94D1AB2921D86ADC00DC595E /* AppDelegate.m */,
@@ -168,6 +206,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1D163C19224742CD00BBC2FD /* vgs2tone.c in Sources */,
+				1D163C17224742CD00BBC2FD /* lz4.c in Sources */,
+				1D163C18224742CD00BBC2FD /* vgs8.cpp in Sources */,
+				1D163C1A224742CD00BBC2FD /* vgsdec.c in Sources */,
 				94D1AB4721D8987800DC595E /* EmuBoard.c in Sources */,
 				94D1AB3E21D86DC900DC595E /* VideoView.m in Sources */,
 				94D1AB2D21D86ADC00DC595E /* ViewController.m in Sources */,
