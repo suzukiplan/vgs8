@@ -37,6 +37,48 @@ void VirtualMachine::tick()
     apu->execute(); // 音声を更新
 }
 
+unsigned short* VirtualMachine::getDisplay565(size_t* size)
+{
+    int dp = 0;
+    for (int y = 8; y < 248; y++) {
+        int vp = (y << 8);
+        for (int x = 8; x < 248; x++) {
+            int cp = 0x5C00 + ppu->vram[vp] * 4;
+            unsigned short r = cpu->ram[cp + 1] & 0b11111000;
+            unsigned short g = cpu->ram[cp + 2] & 0b11111100;
+            unsigned char b = cpu->ram[cp + 3] & 0b11111000;
+            displayBuffer[dp] = r << 8;
+            displayBuffer[dp] |= g << 3;
+            displayBuffer[dp] |= b >> 3;
+            vp++;
+            dp++;
+        }
+    }
+    *size = sizeof(displayBuffer);
+    return displayBuffer;
+}
+
+unsigned short* VirtualMachine::getDisplay555(size_t* size)
+{
+    int dp = 0;
+    for (int y = 8; y < 248; y++) {
+        int vp = (y << 8);
+        for (int x = 8; x < 248; x++) {
+            int cp = 0x5C00 + ppu->vram[vp] * 4;
+            unsigned short r = cpu->ram[cp + 1] & 0b11111000;
+            unsigned short g = cpu->ram[cp + 2] & 0b11111000;
+            unsigned char b = cpu->ram[cp + 3] & 0b11111000;
+            displayBuffer[dp] = r << 7;
+            displayBuffer[dp] |= g << 2;
+            displayBuffer[dp] |= b >> 3;
+            vp++;
+            dp++;
+        }
+    }
+    *size = sizeof(displayBuffer);
+    return displayBuffer;
+}
+
 void* VirtualMachine::save(size_t* size)
 {
     savePtr = 0;
