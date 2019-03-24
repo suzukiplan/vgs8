@@ -1,4 +1,4 @@
-// Copyright 2019, SUZUKI PLAN (GPLv3 license)
+// Copyright 2019, SUZUKI PLAN (MIT license)
 
 #define CPU_CLOCKS_PER_FRAME 139810 /* 8MHz / 60 */
 

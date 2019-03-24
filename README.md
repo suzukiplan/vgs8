@@ -190,6 +190,24 @@ STA $5405   ; 背景色をパレット番号255に設定
 
 ### Window positions ($5406〜$5409)
 
+FG, BG の表示起点座標をピクセル単位で指定する
+
+- $5406: FGのX座標
+- $5407: FGのY座標
+- $5408: BGのX座標
+- $5409: BGのY座標
+
+```
+LDA #100
+STA $5406
+STA $5407   ; FGの表示範囲の起点を (100, 100) にする
+LDA #200
+STA $5408
+STA $5409   ; BGの表示範囲の起点を (200, 200) にする
+```
+
+> FG/BGの nametable は 8x8ピクセル のキャラクタ単位で 64x64 (512x512ピクセル) です。
+
 ### Scroll nametables ($540A〜$540D)
 
 FG, BG の nametable を 縦方向 or 横方向 にスクロールできます
@@ -227,5 +245,4 @@ mainloop:
 
 ## License
 
-[GPLv3](LICENSE.txt)
-
+[MIT](LICENSE.txt)

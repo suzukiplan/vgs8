@@ -1,4 +1,4 @@
-// Copyright 2019, SUZUKI PLAN (GPLv3 license)
+// Copyright 2019, SUZUKI PLAN (MIT license)
 
 class Bank
 {
