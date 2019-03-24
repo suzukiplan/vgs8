@@ -52,12 +52,34 @@ class APU
         }
     }
 
+    void pauseBgm()
+    {
+        reg.bgmPlaying = 0;
+    }
+
+    void resumeBgm()
+    {
+        if (vm->bank->bgm[reg.bgmCursor]) {
+            reg.bgmPlaying = 1;
+        }
+    }
+
+    bool isBgmPlaying()
+    {
+        return reg.bgmPlaying ? true : false;
+    }
+
     void playEff(unsigned char n)
     {
         if (vm->bank->eff[n]) {
             reg.effPlaying[n] = 1;
             reg.effCursor[n] = 0;
         }
+    }
+
+    void stopEff(unsigned char n)
+    {
+        reg.effPlaying[n] = 0;
     }
 
     void execute()

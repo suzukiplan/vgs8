@@ -135,35 +135,78 @@ bool VirtualMachine::load(void* state, size_t size)
 
 void VirtualMachine::_setChrBank(int cn, unsigned char bn)
 {
+    if (!ppu) return;
     ppu->reg.cbank[cn & 1] = bn;
 }
 
 void VirtualMachine::_setChrMap(unsigned char n)
 {
+    if (!ppu) return;
     ppu->reg.cmap = n;
 }
 
 void VirtualMachine::_setBgColor(unsigned char n)
 {
+    if (!ppu) return;
     ppu->reg.bgC = n;
 }
 
 void VirtualMachine::_setBgX(unsigned char n)
 {
+    if (!ppu) return;
     ppu->reg.bgX = n;
 }
 
 void VirtualMachine::_setBgY(unsigned char n)
 {
+    if (!ppu) return;
     ppu->reg.bgY = n;
 }
 
 void VirtualMachine::_setFgX(unsigned char n)
 {
+    if (!ppu) return;
     ppu->reg.fgX = n;
 }
 
 void VirtualMachine::_setFgY(unsigned char n)
 {
+    if (!ppu) return;
     ppu->reg.fgY = n;
+}
+
+void VirtualMachine::_playEff(unsigned char n)
+{
+    if (!apu) return;
+    apu->playEff(n);
+}
+
+void VirtualMachine::_stopEff(unsigned char n)
+{
+    if (!apu) return;
+    apu->stopEff(n);
+}
+
+void VirtualMachine::_playBgm(unsigned char n)
+{
+    if (!apu) return;
+    apu->playBgm(n);
+}
+
+void VirtualMachine::_pauseBgm()
+{
+    if (!apu) return;
+    apu->pauseBgm();
+}
+
+void VirtualMachine::_resumeBgm()
+{
+    if (!apu) return;
+    apu->resumeBgm();
+}
+
+bool VirtualMachine::_isBgmPlaying()
+{
+    if (!apu) return false;
+    return apu->isBgmPlaying();
 }

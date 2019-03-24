@@ -119,6 +119,12 @@ class VirtualMachine
     void _setBgY(unsigned char n);
     void _setFgX(unsigned char n);
     void _setFgY(unsigned char n);
+    void _playEff(unsigned char n);
+    void _stopEff(unsigned char n);
+    void _playBgm(unsigned char n);
+    void _pauseBgm();
+    void _resumeBgm();
+    bool _isBgmPlaying();
 };
 
 #include "bank.hpp"

@@ -87,8 +87,11 @@ class CPU
     inline void checkLD(unsigned short addr, unsigned char* value)
     {
         switch (addr) {
-            case 0x5BFF: vramUpdateRequest = true; break;
+            case 0x5603: *value = vm->_isBgmPlaying() ? 1 : 0; break;
+            case 0x5BFF: vramUpdateRequest = true; return;
+            default: return;
         }
+        updateNZ(*value);
     }
 
     inline void checkST(unsigned short addr, unsigned char value)
@@ -108,6 +111,11 @@ class CPU
             case 0x540B: fgNameTableShiftH(value); break;
             case 0x540C: bgNameTableShiftV(value); break;
             case 0x540D: bgNameTableShiftH(value); break;
+            case 0x5500: vm->_playEff(value); break;
+            case 0x5501: vm->_stopEff(value); break;
+            case 0x5600: vm->_playBgm(value); break;
+            case 0x5601: vm->_pauseBgm(); break;
+            case 0x5602: vm->_resumeBgm(); break;
             case 0x5BFF: vramUpdateRequest = true; break;
         }
     }

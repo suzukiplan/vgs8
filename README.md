@@ -66,7 +66,8 @@ make
 4. 任意のテキストエディタで [VGSのMML形式ファイル](https://github.com/suzukiplan/vgs-mml-compiler/blob/master/MML-ja.md) `(*.mml)` を最大256個作成
 5. [romlink](tools/romlink.c)で, `*.bin` , `*.bmp` , `*.wav` , `*.mml` をリンク
 
-> 以下のファイルを用いたゲームの[romlink](tools/romlink.c) をする例を示します。
+> 以下のファイルを用いたゲームの [romlink](tools/romlink.c) をする例を示します。
+>
 > - program1.bin (プログラム1)
 > - program2.bin (プログラム2)
 > - program3.bin (プログラム3)
@@ -80,6 +81,7 @@ make
 > - bgm1.mml (BGM1)
 > - bgm2.mml (BGM2)
 > - bgm3.mml (BGM3)
+>
 > ```
 > romlink mygame.rom \
 >     program1.bin program2.bin program3.bin \
@@ -87,6 +89,24 @@ make
 >     eff1.wav eff2.wav eff3.wav \
 >     bgm1.mml bgm2.mml bgm3.mml
 > ```
+>
+> バンク番号は [romlink](tools/romlink.c) のコマンドライン引数指定順で決まります。
+>
+> 上記の例の場合:
+>
+> - program1.bin は PRGバンク0
+> - program2.bin は PRGバンク1
+> - program3.bin は PRGバンク2
+> - sprite.bmp は CHRバンク0
+> - bg1.bin は CHRバンク1
+> - bg2.bin は CHRバンク2
+> - bg3.bin は CHRバンク3
+> - eff1.wav は EFFバンク0
+> - eff2.wav は EFFバンク1
+> - eff3.wav は EFFバンク2
+> - bgm1.mml は BGMバンク0
+> - bgm2.mml は BGMバンク1
+> - bgm3.mml は BGMバンク2
 
 ## How to make 6502 programs
 
@@ -111,6 +131,12 @@ VGS8ではプログラマが意識する必要があるPPUのメモリマップ�
 |$5405|PPU I/O port (RW): Background Color|
 |$5406〜$5409|PPU I/O port (RW): FG/BG window positions|
 |$540A〜$540D|PPU I/O port (W): FG/BG scroll|
+|$5500|APU I/O port (W): play EFF|
+|$5501|APU I/O port (W): stop EFF|
+|$5600|APU I/O port (W): play BGM|
+|$5601|APU I/O port (W): pause BGM|
+|$5602|APU I/O port (W): resume BGM|
+|$5603|APU I/O port (R): BGM playing status|
 |$5BFF|CPU I/O port (R): update VRAM request|
 |$5C00〜$5FFF|Palette|
 |$6000〜$6FFF|BG nametable (64x64)|
@@ -230,6 +256,21 @@ STA $540D   ; BGを下スクロール
 ```
 
 > FG/BGの nametable は 8x8ピクセル のキャラクタ単位で 64x64 (512x512ピクセル) なので, 8ピクセル単位のスクロールを本機能で実現可能です。1ピクセル単位の細かいスクロールには window positions を用います。
+
+### Play/Stop sound effect ($5500, $5501)
+
+- $5500 に EFFバンク番号 を store することで, 指定バンク番号の効果音を再生します
+- $5501 に EFFバンク番号 を store することで, 指定バンク番号の効果音を停止します
+
+> 効果音は再生時間が終了すると自動的に停止します
+
+
+### Play/Stop BGM ($5600〜$5603)
+
+- $5600 に BGMバンク番号 を store することで, 指定バンク番号のBGMを再生します
+- $5601 に 任意の値 を store することで, BGMの再生を停止（ポーズ）します
+- $5602 に 任意の値 を stroe することで, BGMの再生を再開（レジューム）します
+- $5603 を load することで, BGMが再生中がチェックできます ($00: 停止中, $01: 再生中)
 
 ### update VRAM request ($5BFF)
 
