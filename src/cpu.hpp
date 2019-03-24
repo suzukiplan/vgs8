@@ -139,9 +139,8 @@ class CPU
 
     inline unsigned short absolute()
     {
-        unsigned short addr = ram[++reg.pc]; // get addr (HIGH)
-        addr <<= 8;                          // addr *= 256
-        addr |= ram[++reg.pc];               // get addr (LOW)
+        unsigned short addr = ram[++reg.pc]; // get addr (LOW)
+        addr |= ram[++reg.pc] * 256;         // get addr (HIGH)
         return addr;
     }
 
