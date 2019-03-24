@@ -1337,7 +1337,7 @@ class CPU
     {
         clocks += 2;
         char relative = (char)ram[reg.pc + 1];
-        if (reg.p & reg.s) {
+        if (reg.p & s) {
             if (!isNot) {
                 reg.pc += relative;
                 return;
