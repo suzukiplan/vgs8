@@ -39,6 +39,7 @@ void VirtualMachine::tick()
 
 unsigned short* VirtualMachine::getDisplay565(size_t* size)
 {
+    if (!ppu) return NULL;
     int dp = 0;
     for (int y = 8; y < 248; y++) {
         int vp = (y << 8);
@@ -60,6 +61,7 @@ unsigned short* VirtualMachine::getDisplay565(size_t* size)
 
 unsigned short* VirtualMachine::getDisplay555(size_t* size)
 {
+    if (!ppu) return NULL;
     int dp = 0;
     for (int y = 8; y < 248; y++) {
         int vp = (y << 8);
@@ -81,11 +83,13 @@ unsigned short* VirtualMachine::getDisplay555(size_t* size)
 
 short* VirtualMachine::getPCM(size_t* size)
 {
+    if (!apu) return NULL;
     return apu->getBuffer(size);
 }
 
 void* VirtualMachine::save(size_t* size)
 {
+    if (!cpu) return NULL;
     savePtr = 0;
     savePtr += cpu->save(saveBuffer + savePtr);
     savePtr += ppu->save(saveBuffer + savePtr);
@@ -96,6 +100,7 @@ void* VirtualMachine::save(size_t* size)
 
 bool VirtualMachine::load(void* state, size_t size)
 {
+    if (!cpu) return false;
     if (!state || size < 1 || sizeof(saveBuffer) <= size) return false;
     memset(saveBuffer, 0, sizeof(saveBuffer));
     memcpy(saveBuffer, state, size);
