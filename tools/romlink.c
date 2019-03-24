@@ -1,4 +1,4 @@
-// ROM LINK
+// Copyright 2019, SUZUKI PLAN (MIT license)
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>

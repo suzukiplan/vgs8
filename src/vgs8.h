@@ -72,8 +72,9 @@ class VirtualMachine
 
     /**
      * CPUを1フレーム回す
+     * @return 実行クロック数
      */
-    void tick();
+    unsigned int tick();
 
     /**
      * ディスプレイ表示内容（RGB565形式）を取得（主にAndroid, Windows用）

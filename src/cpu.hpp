@@ -122,11 +122,20 @@ class CPU
         }
     }
 
+#ifdef DEBUG_OP_DUMP
+    inline const char* registerDump()
+    {
+        static char buf[80];
+        sprintf(buf, "(a=$%02X, x=$%02X, y=$%02X, s=$%02X, p=$%02X)", (int)((unsigned char)reg.a), (int)reg.x, (int)reg.y, (int)reg.s, (int)reg.p);
+        return buf;
+    }
+#endif
+
     inline void updateNZ(unsigned char value)
     {
         reg.p &= 0b01111101;    // clear N, Z
         reg.p |= value & 0x80;  // set negative
-        reg.p |= value ? 2 : 0; // set zero
+        reg.p |= value ? 0 : 2; // set zero
     }
 
     inline void updateCNZ(int value)
@@ -182,6 +191,9 @@ class CPU
         updateNZ(reg.a);       // update p
         reg.pc++;              // increment pc
         clocks += 2;           // tick the clock
+#ifdef DEBUG_OP_DUMP
+        printf("LDA #$%02X            %s", (int)((unsigned char)reg.a), registerDump());
+#endif
     }
 
     inline void ldx_immediate()
@@ -190,6 +202,9 @@ class CPU
         updateNZ(reg.x);       // update p
         reg.pc++;              // increment pc
         clocks += 2;           // tick the clock
+#ifdef DEBUG_OP_DUMP
+        printf("LDX #$%02X            %s", (int)reg.x, registerDump());
+#endif
     }
 
     inline void ldy_immediate()
@@ -198,6 +213,9 @@ class CPU
         updateNZ(reg.y);       // update p
         reg.pc++;              // increment pc
         clocks += 2;           // tick the clock
+#ifdef DEBUG_OP_DUMP
+        printf("LDY #$%02X            %s", (int)reg.y, registerDump());
+#endif
     }
 
     inline void lda_zero()
@@ -209,6 +227,9 @@ class CPU
         reg.pc++;                              // increment pc
         clocks += 3;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.a); // I/O check
+#ifdef DEBUG_OP_DUMP
+        printf("LDA $%02X             %s", (int)addr, registerDump());
+#endif
     }
 
     inline void ldx_zero()
@@ -220,6 +241,9 @@ class CPU
         reg.pc++;                              // increment pc
         clocks += 3;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.x); // I/O check
+#ifdef DEBUG_OP_DUMP
+        printf("LDX $%02X             %s", (int)addr, registerDump());
+#endif
     }
 
     inline void ldy_zero()
@@ -231,6 +255,9 @@ class CPU
         reg.pc++;                              // increment pc
         clocks += 3;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.y); // I/O check
+#ifdef DEBUG_OP_DUMP
+        printf("LDY $%02X             %s", (int)addr, registerDump());
+#endif
     }
 
     inline void sta_zero()
@@ -241,6 +268,9 @@ class CPU
         reg.pc++;                            // increment pc
         clocks += 3;                         // tick the clock
         checkST(addr, (unsigned char)reg.a); // I/O check
+#ifdef DEBUG_OP_DUMP
+        printf("STA $%02X             %s", (int)addr, registerDump());
+#endif
     }
 
     inline void stx_zero()
@@ -251,6 +281,9 @@ class CPU
         reg.pc++;                            // increment pc
         clocks += 3;                         // tick the clock
         checkST(addr, (unsigned char)reg.x); // I/O check
+#ifdef DEBUG_OP_DUMP
+        printf("STX $%02X             %s", (int)addr, registerDump());
+#endif
     }
 
     inline void sty_zero()
@@ -261,6 +294,9 @@ class CPU
         reg.pc++;                            // increment pc
         clocks += 3;                         // tick the clock
         checkST(addr, (unsigned char)reg.y); // I/O check
+#ifdef DEBUG_OP_DUMP
+        printf("STY $%02X             %s", (int)addr, registerDump());
+#endif
     }
 
     inline void lda_zero_x()
@@ -272,6 +308,9 @@ class CPU
         reg.pc++;                              // increment pc
         clocks += 4;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.a); // I/O check
+#ifdef DEBUG_OP_DUMP
+        printf("LDA $%02X, X          %s", (int)addr, registerDump());
+#endif
     }
 
     inline void ldx_zero_y()
@@ -283,6 +322,9 @@ class CPU
         reg.pc++;                              // increment pc
         clocks += 4;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.x); // I/O check
+#ifdef DEBUG_OP_DUMP
+        printf("LDX $%02X, Y          %s", (int)addr, registerDump());
+#endif
     }
 
     inline void ldy_zero_x()
@@ -294,6 +336,9 @@ class CPU
         reg.pc++;                              // increment pc
         clocks += 4;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.y); // I/O check
+#ifdef DEBUG_OP_DUMP
+        printf("LDY $%02X, X          %s", (int)addr, registerDump());
+#endif
     }
 
     inline void sta_zero_x()
@@ -304,6 +349,9 @@ class CPU
         reg.pc++;                            // increment pc
         clocks += 4;                         // tick the clock
         checkST(addr, (unsigned char)reg.a); // I/O check
+#ifdef DEBUG_OP_DUMP
+        printf("STA $%02X, X          %s", (int)addr, registerDump());
+#endif
     }
 
     inline void stx_zero_y()
@@ -314,6 +362,9 @@ class CPU
         reg.pc++;                            // increment pc
         clocks += 4;                         // tick the clock
         checkST(addr, (unsigned char)reg.x); // I/O check
+#ifdef DEBUG_OP_DUMP
+        printf("STX $%02X, Y          %s", (int)addr, registerDump());
+#endif
     }
 
     inline void sty_zero_x()
@@ -324,6 +375,9 @@ class CPU
         reg.pc++;                            // increment pc
         clocks += 4;                         // tick the clock
         checkST(addr, (unsigned char)reg.y); // I/O check
+#ifdef DEBUG_OP_DUMP
+        printf("STY $%02X, X          %s", (int)addr, registerDump());
+#endif
     }
 
     inline void lda_absolute()
@@ -334,6 +388,9 @@ class CPU
         reg.pc++;                              // increment pc
         clocks += 4;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.a); // I/O check
+#ifdef DEBUG_OP_DUMP
+        printf("LDA $%04X           %s", (int)addr, registerDump());
+#endif
     }
 
     inline void ldx_absolute()
@@ -344,6 +401,9 @@ class CPU
         reg.pc++;                              // increment pc
         clocks += 4;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.x); // I/O check
+#ifdef DEBUG_OP_DUMP
+        printf("LDX $%04X           %s", (int)addr, registerDump());
+#endif
     }
 
     inline void ldy_absolute()
@@ -354,6 +414,9 @@ class CPU
         reg.pc++;                              // increment pc
         clocks += 4;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.y); // I/O check
+#ifdef DEBUG_OP_DUMP
+        printf("LDY $%04X           %s", (int)addr, registerDump());
+#endif
     }
 
     inline void sta_absolute()
@@ -363,6 +426,9 @@ class CPU
         reg.pc++;                            // increment pc
         clocks += 4;                         // tick the clock
         checkST(addr, (unsigned char)reg.a); // I/O check
+#ifdef DEBUG_OP_DUMP
+        printf("STA $%04X           %s", (int)addr, registerDump());
+#endif
     }
 
     inline void stx_absolute()
@@ -372,6 +438,9 @@ class CPU
         reg.pc++;                            // increment pc
         clocks += 4;                         // tick the clock
         checkST(addr, (unsigned char)reg.x); // I/O check
+#ifdef DEBUG_OP_DUMP
+        printf("STX $%04X           %s", (int)addr, registerDump());
+#endif
     }
 
     inline void sty_absolute()
@@ -381,6 +450,9 @@ class CPU
         reg.pc++;                            // increment pc
         clocks += 4;                         // tick the clock
         checkST(addr, (unsigned char)reg.y); // I/O check
+#ifdef DEBUG_OP_DUMP
+        printf("STY $%04X           %s", (int)addr, registerDump());
+#endif
     }
 
     inline void lda_absolute_x()
@@ -391,6 +463,9 @@ class CPU
         reg.pc++;                              // increment pc
         clocks += 4;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.a); // I/O check
+#ifdef DEBUG_OP_DUMP
+        printf("LDA $%04X, X        %s", (int)addr - reg.x, registerDump());
+#endif
     }
 
     inline void lda_absolute_y()
@@ -401,6 +476,9 @@ class CPU
         reg.pc++;                              // increment pc
         clocks += 4;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.a); // I/O check
+#ifdef DEBUG_OP_DUMP
+        printf("LDA $%04X, Y        %s", (int)addr - reg.y, registerDump());
+#endif
     }
 
     inline void sta_absolute_x()
@@ -410,6 +488,9 @@ class CPU
         reg.pc++;                              // increment pc
         clocks += 5;                           // tick the clock
         checkST(addr, (unsigned char)reg.a);   // I/O check
+#ifdef DEBUG_OP_DUMP
+        printf("STA $%04X, X        %s", (int)addr - reg.x, registerDump());
+#endif
     }
 
     inline void sta_absolute_y()
@@ -419,6 +500,9 @@ class CPU
         reg.pc++;                              // increment pc
         clocks += 5;                           // tick the clock
         checkST(addr, (unsigned char)reg.a);   // I/O check
+#ifdef DEBUG_OP_DUMP
+        printf("STA $%04X, Y        %s", (int)addr - reg.y, registerDump());
+#endif
     }
 
     inline void ldx_absolute_y()
@@ -429,6 +513,9 @@ class CPU
         reg.pc++;                              // increment pc
         clocks += 4;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.x); // I/O check
+#ifdef DEBUG_OP_DUMP
+        printf("LDX $%04X, Y        %s", (int)addr - reg.y, registerDump());
+#endif
     }
 
     inline void ldy_absolute_x()
@@ -439,6 +526,9 @@ class CPU
         reg.pc++;                              // increment pc
         clocks += 4;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.y); // I/O check
+#ifdef DEBUG_OP_DUMP
+        printf("LDY $%04X, X        %s", (int)addr - reg.x, registerDump());
+#endif
     }
 
     inline void lda_indirect_x()
@@ -1418,10 +1508,12 @@ class CPU
 
     void execute()
     {
-        // TODO: デシマルモードを除く6502の全命令を実装予定
         vramUpdateRequest = false;
         clocks = 0;
         while (!vramUpdateRequest) {
+#ifdef DEBUG_OP_DUMP
+            printf("$%04X: ", reg.pc);
+#endif
             switch (ram[reg.pc]) {
                 // TRANSFER
                 case 0xAA: tax(); break;
@@ -1602,6 +1694,9 @@ class CPU
                 case 0x00: brk(); break;
                 case 0xEA: nop(); break;
             }
+#ifdef DEBUG_OP_DUMP
+            printf("\n");
+#endif
             // 1フレームで処理可能なクロック数を超えた場合に強制的にVRAM更新リクエストを発生させる
             if (CPU_CLOCKS_PER_FRAME <= clocks) {
                 vramUpdateRequest = true;

@@ -51,12 +51,13 @@ void VirtualMachine::reset()
     apu->reset();
 }
 
-void VirtualMachine::tick()
+unsigned int VirtualMachine::tick()
 {
-    if (!cpu) return;
+    if (!cpu) return 0;
     cpu->execute(); // VRAM update request が発生するまでの間CPUを回す
     ppu->execute(); // VRAMを更新
     apu->execute(); // 音声を更新
+    return cpu->clocks;
 }
 
 unsigned short* VirtualMachine::getDisplay565(size_t* size)
