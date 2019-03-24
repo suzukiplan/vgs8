@@ -13,7 +13,7 @@
 - [x] [PPUを実装](src/ppu.hpp)
 - [x] [APUを実装](src/apu.hpp)
 - [x] [VGS8仮想マシンを実装](src/vgs8.h)
-- [ ] I/Oポートマップを完成させる
+- [x] I/Oポートマップを完成させる (完全には完成していないが一旦最低限揃える)
 - [ ] macOSでテストできるCocoaAppを作成
 - [ ] examplesを色々と追加しながらテスト
 - [ ] [ファミコン版Battle Marine](https://github.com/suzukiplan/battle-marine-fc)をVGS8に移植して最終テスト
@@ -56,7 +56,7 @@ make
   - 255個のBGM, 255個のSE
   - BGMはVGSと同等（波形メモリ音源）
   - SEはVGSと同等（PCM）
-- バッテリーバックアップ機能は無い（セーブ/ロードはH/W機能としてのみ提供する想定）
+- バッテリーバックアップ機能は無い（セーブ/ロードはH/W機能として提供）
 
 ## How to make your GAME
 
