@@ -90,6 +90,8 @@ make
 
 ## CPU memory map (WIP)
 
+VGS8ではプログラマが意識する必要があるPPUのメモリマップについてもCPU上でミラーしているため, プログラマはCPUのメモリマップのみ把握すればプログラミング可能なシンプルな構造になっています。
+
 |Address|Usage|
 |---|---|
 |$0000〜$00FF|Zero page|
@@ -102,14 +104,8 @@ make
 |$5403|PPU I/O port (RW): CHR Bank of 1|
 |$5404|PPU I/O port (RW): CMAP register `-----FBS`|
 |$5405|PPU I/O port (RW): Background Color|
-|$5406|PPU I/O port (RW): X of FG window position|
-|$5407|PPU I/O port (RW): Y of FG window position|
-|$5408|PPU I/O port (RW): X of BG window position|
-|$5409|PPU I/O port (RW): Y of BG window position|
-|$540A|PPU I/O port (W): FG nametable virtical scroll|
-|$540B|PPU I/O port (W): FG nametable horizontal scroll|
-|$540C|PPU I/O port (W): BG nametable virtical scroll|
-|$540D|PPU I/O port (W): BG nametable horizontal scroll|
+|$5406〜$5409|PPU I/O port (RW): FG/BG window positions|
+|$540A〜$540D|PPU I/O port (W): FG/BG scroll|
 |$5BFF|CPU I/O port (R): update VRAM request|
 |$5C00〜$5FFF|Palette|
 |$6000〜$6FFF|BG nametable (64x64)|
@@ -188,7 +184,7 @@ LDA #$FF
 STA $5405   ; 背景色をパレット番号255に設定
 ```
 
-### Window positions ($5406〜$5409)
+### BG/FG window positions ($5406〜$5409)
 
 FG, BG の表示起点座標をピクセル単位で指定する
 
@@ -208,7 +204,7 @@ STA $5409   ; BGの表示範囲の起点を (200, 200) にする
 
 > FG/BGの nametable は 8x8ピクセル のキャラクタ単位で 64x64 (512x512ピクセル) です。
 
-### Scroll nametables ($540A〜$540D)
+### BG/FG scroll ($540A〜$540D)
 
 FG, BG の nametable を 縦方向 or 横方向 にスクロールできます
 
@@ -227,6 +223,8 @@ STA $540C   ; BGを上スクロール
 LDA #$01
 STA $540D   ; BGを下スクロール
 ```
+
+> FG/BGの nametable は 8x8ピクセル のキャラクタ単位で 64x64 (512x512ピクセル) なので, 8ピクセル単位のスクロールを本機能で実現可能です。1ピクセル単位の細かいスクロールには window positions を用います。
 
 ### update VRAM request ($5BFF)
 
