@@ -18,7 +18,7 @@
 		94D1AB3521D86ADD00DC595E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 94D1AB3421D86ADD00DC595E /* main.m */; };
 		94D1AB3E21D86DC900DC595E /* VideoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 94D1AB3D21D86DC900DC595E /* VideoView.m */; };
 		94D1AB4121D86E0900DC595E /* VideoLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 94D1AB4021D86E0900DC595E /* VideoLayer.m */; };
-		94D1AB4721D8987800DC595E /* EmuBoard.c in Sources */ = {isa = PBXBuildFile; fileRef = 94D1AB4621D8987800DC595E /* EmuBoard.c */; };
+		94D1AB4721D8987800DC595E /* EmuBoard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 94D1AB4621D8987800DC595E /* EmuBoard.cpp */; };
 		94D1AB5421D8A59400DC595E /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94D1AB5321D8A59400DC595E /* OpenAL.framework */; };
 /* End PBXBuildFile section */
 
@@ -52,7 +52,7 @@
 		94D1AB4021D86E0900DC595E /* VideoLayer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VideoLayer.m; sourceTree = "<group>"; };
 		94D1AB4221D8767900DC595E /* constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = constants.h; sourceTree = "<group>"; };
 		94D1AB4321D87FFF00DC595E /* EmuBoard.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EmuBoard.h; sourceTree = "<group>"; };
-		94D1AB4621D8987800DC595E /* EmuBoard.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = EmuBoard.c; sourceTree = "<group>"; };
+		94D1AB4621D8987800DC595E /* EmuBoard.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = EmuBoard.cpp; sourceTree = "<group>"; };
 		94D1AB5321D8A59400DC595E /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -119,7 +119,7 @@
 				94D1AB3F21D86E0900DC595E /* VideoLayer.h */,
 				94D1AB4021D86E0900DC595E /* VideoLayer.m */,
 				94D1AB4321D87FFF00DC595E /* EmuBoard.h */,
-				94D1AB4621D8987800DC595E /* EmuBoard.c */,
+				94D1AB4621D8987800DC595E /* EmuBoard.cpp */,
 				94D1AB2E21D86ADD00DC595E /* Assets.xcassets */,
 				94D1AB3021D86ADD00DC595E /* Main.storyboard */,
 				94D1AB3321D86ADD00DC595E /* Info.plist */,
@@ -210,7 +210,7 @@
 				1D163C17224742CD00BBC2FD /* lz4.c in Sources */,
 				1D163C18224742CD00BBC2FD /* vgs8.cpp in Sources */,
 				1D163C1A224742CD00BBC2FD /* vgsdec.c in Sources */,
-				94D1AB4721D8987800DC595E /* EmuBoard.c in Sources */,
+				94D1AB4721D8987800DC595E /* EmuBoard.cpp in Sources */,
 				94D1AB3E21D86DC900DC595E /* VideoView.m in Sources */,
 				94D1AB2D21D86ADC00DC595E /* ViewController.m in Sources */,
 				94D1AB3521D86ADD00DC595E /* main.m in Sources */,

@@ -19,7 +19,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    emu_init();
+    emu_init(); // TODO: テストROMを指定する
     self.view.frame = CGRectMake(0, 0, VRAM_VIEW_WIDTH * 1.5, VRAM_VIEW_HEIGHT * 1.5);
     CALayer *layer = [CALayer layer];
     [layer setBackgroundColor:CGColorCreateGenericRGB(0.0, 0.0, 0.0, 1.0)];
