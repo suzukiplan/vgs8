@@ -22,6 +22,68 @@ class CPU
     struct Register reg;
     bool vramUpdateRequest;
 
+    // BGのnametable全体を縦方向にシフトさせる
+    inline void bgNameTableShiftV(char value)
+    {
+        if (value & 0x80) {
+            // 上スクロール
+            memmove(&ram[0x6000 + 64], &ram[0x6000], 64 * 63);
+            memset(&ram[0x6000 + 63 * 64], 0, 64);
+        } else if (value) {
+            // 下スクロール
+            memmove(&ram[0x6000], &ram[0x6000 + 64], 64 * 63);
+            memset(&ram[0x6000], 0, 64);
+        }
+    }
+
+    // BGのnametable全体を横方向にシフトさせる
+    inline void bgNameTableShiftH(char value)
+    {
+        if (value & 0x80) {
+            // 左スクロール
+            for (int y = 0; y < 64 * 64; y += 64) {
+                memmove(&ram[0x6000 + y], &ram[0x6000 + y + 1], 63);
+                ram[0x6000 + y + 63] = 0;
+            }
+        } else if (value) {
+            // 右スクロール
+            for (int y = 0; y < 64 * 64; y += 64) {
+                memmove(&ram[0x6000 + y + 1], &ram[0x6000 + y], 63);
+                ram[0x6000 + y] = 0;
+            }
+        }
+    }
+
+    // FGのnametable全体を縦方向にシフトさせる
+    inline void fgNameTableShiftV(char value)
+    {
+        if (value & 0x80) {
+            memmove(&ram[0x7000 + 64], &ram[0x7000], 64 * 63);
+            memset(&ram[0x7000 + 63 * 64], 0, 64);
+        } else if (value) {
+            memmove(&ram[0x7000], &ram[0x7000 + 64], 64 * 63);
+            memset(&ram[0x7000], 0, 64);
+        }
+    }
+
+    // FGのnametable全体を横方向にシフトさせる
+    inline void fgNameTableShiftH(char value)
+    {
+        if (value & 0x80) {
+            // 左スクロール
+            for (int y = 0; y < 64 * 64; y += 64) {
+                memmove(&ram[0x7000 + y], &ram[0x7000 + y + 1], 63);
+                ram[0x6000 + y + 63] = 0;
+            }
+        } else if (value) {
+            // 右スクロール
+            for (int y = 0; y < 64 * 64; y += 64) {
+                memmove(&ram[0x7000 + y + 1], &ram[0x7000 + y], 63);
+                ram[0x7000 + y] = 0;
+            }
+        }
+    }
+
     inline void checkLD(unsigned short addr, unsigned char* value)
     {
         switch (addr) {
@@ -38,10 +100,14 @@ class CPU
             case 0x5403: vm->_setChrBank(0, value); break;
             case 0x5404: vm->_setChrMap(value); break;
             case 0x5405: vm->_setBgColor(value); break;
-            case 0x5406: vm->_setBgX(value); break;
-            case 0x5407: vm->_setBgY(value); break;
-            case 0x5408: vm->_setFgX(value); break;
-            case 0x5409: vm->_setFgY(value); break;
+            case 0x5406: vm->_setFgX(value); break;
+            case 0x5407: vm->_setFgY(value); break;
+            case 0x5408: vm->_setBgX(value); break;
+            case 0x5409: vm->_setBgY(value); break;
+            case 0x540A: fgNameTableShiftV(value); break;
+            case 0x540B: fgNameTableShiftH(value); break;
+            case 0x540C: bgNameTableShiftV(value); break;
+            case 0x540D: bgNameTableShiftH(value); break;
             case 0x5BFF: vramUpdateRequest = true; break;
         }
     }
