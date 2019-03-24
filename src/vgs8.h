@@ -18,8 +18,7 @@ class PPU;
 class VirtualMachine
 {
   private:
-    unsigned char p1key; // 1コンのキー入力状態
-    unsigned char p2key; // 2コンのキー入力状態
+    unsigned char keys[2]; // キー入力状態
     unsigned short displayBuffer[240 * 240];
     char saveBuffer[65536]; // max = register + 32KB
     int savePtr;
@@ -56,15 +55,15 @@ class VirtualMachine
      * @param select [I] セレクトボタン
      * @param start [I] スタートボタン
      */
-    void setJoyPad(int number,
-                   bool up,
-                   bool down,
-                   bool left,
-                   bool right,
-                   bool a,
-                   bool b,
-                   bool select,
-                   bool start);
+    void setKey(int number,
+                bool up,
+                bool down,
+                bool left,
+                bool right,
+                bool a,
+                bool b,
+                bool select,
+                bool start);
 
     /**
      * リセット

@@ -8,6 +8,7 @@ VirtualMachine::VirtualMachine(const void* rom, size_t size)
     this->cpu = new CPU(this);
     this->ppu = new PPU(this);
     this->apu = new APU(this);
+    memset(keys, 0, sizeof(keys));
 }
 
 VirtualMachine::~VirtualMachine()
@@ -20,6 +21,27 @@ VirtualMachine::~VirtualMachine()
     cpu = NULL;
     delete bank;
     bank = NULL;
+}
+
+void VirtualMachine::setKey(int number,
+                            bool up,
+                            bool down,
+                            bool left,
+                            bool right,
+                            bool a,
+                            bool b,
+                            bool select,
+                            bool start)
+{
+    number &= 1;
+    keys[number] = up ? 0x80 : 0;
+    keys[number] |= down ? 0x40 : 0;
+    keys[number] |= left ? 0x20 : 0;
+    keys[number] |= right ? 0x10 : 0;
+    keys[number] |= a ? 0x08 : 0;
+    keys[number] |= b ? 0x04 : 0;
+    keys[number] |= select ? 0x02 : 0;
+    keys[number] |= start ? 0x01 : 0;
 }
 
 void VirtualMachine::reset()
