@@ -36,9 +36,8 @@ git submodule update --init --recursive
 make
 ```
 
-- 上記を実行することで, ROMをリンクするツール（romlink）の生成とVGS8コアのテストが実行されます
+- 上記を実行することで, ROMをリンクするツール（[romlink](tools/romlink.c)）の生成とVGS8コアのテストが実行されます
 - 各自が実装するHALには [src](src) ディレクトリ以下のモジュールを取り込んで使用します
-
 
 ## Features
 
@@ -58,6 +57,36 @@ make
   - BGMはVGSと同等（波形メモリ音源）
   - SEはVGSと同等（PCM）
 - バッテリーバックアップ機能は無い（セーブ/ロードはH/W機能としてのみ提供する想定）
+
+## How to make your GAME
+
+1. cc65を使って最大256個のプログラム `(*.bin)` をアセンブル（1つのプログラムの最大サイズ: 16KB）
+2. 任意のグラフィックエディタで 128x128 サイズの 256色bitmapファイル `(*.bmp)` を最大256個作成
+3. 任意の波形エディタで 22050Hz, 16bit, 1ch の効果音ファイル `(*.wav)` を最大256個作成
+4. 任意のテキストエディタで [VGSのMML形式ファイル](https://github.com/suzukiplan/vgs-mml-compiler/blob/master/MML-ja.md) `(*.mml)` を最大256個作成
+5. [romlink](tools/romlink.c)で, `*.bin` , `*.bmp` , `*.wav` , `*.mml` をリンク
+
+> 以下のファイルを用いたゲームの[romlink](tools/romlink.c) をする例を示します。
+> - program1.bin (プログラム1)
+> - program2.bin (プログラム2)
+> - program3.bin (プログラム3)
+> - sprite.bmp (スプライト)
+> - bg1.bmp (背景1)
+> - bg2.bmp (背景2)
+> - bg3.bmp (背景3)
+> - eff1.wav (効果音1)
+> - eff2.wav (効果音2)
+> - eff3.wav (効果音3)
+> - bgm1.mml (BGM1)
+> - bgm2.mml (BGM2)
+> - bgm3.mml (BGM3)
+> ```
+> romlink mygame.rom \
+>     program1.bin program2.bin program3.bin \
+>     sprite.bmp bg1.bmp bg2.bmp bg3.bmp \
+>     eff1.wav eff2.wav eff3.wav \
+>     bgm1.mml bgm2.mml bgm3.mml
+> ```
 
 ## CPU memory map (WIP)
 
