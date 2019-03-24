@@ -133,12 +133,17 @@ bool VirtualMachine::load(void* state, size_t size)
     return true;
 }
 
-void VirtualMachine::setChrBank(int cn, unsigned char bn)
+void VirtualMachine::_setChrBank(int cn, unsigned char bn)
 {
     ppu->reg.cbank[cn & 1] = bn;
 }
 
-void VirtualMachine::setChrMap(unsigned char n)
+void VirtualMachine::_setChrMap(unsigned char n)
 {
     ppu->reg.cmap = n;
+}
+
+void VirtualMachine::_setBgColor(unsigned char n)
+{
+    ppu->reg.bgC = n;
 }

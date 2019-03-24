@@ -96,12 +96,12 @@ make
 |$0100〜$01FF|Stack|
 |$0200〜$4FFF|RAM|
 |$5000〜$53FF|Sprite OAM (4x256)|
-|$5400|I/O port (RW): PRG Bank of $8000〜$BFFF|
-|$5401|I/O port (RW): PRG Bank of $C000〜$FFFF|
-|$5402|I/O port (RW): CHR Bank of 0|
-|$5403|I/O port (RW): CHR Bank of 1|
-|$5405|I/O port (R): update VRAM request|
-|$5402〜$5BFF|other I/O ports (WIP)|
+|$5400|CPU I/O port (RW): PRG Bank of $8000〜$BFFF|
+|$5401|CPU I/O port (RW): PRG Bank of $C000〜$FFFF|
+|$5402|PPU I/O port (RW): CHR Bank of 0|
+|$5403|PPU I/O port (RW): CHR Bank of 1|
+|$5404|PPU I/O port (RW): Background Color|
+|$5BFF|CPU I/O port (R): update VRAM request|
 |$5C00〜$5FFF|Palette|
 |$6000〜$6FFF|BG nametable (64x64)|
 |$7000〜$7FFF|FG nametable (64x64)|
@@ -114,15 +114,15 @@ make
 - $5400〜$5FFFで PPUへのI/O, APUへのI/O, ジョイパッド入力, バンク切り替え, DMA等を実現する予定
 - BG/FGのnametableはファミコンのnametableと同様8x8単位でキャラクタパターンを指定する（座標系は32x32）
 
-### $5405: update VRAM request
+### $5BFF: update VRAM request
 
-$5405 を load することで __VRAM更新信号__ が VGS8 に送信される。
+$5BFF を load することで __VRAM更新信号__ が VGS8 に送信される。
 従って, ゲームのメインループ処理は以下のように実装することになる。
 
 ```
 mainloop:
     ~~~ 処理 ~~~
-    LDA $5405       ; VRAM更新信号 を送信
+    LDA $5BFF       ; VRAM更新信号 を送信
     JMP mainloop
 ```
 

@@ -112,8 +112,9 @@ class VirtualMachine
     bool load(void* state, size_t size);
 
     /* 以下、内部関数 */
-    void setChrBank(int cn, unsigned char bn);
-    void setChrMap(unsigned char n);
+    void _setChrBank(int cn, unsigned char bn);
+    void _setChrMap(unsigned char n);
+    void _setBgColor(unsigned char n);
 };
 
 #include "bank.hpp"

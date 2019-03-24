@@ -25,7 +25,7 @@ class CPU
     inline void checkLD(unsigned short addr, unsigned char* value)
     {
         switch (addr) {
-            case 0x5405: vramUpdateRequest = true; break;
+            case 0x5BFF: vramUpdateRequest = true; break;
         }
     }
 
@@ -34,10 +34,11 @@ class CPU
         switch (addr) {
             case 0x5400: changeProgramBank8000(value); break;
             case 0x5401: changeProgramBankC000(value); break;
-            case 0x5402: vm->setChrBank(0, value); break;
-            case 0x5403: vm->setChrBank(0, value); break;
-            case 0x5404: vm->setChrMap(value); break;
-            case 0x5405: vramUpdateRequest = true; break;
+            case 0x5402: vm->_setChrBank(0, value); break;
+            case 0x5403: vm->_setChrBank(0, value); break;
+            case 0x5404: vm->_setChrMap(value); break;
+            case 0x5405: vm->_setBgColor(value); break;
+            case 0x5BFF: vramUpdateRequest = true; break;
         }
     }
 

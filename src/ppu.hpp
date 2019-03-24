@@ -22,6 +22,9 @@ class PPU
          */
         unsigned char cmap;
 
+        /* background color */
+        unsigned char bgC;
+
         /* window position of BG/FG */
         unsigned char bgX;
         unsigned char bgY;
@@ -64,7 +67,7 @@ class PPU
         unsigned char* dptr;
         unsigned char c;
         unsigned char window[32 * 32];
-        memset(vram, 0, sizeof(vram));
+        memset(vram, reg.bgC, sizeof(vram));
 
         // draw BG
         data = (unsigned char*)vm->bank->chr[reg.cbank[reg.cmap & 2 ? 1 : 0]];
