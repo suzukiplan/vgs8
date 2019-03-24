@@ -1333,17 +1333,17 @@ class CPU
         clocks += 6;                           // tick the clock
     }
 
-    inline void branch(unsigned char s, bool isNot)
+    inline void branch(unsigned char s, bool isSet)
     {
         clocks += 2;
         char relative = (char)ram[reg.pc + 1];
         if (reg.p & s) {
-            if (!isNot) {
+            if (isSet) {
                 reg.pc += relative;
                 return;
             }
         } else {
-            if (isNot) {
+            if (!isSet) {
                 reg.pc += relative;
                 return;
             }
