@@ -33,7 +33,11 @@ class Bank
             idx += 4;
             if (NULL != (prg[i] = malloc(max))) {
                 memset(prg[i], 0, max);
-                LZ4_decompress_safe((const char*)prg[i], (char*)&rp[idx], sz, max);
+                int dsz = LZ4_decompress_safe((const char*)&rp[idx], (char*)prg[i], sz, max);
+#ifdef DEBUG
+                printf("PRG%d size: %d\n", i, dsz);
+                printf("first instruction: %02X\n", ((unsigned char*)prg[i])[0]);
+#endif
             }
             idx += sz;
         }
