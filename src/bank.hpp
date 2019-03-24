@@ -73,7 +73,7 @@ class Bank
         }
 
         // extract palette data
-        memcpy(pal, rp, 1024);
+        memcpy(pal, &rp[idx], 1024);
     }
 
     ~Bank()
