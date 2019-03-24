@@ -108,7 +108,7 @@ int __stdcall vgsdec_async_start(void* context);
 int __stdcall vgsdec_async_enqueue(void* context, void* buffer, size_t size, void (*callback)(void* context, void* buffer, size_t size));
 void __stdcall vgsdec_async_stop(void* context);
 #else
-void* vgsdec_create_context();
+void* vgsdec_create_context(void);
 int vgsdec_load_bgm_from_file(void* context, const char* path);
 int vgsdec_load_bgm_from_memory(void* context, void* data, size_t size);
 void vgsdec_execute(void* context, void* buffer, size_t size);

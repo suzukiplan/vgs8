@@ -22,7 +22,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include "vgsdec.h"
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wcomma"
 #include "miniz.h"
+#pragma clang diagnostic pop
 
 #define NTYPE_ENV1 1
 #define NTYPE_ENV2 2

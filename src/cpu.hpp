@@ -1638,7 +1638,7 @@ class CPU
         int compressedSize;
         memcpy(&compressedSize, buffer + index, 4);
         index += 4;
-        LZ4_decompress_safe((const char*)buffer + index, (char*)ram, compressedSize, 0x8000);
+        LZ4_decompress_safe((const char*)buffer + index, (char*)ram, compressedSize, maxCompressedSize);
         index += compressedSize;
         changeProgramBank8000(reg.prg8000);
         changeProgramBankC000(reg.prgC000);
