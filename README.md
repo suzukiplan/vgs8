@@ -12,7 +12,8 @@
 - [x] [CPUを実装](src/cpu.hpp)
 - [x] [PPUを実装](src/ppu.hpp)
 - [x] [APUを実装](src/apu.hpp)
-- [ ] [VGS8仮想マシンを実装](src/vgs8.h)
+- [x] [VGS8仮想マシンを実装](src/vgs8.h)
+- [ ] I/Oポートマップを完成させる
 - [ ] macOSでテストできるCocoaAppを作成
 - [ ] examplesを色々と追加しながらテスト
 - [ ] [ファミコン版Battle Marine](https://github.com/suzukiplan/battle-marine-fc)をVGS8に移植して最終テスト
