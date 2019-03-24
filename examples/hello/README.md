@@ -2,3 +2,5 @@
 
 BG に `Hello, VGS8 World!` というテキストを表示するサンプルプログラム
 
+![ScreenShot](screenshot.png)
+
