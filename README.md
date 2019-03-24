@@ -27,6 +27,23 @@
 - CLANG
 - cc65
 
+#### Windows
+
+(略)
+
+#### macOS
+
+- GNU make, CLANG は XCODE Command Line Tools をインストール
+- cc65 は HomeBrew でインストールできます
+
+```
+brew install cc65
+```
+
+#### Linux
+
+(略)
+
 ### Setup
 
 ```
