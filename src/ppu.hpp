@@ -78,18 +78,25 @@ class PPU
             vx = reg.bgX / 8;
             for (i = 0; i < 32; i++) {
                 for (j = 0; j < 32; j++) {
-                    window[i * 32 + j] = vm->cpu->ram[0x6000 + (vy + i) * 32 + vx + j];
+                    window[i * 32 + j] = vm->cpu->ram[0x6000 + (vy + i) * 64 + vx + j];
                 }
             }
             dy = reg.bgY % 8;
             dx = reg.bgX % 8;
             for (y = 0; y < 32; y++) {
                 for (x = 0; x < 32; x++) {
-                    dptr = &data[window[(y * 32 + x)] * 64];
-                    if (dptr) {
-                        vx = x * 8 + dx;
-                        vy = y * 8 + dy;
-                        vram[vy * 256 + vx] = *dptr;
+                    int cn = window[y * 32 + x];
+                    if (!cn) continue; // do not draw $00
+                    cn *= 64;
+                    for (i = 0; i < 8; i++) {
+                        for (j = 0; j < 8; j++) {
+                            dptr = &data[cn + i * 8 + j];
+                            if (*dptr) {
+                                vx = x * 8 + dx + j;
+                                vy = y * 8 + dy + i;
+                                vram[vy * 256 + vx] = *dptr;
+                            }
+                        }
                     }
                 }
             }
@@ -123,18 +130,25 @@ class PPU
             vx = reg.bgX / 8;
             for (i = 0; i < 32; i++) {
                 for (j = 0; j < 32; j++) {
-                    window[i * 32 + j] = vm->cpu->ram[0x7000 + (vy + i) * 32 + vx + j];
+                    window[i * 32 + j] = vm->cpu->ram[0x7000 + (vy + i) * 64 + vx + j];
                 }
             }
             dy = reg.bgY % 8;
             dx = reg.bgX % 8;
             for (y = 0; y < 32; y++) {
                 for (x = 0; x < 32; x++) {
-                    dptr = &data[window[(y * 32 + x)] * 64];
-                    if (dptr) {
-                        vx = x * 8 + dx;
-                        vy = y * 8 + dy;
-                        vram[vy * 256 + vx] = *dptr;
+                    int cn = window[y * 32 + x];
+                    if (!cn) continue; // do not draw $00
+                    cn *= 64;
+                    for (i = 0; i < 8; i++) {
+                        for (j = 0; j < 8; j++) {
+                            dptr = &data[cn + i * 8 + j];
+                            if (*dptr) {
+                                vx = x * 8 + dx + j;
+                                vy = y * 8 + dy + i;
+                                vram[vy * 256 + vx] = *dptr;
+                            }
+                        }
                     }
                 }
             }
