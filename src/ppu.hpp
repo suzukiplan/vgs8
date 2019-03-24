@@ -70,7 +70,9 @@ class PPU
         memset(vram, reg.bgC, sizeof(vram));
 
         // draw BG
-        data = (unsigned char*)vm->bank->chr[reg.cbank[reg.cmap & 2 ? 1 : 0]];
+        int cno = reg.cmap & 2 ? 1 : 0;
+        int bno = reg.cbank[cno];
+        data = (unsigned char*)vm->bank->chr[bno];
         if (data) {
             vy = reg.bgY / 8;
             vx = reg.bgX / 8;
@@ -83,7 +85,7 @@ class PPU
             dx = reg.bgX % 8;
             for (y = 0; y < 32; y++) {
                 for (x = 0; x < 32; x++) {
-                    dptr = &data[window[(y * 32 + x) * 64]];
+                    dptr = &data[window[(y * 32 + x)] * 64];
                     if (dptr) {
                         vx = x * 8 + dx;
                         vy = y * 8 + dy;
@@ -113,7 +115,9 @@ class PPU
         }
 
         // draw FG
-        data = (unsigned char*)vm->bank->chr[reg.cbank[reg.cmap & 4 ? 1 : 0]];
+        cno = reg.cmap & 4 ? 1 : 0;
+        bno = reg.cbank[cno];
+        data = (unsigned char*)vm->bank->chr[bno];
         if (data) {
             vy = reg.bgY / 8;
             vx = reg.bgX / 8;
@@ -126,7 +130,7 @@ class PPU
             dx = reg.bgX % 8;
             for (y = 0; y < 32; y++) {
                 for (x = 0; x < 32; x++) {
-                    dptr = &data[window[(y * 32 + x) * 64]];
+                    dptr = &data[window[(y * 32 + x)] * 64];
                     if (dptr) {
                         vx = x * 8 + dx;
                         vy = y * 8 + dy;
