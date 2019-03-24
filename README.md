@@ -101,6 +101,10 @@ make
 |$5402|PPU I/O port (RW): CHR Bank of 0|
 |$5403|PPU I/O port (RW): CHR Bank of 1|
 |$5404|PPU I/O port (RW): Background Color|
+|$5405|PPU I/O port (RW): X of BG window|
+|$5406|PPU I/O port (RW): Y of BG window|
+|$5407|PPU I/O port (RW): X of FG window|
+|$5408|PPU I/O port (RW): Y of FG window|
 |$5BFF|CPU I/O port (R): update VRAM request|
 |$5C00〜$5FFF|Palette|
 |$6000〜$6FFF|BG nametable (64x64)|

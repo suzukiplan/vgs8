@@ -38,6 +38,10 @@ class CPU
             case 0x5403: vm->_setChrBank(0, value); break;
             case 0x5404: vm->_setChrMap(value); break;
             case 0x5405: vm->_setBgColor(value); break;
+            case 0x5406: vm->_setBgX(value); break;
+            case 0x5407: vm->_setBgY(value); break;
+            case 0x5408: vm->_setFgX(value); break;
+            case 0x5409: vm->_setFgY(value); break;
             case 0x5BFF: vramUpdateRequest = true; break;
         }
     }

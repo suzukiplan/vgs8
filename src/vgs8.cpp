@@ -147,3 +147,23 @@ void VirtualMachine::_setBgColor(unsigned char n)
 {
     ppu->reg.bgC = n;
 }
+
+void VirtualMachine::_setBgX(unsigned char n)
+{
+    ppu->reg.bgX = n;
+}
+
+void VirtualMachine::_setBgY(unsigned char n)
+{
+    ppu->reg.bgY = n;
+}
+
+void VirtualMachine::_setFgX(unsigned char n)
+{
+    ppu->reg.fgX = n;
+}
+
+void VirtualMachine::_setFgY(unsigned char n)
+{
+    ppu->reg.fgY = n;
+}

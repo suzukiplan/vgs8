@@ -111,10 +111,14 @@ class VirtualMachine
      */
     bool load(void* state, size_t size);
 
-    /* 以下、内部関数 */
+    /* 以下、内部関数 (CPUからPPUへアクセスするためのもの) */
     void _setChrBank(int cn, unsigned char bn);
     void _setChrMap(unsigned char n);
     void _setBgColor(unsigned char n);
+    void _setBgX(unsigned char n);
+    void _setBgY(unsigned char n);
+    void _setFgX(unsigned char n);
+    void _setFgY(unsigned char n);
 };
 
 #include "bank.hpp"
