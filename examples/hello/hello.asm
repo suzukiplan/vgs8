@@ -10,7 +10,7 @@
     ldx #$00
 draw_loop:
     lda string_hello_world, x
-    sta $61E7, x ; write on (7 + x, 15) = ($007 + x, $1E0)
+    sta $63C7, x ; write on (7 + x, 15) = ($007 + x, $3C0 = 15 * 64)
     inx
     cpx #18 ; text length
     bne draw_loop
