@@ -91,22 +91,6 @@ make
 > ```
 >
 > バンク番号は [romlink](tools/romlink.c) のコマンドライン引数指定順で決まります。
->
-> 上記の例の場合:
->
-> - program1.bin は PRGバンク0
-> - program2.bin は PRGバンク1
-> - program3.bin は PRGバンク2
-> - sprite.bmp は CHRバンク0
-> - bg1.bin は CHRバンク1
-> - bg2.bin は CHRバンク2
-> - bg3.bin は CHRバンク3
-> - eff1.wav は EFFバンク0
-> - eff2.wav は EFFバンク1
-> - eff3.wav は EFFバンク2
-> - bgm1.mml は BGMバンク0
-> - bgm2.mml は BGMバンク1
-> - bgm3.mml は BGMバンク2
 
 ## How to make 6502 programs
 
