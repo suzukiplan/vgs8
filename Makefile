@@ -1,5 +1,7 @@
 all: vgs8.o vgs2tone.o vgsdec.o bin bin/romlink bin/vgsrun
 	cd examples/hello && make
+
+test: all
 	cd tests/full_operands && make
 
 clean:
