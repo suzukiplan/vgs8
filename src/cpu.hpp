@@ -21,6 +21,9 @@ class CPU
     VGS8::VirtualMachine* vm;
     struct Register reg;
     bool vramUpdateRequest;
+#ifdef DEBUG_OP_DUMP
+    char debugLine[32];
+#endif
 
     // BGのnametable全体を縦方向にシフトさせる
     inline void bgNameTableShiftV(char value)
@@ -192,7 +195,7 @@ class CPU
         reg.pc++;              // increment pc
         clocks += 2;           // tick the clock
 #ifdef DEBUG_OP_DUMP
-        printf("LDA #$%02X            %s", (int)((unsigned char)reg.a), registerDump());
+        sprintf(debugLine, "LDA #$%02X", (int)((unsigned char)reg.a));
 #endif
     }
 
@@ -203,7 +206,7 @@ class CPU
         reg.pc++;              // increment pc
         clocks += 2;           // tick the clock
 #ifdef DEBUG_OP_DUMP
-        printf("LDX #$%02X            %s", (int)reg.x, registerDump());
+        sprintf(debugLine, "LDX #$%02X", (int)reg.x);
 #endif
     }
 
@@ -214,7 +217,7 @@ class CPU
         reg.pc++;              // increment pc
         clocks += 2;           // tick the clock
 #ifdef DEBUG_OP_DUMP
-        printf("LDY #$%02X            %s", (int)reg.y, registerDump());
+        sprintf(debugLine, "LDY #$%02X", (int)reg.y);
 #endif
     }
 
@@ -228,7 +231,7 @@ class CPU
         clocks += 3;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.a); // I/O check
 #ifdef DEBUG_OP_DUMP
-        printf("LDA $%02X             %s", (int)addr, registerDump());
+        sprintf(debugLine, "LDA $%02X", (int)addr);
 #endif
     }
 
@@ -242,7 +245,7 @@ class CPU
         clocks += 3;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.x); // I/O check
 #ifdef DEBUG_OP_DUMP
-        printf("LDX $%02X             %s", (int)addr, registerDump());
+        sprintf(debugLine, "LDX $%02X", (int)addr);
 #endif
     }
 
@@ -256,7 +259,7 @@ class CPU
         clocks += 3;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.y); // I/O check
 #ifdef DEBUG_OP_DUMP
-        printf("LDY $%02X             %s", (int)addr, registerDump());
+        sprintf(debugLine, "LDY $%02X", (int)addr);
 #endif
     }
 
@@ -269,7 +272,7 @@ class CPU
         clocks += 3;                         // tick the clock
         checkST(addr, (unsigned char)reg.a); // I/O check
 #ifdef DEBUG_OP_DUMP
-        printf("STA $%02X             %s", (int)addr, registerDump());
+        sprintf(debugLine, "STA $%02X", (int)addr);
 #endif
     }
 
@@ -282,7 +285,7 @@ class CPU
         clocks += 3;                         // tick the clock
         checkST(addr, (unsigned char)reg.x); // I/O check
 #ifdef DEBUG_OP_DUMP
-        printf("STX $%02X             %s", (int)addr, registerDump());
+        sprintf(debugLine, "STX $%02X", (int)addr);
 #endif
     }
 
@@ -295,7 +298,7 @@ class CPU
         clocks += 3;                         // tick the clock
         checkST(addr, (unsigned char)reg.y); // I/O check
 #ifdef DEBUG_OP_DUMP
-        printf("STY $%02X             %s", (int)addr, registerDump());
+        sprintf(debugLine, "STY $%02X", (int)addr);
 #endif
     }
 
@@ -309,7 +312,7 @@ class CPU
         clocks += 4;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.a); // I/O check
 #ifdef DEBUG_OP_DUMP
-        printf("LDA $%02X, X          %s", (int)addr, registerDump());
+        sprintf(debugLine, "LDA $%02X, X", (int)addr);
 #endif
     }
 
@@ -323,7 +326,7 @@ class CPU
         clocks += 4;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.x); // I/O check
 #ifdef DEBUG_OP_DUMP
-        printf("LDX $%02X, Y          %s", (int)addr, registerDump());
+        sprintf(debugLine, "LDX $%02X, Y", (int)addr);
 #endif
     }
 
@@ -337,7 +340,7 @@ class CPU
         clocks += 4;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.y); // I/O check
 #ifdef DEBUG_OP_DUMP
-        printf("LDY $%02X, X          %s", (int)addr, registerDump());
+        sprintf(debugLine, "LDY $%02X, X", (int)addr);
 #endif
     }
 
@@ -350,7 +353,7 @@ class CPU
         clocks += 4;                         // tick the clock
         checkST(addr, (unsigned char)reg.a); // I/O check
 #ifdef DEBUG_OP_DUMP
-        printf("STA $%02X, X          %s", (int)addr, registerDump());
+        sprintf(debugLine, "STA $%02X, X ", (int)addr);
 #endif
     }
 
@@ -363,7 +366,7 @@ class CPU
         clocks += 4;                         // tick the clock
         checkST(addr, (unsigned char)reg.x); // I/O check
 #ifdef DEBUG_OP_DUMP
-        printf("STX $%02X, Y          %s", (int)addr, registerDump());
+        sprintf(debugLine, "STX $%02X, Y", (int)addr);
 #endif
     }
 
@@ -376,7 +379,7 @@ class CPU
         clocks += 4;                         // tick the clock
         checkST(addr, (unsigned char)reg.y); // I/O check
 #ifdef DEBUG_OP_DUMP
-        printf("STY $%02X, X          %s", (int)addr, registerDump());
+        sprintf(debugLine, "STY $%02X, X", (int)addr);
 #endif
     }
 
@@ -389,7 +392,7 @@ class CPU
         clocks += 4;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.a); // I/O check
 #ifdef DEBUG_OP_DUMP
-        printf("LDA $%04X           %s", (int)addr, registerDump());
+        sprintf(debugLine, "LDA $%04X", (int)addr);
 #endif
     }
 
@@ -402,7 +405,7 @@ class CPU
         clocks += 4;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.x); // I/O check
 #ifdef DEBUG_OP_DUMP
-        printf("LDX $%04X           %s", (int)addr, registerDump());
+        sprintf(debugLine, "LDX $%04X", (int)addr);
 #endif
     }
 
@@ -415,7 +418,7 @@ class CPU
         clocks += 4;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.y); // I/O check
 #ifdef DEBUG_OP_DUMP
-        printf("LDY $%04X           %s", (int)addr, registerDump());
+        sprintf(debugLine, "LDY $%04X", (int)addr);
 #endif
     }
 
@@ -427,7 +430,7 @@ class CPU
         clocks += 4;                         // tick the clock
         checkST(addr, (unsigned char)reg.a); // I/O check
 #ifdef DEBUG_OP_DUMP
-        printf("STA $%04X           %s", (int)addr, registerDump());
+        sprintf(debugLine, "STA $%04X", (int)addr);
 #endif
     }
 
@@ -439,7 +442,7 @@ class CPU
         clocks += 4;                         // tick the clock
         checkST(addr, (unsigned char)reg.x); // I/O check
 #ifdef DEBUG_OP_DUMP
-        printf("STX $%04X           %s", (int)addr, registerDump());
+        sprintf(debugLine, "STX $%04X", (int)addr);
 #endif
     }
 
@@ -451,7 +454,7 @@ class CPU
         clocks += 4;                         // tick the clock
         checkST(addr, (unsigned char)reg.y); // I/O check
 #ifdef DEBUG_OP_DUMP
-        printf("STY $%04X           %s", (int)addr, registerDump());
+        sprintf(debugLine, "STY $%04X", (int)addr);
 #endif
     }
 
@@ -464,7 +467,7 @@ class CPU
         clocks += 4;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.a); // I/O check
 #ifdef DEBUG_OP_DUMP
-        printf("LDA $%04X, X        %s", (int)addr - reg.x, registerDump());
+        sprintf(debugLine, "LDA $%04X, X", (int)addr - reg.x);
 #endif
     }
 
@@ -477,7 +480,7 @@ class CPU
         clocks += 4;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.a); // I/O check
 #ifdef DEBUG_OP_DUMP
-        printf("LDA $%04X, Y        %s", (int)addr - reg.y, registerDump());
+        sprintf(debugLine, "LDA $%04X, Y", (int)addr - reg.y);
 #endif
     }
 
@@ -489,7 +492,7 @@ class CPU
         clocks += 5;                           // tick the clock
         checkST(addr, (unsigned char)reg.a);   // I/O check
 #ifdef DEBUG_OP_DUMP
-        printf("STA $%04X, X        %s", (int)addr - reg.x, registerDump());
+        sprintf(debugLine, "STA $%04X, X", (int)addr - reg.x);
 #endif
     }
 
@@ -501,7 +504,7 @@ class CPU
         clocks += 5;                           // tick the clock
         checkST(addr, (unsigned char)reg.a);   // I/O check
 #ifdef DEBUG_OP_DUMP
-        printf("STA $%04X, Y        %s", (int)addr - reg.y, registerDump());
+        sprintf(debugLine, "STA $%04X, Y", (int)addr - reg.y);
 #endif
     }
 
@@ -514,7 +517,7 @@ class CPU
         clocks += 4;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.x); // I/O check
 #ifdef DEBUG_OP_DUMP
-        printf("LDX $%04X, Y        %s", (int)addr - reg.y, registerDump());
+        sprintf(debugLine, "LDX $%04X, Y", (int)addr - reg.y);
 #endif
     }
 
@@ -527,7 +530,7 @@ class CPU
         clocks += 4;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.y); // I/O check
 #ifdef DEBUG_OP_DUMP
-        printf("LDY $%04X, X        %s", (int)addr - reg.x, registerDump());
+        sprintf(debugLine, "LDY $%04X, X", (int)addr - reg.x);
 #endif
     }
 
@@ -1513,6 +1516,7 @@ class CPU
         while (!vramUpdateRequest) {
 #ifdef DEBUG_OP_DUMP
             printf("$%04X: ", reg.pc);
+            debugLine[0] = '\0';
 #endif
             switch (ram[reg.pc]) {
                 // TRANSFER
@@ -1695,7 +1699,9 @@ class CPU
                 case 0xEA: nop(); break;
             }
 #ifdef DEBUG_OP_DUMP
-            printf("\n");
+            for (size_t i = strlen(debugLine); i < sizeof(debugLine) - 1; i++) debugLine[i] = ' ';
+            debugLine[sizeof(debugLine) - 1] = '\0';
+            printf("%s%s\n", debugLine, registerDump());
 #endif
             // 1フレームで処理可能なクロック数を超えた場合に強制的にVRAM更新リクエストを発生させる
             if (CPU_CLOCKS_PER_FRAME <= clocks) {
