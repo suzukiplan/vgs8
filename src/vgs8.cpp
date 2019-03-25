@@ -148,6 +148,12 @@ void VirtualMachine::resetBreakPoint()
     cpu->brkCB = NULL;
 }
 
+const unsigned char* VirtualMachine::getRAM()
+{
+    if (!cpu) return NULL;
+    return cpu->ram;
+}
+
 void VirtualMachine::_setChrBank(int cn, unsigned char bn)
 {
     if (!ppu) return;

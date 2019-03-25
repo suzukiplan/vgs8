@@ -126,6 +126,11 @@ class VirtualMachine
      */
     void resetBreakPoint();
 
+    /**
+     * RAMの先頭ポインタを取得
+     */
+    const unsigned char* getRAM();
+
     /* 以下、内部関数 (CPUからPPUへアクセスするためのもの) */
     void _setChrBank(int cn, unsigned char bn);
     void _setChrMap(unsigned char n);

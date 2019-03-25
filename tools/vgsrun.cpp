@@ -20,6 +20,8 @@ static int atoi65_bin(const char* text)
         switch (*text) {
             case '0': result += 0; break;
             case '1': result += 1; break;
+            case '\r': return result >> 1;
+            case '\n': return result >> 1;
             default: invalidArgument("invalid binary value");
         }
     }
@@ -48,6 +50,8 @@ static int atoi65_hex(const char* text)
             case 'D': result += 13; break;
             case 'E': result += 14; break;
             case 'F': result += 15; break;
+            case '\r': return result >> 4;
+            case '\n': return result >> 4;
             default: invalidArgument("invalid hex value");
         }
     }
@@ -76,22 +80,73 @@ static int atoi65(const char* text)
 static void breakCallback(VGS8::VirtualMachine* vm)
 {
     char buf[1024];
+    const unsigned char* ram = vm->getRAM();
     printf("COMMAND> ");
     while (fgets(buf, sizeof(buf) - 1, stdin)) {
         switch (toupper(buf[0])) {
             case 'C': return;  // continue
             case 'Q': exit(0); // exit
-            case 'M': {        // show memory dump
-                puts("TODO: memory dump (not implemented)");
+            case 'K': {        // set key status
+                unsigned char key = 0;
+                for (int i = 1; buf[i]; i++) {
+                    if (' ' == buf[i] || '\t' == buf[i]) continue;
+                    key = atoi65(&buf[i]);
+                    break;
+                }
+                bool up = key & 0x80;
+                bool down = key & 0x40;
+                bool left = key & 0x20;
+                bool right = key & 0x10;
+                bool a = key & 0x08;
+                bool b = key & 0x04;
+                bool select = key & 0x02;
+                bool start = key & 0x01;
+                vm->setKey(0, up, down, left, right, a, b, select, start);
+                printf("    up: %s\n", up ? "ON" : "OFF");
+                printf("  down: %s\n", down ? "ON" : "OFF");
+                printf("  left: %s\n", left ? "ON" : "OFF");
+                printf(" right: %s\n", right ? "ON" : "OFF");
+                printf("     a: %s\n", a ? "ON" : "OFF");
+                printf("     b: %s\n", b ? "ON" : "OFF");
+                printf("select: %s\n", select ? "ON" : "OFF");
+                printf(" start: %s\n", start ? "ON" : "OFF");
+                break;
+            }
+            case 'M': { // show memory dump
+                unsigned short addr = 0;
+                for (int i = 1; buf[i]; i++) {
+                    if (' ' == buf[i] || '\t' == buf[i]) continue;
+                    addr = atoi65(&buf[i]);
+                    break;
+                }
+                char asc[17];
+                asc[16] = '\0';
+                puts(" ADDR: +0 +1 +2 +3 +4 +5 +6 +7 - +8 +9 +A +B +C +D +E +F : ASCII");
+                for (int i = 0; i < 16; i++) {
+                    printf("$%04X: ", (int)addr);
+                    for (int j = 0; j < 16; j++) {
+                        if (8 == j) printf("- ");
+                        int m = (int)ram[addr++];
+                        printf("%02X ", m);
+                        if (isgraph(m)) {
+                            asc[j] = m;
+                        } else {
+                            asc[j] = '.';
+                        }
+                    }
+                    printf(": %s\n", asc);
+                }
+                printf("\nCOMMAND> ");
                 break;
             }
             default: {
                 puts("M $ADDR: Memory dump");
+                puts("K %%udlrabes: set key status");
                 puts("C: Continue");
                 puts("Q: Quit");
-                printf("COMMAND> ");
             }
         }
+        printf("COMMAND> ");
     }
 }
 
