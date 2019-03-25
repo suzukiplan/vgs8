@@ -126,15 +126,15 @@ class PPU
         bno = reg.cbank[cno];
         data = (unsigned char*)vm->bank->chr[bno];
         if (data) {
-            vy = reg.bgY / 8;
-            vx = reg.bgX / 8;
+            vy = reg.fgY / 8;
+            vx = reg.fgX / 8;
             for (i = 0; i < 32; i++) {
                 for (j = 0; j < 32; j++) {
                     window[i * 32 + j] = vm->cpu->ram[0x7000 + (vy + i) * 64 + vx + j];
                 }
             }
-            dy = reg.bgY % 8;
-            dx = reg.bgX % 8;
+            dy = reg.fgY % 8;
+            dx = reg.fgX % 8;
             for (y = 0; y < 32; y++) {
                 for (x = 0; x < 32; x++) {
                     int cn = window[y * 32 + x];
