@@ -1826,8 +1826,23 @@ class CPU
     inline void status(unsigned char s, bool isSet)
     {
         if (isSet) {
+#ifdef DEBUG_OP_DUMP
+            switch (s) {
+                case 0x01: strcpy(debugLine, "SEC"); break;
+                case 0x04: strcpy(debugLine, "SEI"); break;
+                case 0x08: strcpy(debugLine, "SED"); break;
+            }
+#endif
             reg.p |= s;
         } else {
+#ifdef DEBUG_OP_DUMP
+            switch (s) {
+                case 0x01: strcpy(debugLine, "CLC"); break;
+                case 0x04: strcpy(debugLine, "CLI"); break;
+                case 0x08: strcpy(debugLine, "CLD"); break;
+                case 0x40: strcpy(debugLine, "CLV"); break;
+            }
+#endif
             s ^= 0xFF;
             reg.p &= s;
         }
