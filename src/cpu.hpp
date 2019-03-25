@@ -121,8 +121,8 @@ class CPU
             case 0x5600: vm->_playBgm(value); break;
             case 0x5601: vm->_pauseBgm(); break;
             case 0x5602: vm->_resumeBgm(); break;
-            case 0x5A01: memset(&ram[ram[0x5A00] * 256], value, 256);
-            case 0x5A02: memcpy(&ram[value * 256], &ram[ram[0x5A00] * 256], 256);
+            case 0x5A01: memset(&ram[ram[0x5A00] * 256], value, 256); break;
+            case 0x5A02: memcpy(&ram[value * 256], &ram[ram[0x5A00] * 256], 256); break;
             case 0x5BFF: vramUpdateRequest = true; break;
         }
     }
