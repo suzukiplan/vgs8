@@ -196,34 +196,34 @@ class CPU
     inline unsigned short indirect()
     {
         unsigned short ptr = ram[++reg.pc];
-#ifdef DEBUG_OP_DUMP
-        sprintf(&debugLine[4], "($%02X)", (int)ram[reg.pc]);
-#endif
         unsigned short addr = ram[ptr++]; // get addr (LOW)
         addr |= ram[ptr] * 256;           // get addr (HIGH)
+#ifdef DEBUG_OP_DUMP
+        sprintf(&debugLine[4], "($%02X) = $%04X", (int)ram[reg.pc], addr);
+#endif
         return addr;
     }
 
     inline unsigned short indirectX()
     {
         unsigned short ptr = ram[++reg.pc] + reg.x;
-#ifdef DEBUG_OP_DUMP
-        sprintf(&debugLine[4], "($%02X, X)", (int)ram[reg.pc]);
-#endif
         unsigned short addr = ram[ptr++]; // get addr (LOW)
         addr |= ram[ptr] * 256;           // get addr (HIGH)
+#ifdef DEBUG_OP_DUMP
+        sprintf(&debugLine[4], "($%02X, X) = $%04X", (int)ram[reg.pc], addr);
+#endif
         return addr;
     }
 
     inline unsigned short indirectY()
     {
         unsigned short ptr = ram[++reg.pc];
-#ifdef DEBUG_OP_DUMP
-        sprintf(&debugLine[4], "($%02X), Y", (int)ram[reg.pc]);
-#endif
         unsigned short addr = ram[ptr++]; // get addr (LOW)
         addr |= ram[ptr] * 256;           // get addr (HIGH)
         addr += reg.y;
+#ifdef DEBUG_OP_DUMP
+        sprintf(&debugLine[4], "($%02X), Y = $%04X", (int)ram[reg.pc], addr);
+#endif
         return addr;
     }
 
