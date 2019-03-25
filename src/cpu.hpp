@@ -980,26 +980,38 @@ class CPU
     inline void cmp_immediate()
     {
         compare(reg.a, ram[++reg.pc]); // compare
-        reg.pc++;                      // increment pc
-        clocks += 2;                   // tick the clock
+#ifdef DEBUG_OP_DUMP
+        sprintf(debugLine, "CMP #$%02X", (int)ram[reg.pc]);
+#endif
+        reg.pc++;    // increment pc
+        clocks += 2; // tick the clock
     }
 
     inline void cmp_zero()
     {
         compare(reg.a, ram[ram[++reg.pc]]); // comapre
-        reg.pc++;                           // increment pc
-        clocks += 3;                        // tick the clock
+#ifdef DEBUG_OP_DUMP
+        sprintf(debugLine, "CMP $%02X", (int)ram[reg.pc]);
+#endif
+        reg.pc++;    // increment pc
+        clocks += 3; // tick the clock
     }
 
     inline void cmp_zero_x()
     {
         compare(reg.a, ram[ram[++reg.pc] + reg.x]); // compare
-        reg.pc++;                                   // increment pc
-        clocks += 4;                                // tick the clock
+#ifdef DEBUG_OP_DUMP
+        sprintf(debugLine, "CMP $%02X, X", (int)ram[reg.pc]);
+#endif
+        reg.pc++;    // increment pc
+        clocks += 4; // tick the clock
     }
 
     inline void cmp_absolute()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "CMP ");
+#endif
         compare(reg.a, ram[absolute()]); // compare
         reg.pc++;                        // increment pc
         clocks += 4;                     // tick the clock
@@ -1007,6 +1019,9 @@ class CPU
 
     inline void cmp_absolute_x()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "CMP ");
+#endif
         compare(reg.a, ram[absoluteX()]); // compare
         reg.pc++;                         // increment pc
         clocks += 4;                      // tick the clock
@@ -1014,6 +1029,9 @@ class CPU
 
     inline void cmp_absolute_y()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "CMP ");
+#endif
         compare(reg.a, ram[absoluteY()]); // compare
         reg.pc++;                         // increment pc
         clocks += 4;                      // tick the clock
@@ -1021,6 +1039,9 @@ class CPU
 
     inline void cmp_indirect_x()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "CMP ");
+#endif
         compare(reg.a, ram[indirectX()]); // compare
         reg.pc++;                         // increment pc
         clocks += 6;                      // tick the clock
@@ -1028,6 +1049,9 @@ class CPU
 
     inline void cmp_indirect_y()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "CMP ");
+#endif
         compare(reg.a, ram[indirectY()]); // compare
         reg.pc++;                         // increment pc
         clocks += 5;                      // tick the clock
@@ -1036,19 +1060,28 @@ class CPU
     inline void cpx_immediate()
     {
         compare(reg.x, ram[++reg.pc]); // compare
-        reg.pc++;                      // increment pc
-        clocks += 2;                   // tick the clock
+#ifdef DEBUG_OP_DUMP
+        sprintf(debugLine, "CPX #$%02X", (int)ram[reg.pc]);
+#endif
+        reg.pc++;    // increment pc
+        clocks += 2; // tick the clock
     }
 
     inline void cpx_zero()
     {
         compare(reg.x, ram[ram[++reg.pc]]); // comapre
-        reg.pc++;                           // increment pc
-        clocks += 3;                        // tick the clock
+#ifdef DEBUG_OP_DUMP
+        sprintf(debugLine, "CPX $%02X", (int)ram[reg.pc]);
+#endif
+        reg.pc++;    // increment pc
+        clocks += 3; // tick the clock
     }
 
     inline void cpx_absolute()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "CPX ");
+#endif
         compare(reg.x, ram[absolute()]); // compare
         reg.pc++;                        // increment pc
         clocks += 4;                     // tick the clock
@@ -1057,19 +1090,28 @@ class CPU
     inline void cpy_immediate()
     {
         compare(reg.y, ram[++reg.pc]); // compare
-        reg.pc++;                      // increment pc
-        clocks += 2;                   // tick the clock
+#ifdef DEBUG_OP_DUMP
+        sprintf(debugLine, "CPY #$%02X", (int)ram[reg.pc]);
+#endif
+        reg.pc++;    // increment pc
+        clocks += 2; // tick the clock
     }
 
     inline void cpy_zero()
     {
         compare(reg.y, ram[ram[++reg.pc]]); // comapre
-        reg.pc++;                           // increment pc
-        clocks += 3;                        // tick the clock
+#ifdef DEBUG_OP_DUMP
+        sprintf(debugLine, "CPY $%02X", (int)ram[reg.pc]);
+#endif
+        reg.pc++;    // increment pc
+        clocks += 3; // tick the clock
     }
 
     inline void cpy_absolute()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "CPY ");
+#endif
         compare(reg.y, ram[absolute()]); // compare
         reg.pc++;                        // increment pc
         clocks += 4;                     // tick the clock
@@ -1484,6 +1526,23 @@ class CPU
     {
         clocks += 2;
         short relative = (char)ram[++reg.pc];
+#ifdef DEBUG_OP_DUMP
+        if (isSet) {
+            switch (s) {
+                case 0x01: sprintf(debugLine, "BCS $%02X", ram[reg.pc]); break;
+                case 0x02: sprintf(debugLine, "BEQ $%02X", ram[reg.pc]); break;
+                case 0x40: sprintf(debugLine, "BVS $%02X", ram[reg.pc]); break;
+                case 0x80: sprintf(debugLine, "BMI $%02X", ram[reg.pc]); break;
+            }
+        } else {
+            switch (s) {
+                case 0x01: sprintf(debugLine, "BCC $%02X", ram[reg.pc]); break;
+                case 0x02: sprintf(debugLine, "BNE $%02X", ram[reg.pc]); break;
+                case 0x40: sprintf(debugLine, "BVC $%02X", ram[reg.pc]); break;
+                case 0x80: sprintf(debugLine, "BPL $%02X", ram[reg.pc]); break;
+            }
+        }
+#endif
         reg.pc++;
         if (reg.p & s) {
             if (isSet) {
