@@ -153,13 +153,31 @@ class CPU
     {
         unsigned short addr = ram[++reg.pc]; // get addr (LOW)
         addr |= ram[++reg.pc] * 256;         // get addr (HIGH)
+#ifdef DEBUG_OP_DUMP
+        sprintf(&debugLine[4], "$%04X", (int)addr);
+#endif
         return addr;
     }
 
-    inline unsigned short absolute(unsigned char i)
+    inline unsigned short absoluteX()
     {
-        unsigned short addr = absolute(); // get absolute address
-        addr += i;                        // plus index
+        unsigned short addr = ram[++reg.pc]; // get addr (LOW)
+        addr |= ram[++reg.pc] * 256;         // get addr (HIGH)
+#ifdef DEBUG_OP_DUMP
+        sprintf(&debugLine[4], "$%04X, X", (int)addr);
+#endif
+        addr += reg.x;
+        return addr;
+    }
+
+    inline unsigned short absoluteY()
+    {
+        unsigned short addr = ram[++reg.pc]; // get addr (LOW)
+        addr |= ram[++reg.pc] * 256;         // get addr (HIGH)
+#ifdef DEBUG_OP_DUMP
+        sprintf(&debugLine[4], "$%04X, Y", (int)addr);
+#endif
+        addr += reg.y;
         return addr;
     }
 
@@ -385,153 +403,153 @@ class CPU
 
     inline void lda_absolute()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "LDA ");
+#endif
         unsigned short addr = absolute();      // get absolute address
         reg.a = ram[addr];                     // a = any page value
         updateNZ(reg.a);                       // update p
         reg.pc++;                              // increment pc
         clocks += 4;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.a); // I/O check
-#ifdef DEBUG_OP_DUMP
-        sprintf(debugLine, "LDA $%04X", (int)addr);
-#endif
     }
 
     inline void ldx_absolute()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "LDX ");
+#endif
         unsigned short addr = absolute();      // get absolute address
         reg.x = ram[addr];                     // x = any page value
         updateNZ(reg.x);                       // update p
         reg.pc++;                              // increment pc
         clocks += 4;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.x); // I/O check
-#ifdef DEBUG_OP_DUMP
-        sprintf(debugLine, "LDX $%04X", (int)addr);
-#endif
     }
 
     inline void ldy_absolute()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "LDY ");
+#endif
         unsigned short addr = absolute();      // get absolute address
         reg.y = ram[addr];                     // y = any page value
         updateNZ(reg.y);                       // update p
         reg.pc++;                              // increment pc
         clocks += 4;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.y); // I/O check
-#ifdef DEBUG_OP_DUMP
-        sprintf(debugLine, "LDY $%04X", (int)addr);
-#endif
     }
 
     inline void sta_absolute()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "STA ");
+#endif
         unsigned short addr = absolute();    // get absolute address
         ram[addr] = reg.a;                   // store a to any page
         reg.pc++;                            // increment pc
         clocks += 4;                         // tick the clock
         checkST(addr, (unsigned char)reg.a); // I/O check
-#ifdef DEBUG_OP_DUMP
-        sprintf(debugLine, "STA $%04X", (int)addr);
-#endif
     }
 
     inline void stx_absolute()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "STX ");
+#endif
         unsigned short addr = absolute();    // get absolute address
         ram[addr] = reg.x;                   // store x to any page
         reg.pc++;                            // increment pc
         clocks += 4;                         // tick the clock
         checkST(addr, (unsigned char)reg.x); // I/O check
-#ifdef DEBUG_OP_DUMP
-        sprintf(debugLine, "STX $%04X", (int)addr);
-#endif
     }
 
     inline void sty_absolute()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "STY ");
+#endif
         unsigned short addr = absolute();    // get absolute address
         ram[addr] = reg.y;                   // store y to any page
         reg.pc++;                            // increment pc
         clocks += 4;                         // tick the clock
         checkST(addr, (unsigned char)reg.y); // I/O check
-#ifdef DEBUG_OP_DUMP
-        sprintf(debugLine, "STY $%04X", (int)addr);
-#endif
     }
 
     inline void lda_absolute_x()
     {
-        unsigned short addr = absolute(reg.x); // get absolute address
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "LDA ");
+#endif
+        unsigned short addr = absoluteX();     // get absolute address
         reg.a = ram[addr];                     // a = any page value
         updateNZ(reg.a);                       // update p
         reg.pc++;                              // increment pc
         clocks += 4;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.a); // I/O check
-#ifdef DEBUG_OP_DUMP
-        sprintf(debugLine, "LDA $%04X, X", (int)addr - reg.x);
-#endif
     }
 
     inline void lda_absolute_y()
     {
-        unsigned short addr = absolute(reg.y); // get absolute address
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "LDA ");
+#endif
+        unsigned short addr = absoluteY();     // get absolute address
         reg.a = ram[addr];                     // a = any page value
         updateNZ(reg.a);                       // update p
         reg.pc++;                              // increment pc
         clocks += 4;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.a); // I/O check
-#ifdef DEBUG_OP_DUMP
-        sprintf(debugLine, "LDA $%04X, Y", (int)addr - reg.y);
-#endif
     }
 
     inline void sta_absolute_x()
     {
-        unsigned short addr = absolute(reg.x); // get absolute address
-        ram[addr] = reg.a;                     // store a to any page
-        reg.pc++;                              // increment pc
-        clocks += 5;                           // tick the clock
-        checkST(addr, (unsigned char)reg.a);   // I/O check
 #ifdef DEBUG_OP_DUMP
-        sprintf(debugLine, "STA $%04X, X", (int)addr - reg.x);
+        strcpy(debugLine, "STA ");
 #endif
+        unsigned short addr = absoluteX();   // get absolute address
+        ram[addr] = reg.a;                   // store a to any page
+        reg.pc++;                            // increment pc
+        clocks += 5;                         // tick the clock
+        checkST(addr, (unsigned char)reg.a); // I/O check
     }
 
     inline void sta_absolute_y()
     {
-        unsigned short addr = absolute(reg.y); // get absolute address
-        ram[addr] = reg.a;                     // store a to any page
-        reg.pc++;                              // increment pc
-        clocks += 5;                           // tick the clock
-        checkST(addr, (unsigned char)reg.a);   // I/O check
 #ifdef DEBUG_OP_DUMP
-        sprintf(debugLine, "STA $%04X, Y", (int)addr - reg.y);
+        strcpy(debugLine, "STA ");
 #endif
+        unsigned short addr = absoluteY();   // get absolute address
+        ram[addr] = reg.a;                   // store a to any page
+        reg.pc++;                            // increment pc
+        clocks += 5;                         // tick the clock
+        checkST(addr, (unsigned char)reg.a); // I/O check
     }
 
     inline void ldx_absolute_y()
     {
-        unsigned short addr = absolute(reg.y); // get absolute address
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "LDX ");
+#endif
+        unsigned short addr = absoluteY();     // get absolute address
         reg.x = ram[addr];                     // x = any page value
         updateNZ(reg.x);                       // update p
         reg.pc++;                              // increment pc
         clocks += 4;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.x); // I/O check
-#ifdef DEBUG_OP_DUMP
-        sprintf(debugLine, "LDX $%04X, Y", (int)addr - reg.y);
-#endif
     }
 
     inline void ldy_absolute_x()
     {
-        unsigned short addr = absolute(reg.x); // get absolute address
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "LDY ");
+#endif
+        unsigned short addr = absoluteX();     // get absolute address
         reg.y = ram[addr];                     // y = any page value
         updateNZ(reg.y);                       // update p
         reg.pc++;                              // increment pc
         clocks += 4;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.y); // I/O check
-#ifdef DEBUG_OP_DUMP
-        sprintf(debugLine, "LDY $%04X, X", (int)addr - reg.x);
-#endif
     }
 
     inline void lda_indirect_x()
@@ -666,16 +684,16 @@ class CPU
 
     inline void adc_absolute_x()
     {
-        adc(ram[absolute(reg.x)]); // add with carry
-        reg.pc++;                  // increment pc
-        clocks += 4;               // tick the clock
+        adc(ram[absoluteX()]); // add with carry
+        reg.pc++;              // increment pc
+        clocks += 4;           // tick the clock
     }
 
     inline void adc_absolute_y()
     {
-        adc(ram[absolute(reg.y)]); // add with carry
-        reg.pc++;                  // increment pc
-        clocks += 4;               // tick the clock
+        adc(ram[absoluteY()]); // add with carry
+        reg.pc++;              // increment pc
+        clocks += 4;           // tick the clock
     }
 
     inline void adc_indirect_x()
@@ -738,16 +756,16 @@ class CPU
 
     inline void sbc_absolute_x()
     {
-        sbc(ram[absolute(reg.x)]); // sub with carry
-        reg.pc++;                  // increment pc
-        clocks += 4;               // tick the clock
+        sbc(ram[absoluteX()]); // sub with carry
+        reg.pc++;              // increment pc
+        clocks += 4;           // tick the clock
     }
 
     inline void sbc_absolute_y()
     {
-        sbc(ram[absolute(reg.y)]); // sub with carry
-        reg.pc++;                  // increment pc
-        clocks += 4;               // tick the clock
+        sbc(ram[absoluteY()]); // sub with carry
+        reg.pc++;              // increment pc
+        clocks += 4;           // tick the clock
     }
 
     inline void sbc_indirect_x()
@@ -800,16 +818,16 @@ class CPU
 
     inline void and_absolute_x()
     {
-        andA(absolute(reg.x)); // and
-        reg.pc++;              // increment pc
-        clocks += 4;           // tick the clock
+        andA(absoluteX()); // and
+        reg.pc++;          // increment pc
+        clocks += 4;       // tick the clock
     }
 
     inline void and_absolute_y()
     {
-        andA(absolute(reg.y)); // and
-        reg.pc++;              // increment pc
-        clocks += 4;           // tick the clock
+        andA(absoluteY()); // and
+        reg.pc++;          // increment pc
+        clocks += 4;       // tick the clock
     }
 
     inline void and_indirect_x()
@@ -862,16 +880,16 @@ class CPU
 
     inline void ora_absolute_x()
     {
-        ora(ram[absolute(reg.x)]); // or
-        reg.pc++;                  // increment pc
-        clocks += 4;               // tick the clock
+        ora(ram[absoluteX()]); // or
+        reg.pc++;              // increment pc
+        clocks += 4;           // tick the clock
     }
 
     inline void ora_absolute_y()
     {
-        ora(ram[absolute(reg.y)]); // or
-        reg.pc++;                  // increment pc
-        clocks += 4;               // tick the clock
+        ora(ram[absoluteY()]); // or
+        reg.pc++;              // increment pc
+        clocks += 4;           // tick the clock
     }
 
     inline void ora_indirect_x()
@@ -924,16 +942,16 @@ class CPU
 
     inline void eor_absolute_x()
     {
-        eor(ram[absolute(reg.x)]); // eor
-        reg.pc++;                  // increment pc
-        clocks += 4;               // tick the clock
+        eor(ram[absoluteX()]); // eor
+        reg.pc++;              // increment pc
+        clocks += 4;           // tick the clock
     }
 
     inline void eor_absolute_y()
     {
-        eor(ram[absolute(reg.y)]); // eor
-        reg.pc++;                  // increment pc
-        clocks += 4;               // tick the clock
+        eor(ram[absoluteY()]); // eor
+        reg.pc++;              // increment pc
+        clocks += 4;           // tick the clock
     }
 
     inline void eor_indirect_x()
@@ -989,16 +1007,16 @@ class CPU
 
     inline void cmp_absolute_x()
     {
-        compare(reg.a, ram[absolute(reg.x)]); // compare
-        reg.pc++;                             // increment pc
-        clocks += 4;                          // tick the clock
+        compare(reg.a, ram[absoluteX()]); // compare
+        reg.pc++;                         // increment pc
+        clocks += 4;                      // tick the clock
     }
 
     inline void cmp_absolute_y()
     {
-        compare(reg.a, ram[absolute(reg.y)]); // compare
-        reg.pc++;                             // increment pc
-        clocks += 4;                          // tick the clock
+        compare(reg.a, ram[absoluteY()]); // compare
+        reg.pc++;                         // increment pc
+        clocks += 4;                      // tick the clock
     }
 
     inline void cmp_indirect_x()
@@ -1102,9 +1120,9 @@ class CPU
 
     inline void asl_absolute_x()
     {
-        shift(true, &ram[absolute(reg.x)]); // left shift
-        reg.pc++;                           // increment pc
-        clocks += 7;                        // tick the clock
+        shift(true, &ram[absoluteX()]); // left shift
+        reg.pc++;                       // increment pc
+        clocks += 7;                    // tick the clock
     }
 
     inline void lsr_a()
@@ -1137,9 +1155,9 @@ class CPU
 
     inline void lsr_absolute_x()
     {
-        shift(false, &ram[absolute(reg.x)]); // right shift
-        reg.pc++;                            // increment pc
-        clocks += 7;                         // tick the clock
+        shift(false, &ram[absoluteX()]); // right shift
+        reg.pc++;                        // increment pc
+        clocks += 7;                     // tick the clock
     }
 
     inline void rotate(bool isLeft, unsigned char* v)
@@ -1192,9 +1210,9 @@ class CPU
 
     inline void rol_absolute_x()
     {
-        rotate(true, &ram[absolute(reg.x)]); // left rotate
-        reg.pc++;                            // increment pc
-        clocks += 7;                         // tick the clock
+        rotate(true, &ram[absoluteX()]); // left rotate
+        reg.pc++;                        // increment pc
+        clocks += 7;                     // tick the clock
     }
 
     inline void ror_a()
@@ -1227,9 +1245,9 @@ class CPU
 
     inline void ror_absolute_x()
     {
-        rotate(false, &ram[absolute(reg.x)]); // right rotate
-        reg.pc++;                             // increment pc
-        clocks += 7;                          // tick the clock
+        rotate(false, &ram[absoluteX()]); // right rotate
+        reg.pc++;                         // increment pc
+        clocks += 7;                      // tick the clock
     }
 
     inline void inc(unsigned char* v)
@@ -1261,9 +1279,9 @@ class CPU
 
     inline void inc_absolute_x()
     {
-        inc(&ram[absolute(reg.x)]); // increment
-        reg.pc++;                   // increment pc
-        clocks += 7;                // tick the clock
+        inc(&ram[absoluteX()]); // increment
+        reg.pc++;               // increment pc
+        clocks += 7;            // tick the clock
     }
 
     inline void inx()
@@ -1309,9 +1327,9 @@ class CPU
 
     inline void dec_absolute_x()
     {
-        dec(&ram[absolute(reg.x)]); // decrement
-        reg.pc++;                   // increment pc
-        clocks += 7;                // tick the clock
+        dec(&ram[absoluteX()]); // decrement
+        reg.pc++;               // increment pc
+        clocks += 7;            // tick the clock
     }
 
     inline void dex()
