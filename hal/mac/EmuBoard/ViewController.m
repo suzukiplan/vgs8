@@ -30,6 +30,7 @@
     [self.view setLayer:layer];
     _video = [[VideoView alloc] initWithFrame:[self calcVramRect]];
     [self.view addSubview:_video];
+    [self.view.window makeFirstResponder:_video];
 }
 
 - (void)viewWillAppear
