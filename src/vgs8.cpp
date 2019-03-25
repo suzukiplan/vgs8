@@ -71,7 +71,7 @@ unsigned short* VirtualMachine::getDisplay565(size_t* size)
         color[i] |= (cpu->ram[j + 2] & 0b11111000) << 8;
     }
     for (int y = 8; y < 248; y++) {
-        int vp = (y << 8);
+        int vp = (y << 8) + 8;
         for (int x = 8; x < 248; x++) {
             displayBuffer[dp] = color[ppu->vram[vp]];
             vp++;
@@ -93,7 +93,7 @@ unsigned short* VirtualMachine::getDisplay555(size_t* size)
         color[i] |= (cpu->ram[j + 2] & 0b11111000) << 7;
     }
     for (int y = 8; y < 248; y++) {
-        int vp = (y << 8);
+        int vp = (y << 8) + 8;
         for (int x = 8; x < 248; x++) {
             displayBuffer[dp] = color[ppu->vram[vp]];
             vp++;
