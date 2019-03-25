@@ -105,7 +105,7 @@ class CPU
             case 0x5400: changeProgramBank8000(value); break;
             case 0x5401: changeProgramBankC000(value); break;
             case 0x5402: vm->_setChrBank(0, value); break;
-            case 0x5403: vm->_setChrBank(0, value); break;
+            case 0x5403: vm->_setChrBank(1, value); break;
             case 0x5404: vm->_setChrMap(value); break;
             case 0x5405: vm->_setBgColor(value); break;
             case 0x5406: vm->_setFgX(value); break;
