@@ -217,6 +217,9 @@ VGS8ではプログラマが意識する必要があるPPUのメモリマップ�
 |$5603|APU I/O port (R): BGM playing status|
 |$5700|JoyPad I/O port (R): read 1P JoyPad status|
 |$5701|JoyPad I/O port (R): read 2P JoyPad status|
+|$5A00|DMA I/O port (RW): Set base page|
+|$5A01|DMA I/O port (W): execute memset|
+|$5A02|DMA I/O port (W): execute memcpy|
 |$5BFF|CPU I/O port (R): update VRAM request|
 |$5C00〜$5FFF|Palette|
 |$6000〜$6FFF|BG nametable (64x64)|
@@ -367,6 +370,26 @@ STA $540D   ; BGを下スクロール
 - `B` : Bボタン
 - `E` : SELECTボタン
 - `S` : STARTボタン
+
+### DMA; Direct Memory Access ($5A00〜$5A02)
+
+- $5A00 に ページ番号（アドレスの上位8bit）を設定 (以下, $5A00に設定した値をBP; ベースページと呼ぶ)
+- $5A01 に 値を書き込むと, BPのメモリ内容（$BP00〜$BPFF）を書き込んだ値で塗りつぶす（memset）
+- $5A02 に 値を書き込むと, BPのメモリ内容（$BP00〜$BPFF）を書き込んだ値のページへ転送する（memcpy）
+
+```
+; set BP
+LDA #$60
+STA $5A00   ; BPを $60 にする
+
+; memset
+LDA #$12
+STA $5A01   ; BP ($6000〜$60FF) に $12 をセット
+
+; memcpy
+LDA #$61
+STA $5A02   ; BP ($6000〜$60FF) の内容を $6100〜$61FF へ転送
+```
 
 ### update VRAM request ($5BFF)
 
