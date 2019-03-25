@@ -19,7 +19,9 @@
   - [x] [PPU](src/ppu.hpp)を動作させるHALを実装
   - [ ] [APU](src/apu.hpp)を動作させるHALを実装
   - [ ] 固定のROMファイル（test.rom）ではなく起動時に任意ROMを選択できるようにする
-- [ ] コマンドライン・デバッガ作成
+- [ ] コマンドライン・デバッガ ([vgsrun](tools/vgsrun.cpp)) 作成
+  - [x] 全命令の動的逆アセンブル & レジスタダンプに対応
+  - [ ] break point機能の実装
 - [ ] examplesを色々と追加しながら一通りの命令+機能をテスト
   - [x] [Hello, World](examples/hello)
   - [ ] FGを使ったサンプル
@@ -130,9 +132,7 @@ make
 >
 > バンク番号は [romlink](tools/romlink.c) のコマンドライン引数指定順で決まります。
 
-## How to debug your GAME (WIP)
-
-_WIP: まだ全部の命令の逆アセンブルに対応していません_
+## How to debug your GAME
 
 [vgsrun](tools/vgsrun.cpp)を用いて, Terminal上でゲームの簡易デバッグが可能です。
 [vgsrun](tools/vgsrun.cpp)は, 任意フレーム数ゲームROMを実行時のマシン語を動的に逆アセンブルして表示しつつ, 各命令実行後のレジスタ値を確認できます。
@@ -238,11 +238,6 @@ $8012: LDA $5BFF                      (a=$00, x=$12, y=$00, s=$00, p=$03)
 FRAME #1 END (3ms, 282Hz)
 $
 ```
-
-WIP status:
-- [x] Hello, World! の範囲の動的逆アセンブルに対応
-- [ ] 全命令の動的逆アセンブルに対応
-- [ ] break point機能の追加（任意アドレスでブレイク後、ステップ実行で動作や任意位置のRAMダンプを確認やメモリの書き換えができる機能）
 
 ## How to make 6502 programs
 

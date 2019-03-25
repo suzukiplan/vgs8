@@ -196,6 +196,9 @@ class CPU
     inline unsigned short indirect()
     {
         unsigned short ptr = ram[++reg.pc];
+#ifdef DEBUG_OP_DUMP
+        sprintf(&debugLine[4], "($%02X)", (int)ram[reg.pc]);
+#endif
         unsigned short addr = ram[ptr++]; // get addr (LOW)
         addr |= ram[ptr] * 256;           // get addr (HIGH)
         return addr;
@@ -204,6 +207,9 @@ class CPU
     inline unsigned short indirectX()
     {
         unsigned short ptr = ram[++reg.pc] + reg.x;
+#ifdef DEBUG_OP_DUMP
+        sprintf(&debugLine[4], "($%02X, X)", (int)ram[reg.pc]);
+#endif
         unsigned short addr = ram[ptr++]; // get addr (LOW)
         addr |= ram[ptr] * 256;           // get addr (HIGH)
         return addr;
@@ -212,6 +218,9 @@ class CPU
     inline unsigned short indirectY()
     {
         unsigned short ptr = ram[++reg.pc];
+#ifdef DEBUG_OP_DUMP
+        sprintf(&debugLine[4], "($%02X), Y", (int)ram[reg.pc]);
+#endif
         unsigned short addr = ram[ptr++]; // get addr (LOW)
         addr |= ram[ptr] * 256;           // get addr (HIGH)
         addr += reg.y;
@@ -566,6 +575,9 @@ class CPU
 
     inline void lda_indirect_x()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "LDA ");
+#endif
         unsigned short addr = indirectX();     // get indirectX address
         reg.a = ram[addr];                     // a = any page value
         updateNZ(reg.a);                       // update p
@@ -576,6 +588,9 @@ class CPU
 
     inline void lda_indirect_y()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "LDA ");
+#endif
         unsigned short addr = indirectY();     // get indirectY address
         reg.a = ram[addr];                     // a = any page value
         updateNZ(reg.a);                       // update p
@@ -586,6 +601,9 @@ class CPU
 
     inline void sta_indirect_x()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "STA ");
+#endif
         unsigned short addr = indirectX();   // get indirectX address
         ram[addr] = reg.a;                   // store a to any page
         reg.pc++;                            // increment pc
@@ -595,6 +613,9 @@ class CPU
 
     inline void sta_indirect_y()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "STA ");
+#endif
         unsigned short addr = indirectY();   // get indirectY address
         ram[addr] = reg.a;                   // store a to any page
         reg.pc++;                            // increment pc
@@ -604,6 +625,9 @@ class CPU
 
     inline void tax()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "TAX");
+#endif
         reg.x = reg.a;   // transfer a to x
         updateNZ(reg.x); // update p
         reg.pc++;        // increment pc
@@ -612,6 +636,9 @@ class CPU
 
     inline void txa()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "TXA");
+#endif
         reg.a = reg.x;   // transfer x to a
         updateNZ(reg.a); // update p
         reg.pc++;        // increment pc
@@ -620,6 +647,9 @@ class CPU
 
     inline void tay()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "TAY");
+#endif
         reg.y = reg.a;   // transfer a to y
         updateNZ(reg.y); // update p
         reg.pc++;        // increment pc
@@ -628,6 +658,9 @@ class CPU
 
     inline void tya()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "TYA");
+#endif
         reg.a = reg.y;   // transfer y to a
         updateNZ(reg.a); // update p
         reg.pc++;        // increment pc
@@ -636,6 +669,9 @@ class CPU
 
     inline void tsx()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "TSX");
+#endif
         reg.x = reg.s;   // transfer s to x
         updateNZ(reg.x); // update p
         reg.pc++;        // increment pc
@@ -644,6 +680,9 @@ class CPU
 
     inline void txs()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "TXS");
+#endif
         reg.s = reg.x;   // transfer x to s
         updateNZ(reg.s); // update p
         reg.pc++;        // increment pc
@@ -669,26 +708,38 @@ class CPU
     inline void adc_immediate()
     {
         adc(ram[++reg.pc]); // add with carry
-        reg.pc++;           // increment pc
-        clocks += 2;        // tick the clock
+#ifdef DEBUG_OP_DUMP
+        sprintf(debugLine, "ADC #$%02X", (int)ram[reg.pc]);
+#endif
+        reg.pc++;    // increment pc
+        clocks += 2; // tick the clock
     }
 
     inline void adc_zero()
     {
         adc(ram[ram[++reg.pc]]); // add with carry
-        reg.pc++;                // increment pc
-        clocks += 3;             // tick the clock
+#ifdef DEBUG_OP_DUMP
+        sprintf(debugLine, "ADC $%02X", (int)ram[reg.pc]);
+#endif
+        reg.pc++;    // increment pc
+        clocks += 3; // tick the clock
     }
 
     inline void adc_zero_x()
     {
         adc(ram[ram[++reg.pc] + reg.x]); // add with carry
-        reg.pc++;                        // increment pc
-        clocks += 4;                     // tick the clock
+#ifdef DEBUG_OP_DUMP
+        sprintf(debugLine, "ADC $%02X, X", (int)ram[reg.pc]);
+#endif
+        reg.pc++;    // increment pc
+        clocks += 4; // tick the clock
     }
 
     inline void adc_absolute()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "ADC ");
+#endif
         adc(ram[absolute()]); // add with carry
         reg.pc++;             // increment pc
         clocks += 4;          // tick the clock
@@ -696,6 +747,9 @@ class CPU
 
     inline void adc_absolute_x()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "ADC ");
+#endif
         adc(ram[absoluteX()]); // add with carry
         reg.pc++;              // increment pc
         clocks += 4;           // tick the clock
@@ -703,6 +757,9 @@ class CPU
 
     inline void adc_absolute_y()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "ADC ");
+#endif
         adc(ram[absoluteY()]); // add with carry
         reg.pc++;              // increment pc
         clocks += 4;           // tick the clock
@@ -710,6 +767,9 @@ class CPU
 
     inline void adc_indirect_x()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "ADC ");
+#endif
         adc(ram[indirectX()]); // add with carry
         reg.pc++;              // increment pc
         clocks += 6;           // tick the clock
@@ -717,6 +777,9 @@ class CPU
 
     inline void adc_indirect_y()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "ADC ");
+#endif
         adc(ram[indirectY()]); // add with carry
         reg.pc++;              // increment pc
         clocks += 5;           // tick the clock
@@ -741,26 +804,38 @@ class CPU
     inline void sbc_immediate()
     {
         sbc(ram[++reg.pc]); // sub with carry
-        reg.pc++;           // increment pc
-        clocks += 2;        // tick the clock
+#ifdef DEBUG_OP_DUMP
+        sprintf(debugLine, "SBC #$%02X", (int)ram[reg.pc]);
+#endif
+        reg.pc++;    // increment pc
+        clocks += 2; // tick the clock
     }
 
     inline void sbc_zero()
     {
         sbc(ram[ram[++reg.pc]]); // sub with carry
-        reg.pc++;                // increment pc
-        clocks += 3;             // tick the clock
+#ifdef DEBUG_OP_DUMP
+        sprintf(debugLine, "SBC $%02X", (int)ram[reg.pc]);
+#endif
+        reg.pc++;    // increment pc
+        clocks += 3; // tick the clock
     }
 
     inline void sbc_zero_x()
     {
         sbc(ram[ram[++reg.pc] + reg.x]); // sub with carry
-        reg.pc++;                        // increment pc
-        clocks += 4;                     // tick the clock
+#ifdef DEBUG_OP_DUMP
+        sprintf(debugLine, "SBC $%02X, X", (int)ram[reg.pc]);
+#endif
+        reg.pc++;    // increment pc
+        clocks += 4; // tick the clock
     }
 
     inline void sbc_absolute()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "SBC ");
+#endif
         sbc(ram[absolute()]); // sub with carry
         reg.pc++;             // increment pc
         clocks += 4;          // tick the clock
@@ -768,6 +843,9 @@ class CPU
 
     inline void sbc_absolute_x()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "SBC ");
+#endif
         sbc(ram[absoluteX()]); // sub with carry
         reg.pc++;              // increment pc
         clocks += 4;           // tick the clock
@@ -775,6 +853,9 @@ class CPU
 
     inline void sbc_absolute_y()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "SBC ");
+#endif
         sbc(ram[absoluteY()]); // sub with carry
         reg.pc++;              // increment pc
         clocks += 4;           // tick the clock
@@ -782,6 +863,9 @@ class CPU
 
     inline void sbc_indirect_x()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "SBC ");
+#endif
         sbc(ram[indirectX()]); // sub with carry
         reg.pc++;              // increment pc
         clocks += 6;           // tick the clock
@@ -789,6 +873,9 @@ class CPU
 
     inline void sbc_indirect_y()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "SBC ");
+#endif
         sbc(ram[indirectY()]); // sub with carry
         reg.pc++;              // increment pc
         clocks += 5;           // tick the clock
@@ -803,26 +890,38 @@ class CPU
     inline void and_immediate()
     {
         andA(ram[++reg.pc]); // and
-        reg.pc++;            // increment pc
-        clocks += 2;         // tick the clock
+#ifdef DEBUG_OP_DUMP
+        sprintf(debugLine, "AND #$%02X", (int)ram[reg.pc]);
+#endif
+        reg.pc++;    // increment pc
+        clocks += 2; // tick the clock
     }
 
     inline void and_zero()
     {
         andA(ram[ram[++reg.pc]]); // and
-        reg.pc++;                 // increment pc
-        clocks += 3;              // tick the clock
+#ifdef DEBUG_OP_DUMP
+        sprintf(debugLine, "AND $%02X", (int)ram[reg.pc]);
+#endif
+        reg.pc++;    // increment pc
+        clocks += 3; // tick the clock
     }
 
     inline void and_zero_x()
     {
         andA(ram[ram[++reg.pc] + reg.x]); // and
-        reg.pc++;                         // increment pc
-        clocks += 4;                      // tick the clock
+#ifdef DEBUG_OP_DUMP
+        sprintf(debugLine, "AND $%02X, X", (int)ram[reg.pc]);
+#endif
+        reg.pc++;    // increment pc
+        clocks += 4; // tick the clock
     }
 
     inline void and_absolute()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "AND ");
+#endif
         andA(ram[absolute()]); // and
         reg.pc++;              // increment pc
         clocks += 4;           // tick the clock
@@ -830,6 +929,9 @@ class CPU
 
     inline void and_absolute_x()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "AND ");
+#endif
         andA(absoluteX()); // and
         reg.pc++;          // increment pc
         clocks += 4;       // tick the clock
@@ -837,6 +939,9 @@ class CPU
 
     inline void and_absolute_y()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "AND ");
+#endif
         andA(absoluteY()); // and
         reg.pc++;          // increment pc
         clocks += 4;       // tick the clock
@@ -844,6 +949,9 @@ class CPU
 
     inline void and_indirect_x()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "AND ");
+#endif
         andA(ram[indirectX()]); // and
         reg.pc++;               // increment pc
         clocks += 6;            // tick the clock
@@ -851,6 +959,9 @@ class CPU
 
     inline void and_indirect_y()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "AND ");
+#endif
         andA(ram[indirectY()]); // and
         reg.pc++;               // increment pc
         clocks += 5;            // tick the clock
@@ -865,26 +976,38 @@ class CPU
     inline void ora_immediate()
     {
         ora(ram[++reg.pc]); // or
-        reg.pc++;           // increment pc
-        clocks += 2;        // tick the clock
+#ifdef DEBUG_OP_DUMP
+        sprintf(debugLine, "ORA #$%02X", (int)ram[reg.pc]);
+#endif
+        reg.pc++;    // increment pc
+        clocks += 2; // tick the clock
     }
 
     inline void ora_zero()
     {
         ora(ram[ram[++reg.pc]]); // or
-        reg.pc++;                // increment pc
-        clocks += 3;             // tick the clock
+#ifdef DEBUG_OP_DUMP
+        sprintf(debugLine, "ORA $%02X", (int)ram[reg.pc]);
+#endif
+        reg.pc++;    // increment pc
+        clocks += 3; // tick the clock
     }
 
     inline void ora_zero_x()
     {
         ora(ram[ram[++reg.pc] + reg.x]); // or
-        reg.pc++;                        // increment pc
-        clocks += 4;                     // tick the clock
+#ifdef DEBUG_OP_DUMP
+        sprintf(debugLine, "ORA $%02X, X", (int)ram[reg.pc]);
+#endif
+        reg.pc++;    // increment pc
+        clocks += 4; // tick the clock
     }
 
     inline void ora_absolute()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "ORA ");
+#endif
         ora(ram[absolute()]); // or
         reg.pc++;             // increment pc
         clocks += 4;          // tick the clock
@@ -892,6 +1015,9 @@ class CPU
 
     inline void ora_absolute_x()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "ORA ");
+#endif
         ora(ram[absoluteX()]); // or
         reg.pc++;              // increment pc
         clocks += 4;           // tick the clock
@@ -899,6 +1025,9 @@ class CPU
 
     inline void ora_absolute_y()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "ORA ");
+#endif
         ora(ram[absoluteY()]); // or
         reg.pc++;              // increment pc
         clocks += 4;           // tick the clock
@@ -906,6 +1035,9 @@ class CPU
 
     inline void ora_indirect_x()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "ORA ");
+#endif
         ora(ram[indirectX()]); // or
         reg.pc++;              // increment pc
         clocks += 6;           // tick the clock
@@ -913,6 +1045,9 @@ class CPU
 
     inline void ora_indirect_y()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "ORA ");
+#endif
         ora(ram[indirectY()]); // or
         reg.pc++;              // increment pc
         clocks += 5;           // tick the clock
@@ -927,26 +1062,38 @@ class CPU
     inline void eor_immediate()
     {
         eor(ram[++reg.pc]); // eor
-        reg.pc++;           // increment pc
-        clocks += 2;        // tick the clock
+#ifdef DEBUG_OP_DUMP
+        sprintf(debugLine, "EOR #$%02X", (int)ram[reg.pc]);
+#endif
+        reg.pc++;    // increment pc
+        clocks += 2; // tick the clock
     }
 
     inline void eor_zero()
     {
         eor(ram[ram[++reg.pc]]); // eor
-        reg.pc++;                // increment pc
-        clocks += 3;             // tick the clock
+#ifdef DEBUG_OP_DUMP
+        sprintf(debugLine, "EOR $%02X", (int)ram[reg.pc]);
+#endif
+        reg.pc++;    // increment pc
+        clocks += 3; // tick the clock
     }
 
     inline void eor_zero_x()
     {
         eor(ram[ram[++reg.pc] + reg.x]); // eor
-        reg.pc++;                        // increment pc
-        clocks += 4;                     // tick the clock
+#ifdef DEBUG_OP_DUMP
+        sprintf(debugLine, "EOR $%02X, X", (int)ram[reg.pc]);
+#endif
+        reg.pc++;    // increment pc
+        clocks += 4; // tick the clock
     }
 
     inline void eor_absolute()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "EOR ");
+#endif
         eor(ram[absolute()]); // eor
         reg.pc++;             // increment pc
         clocks += 4;          // tick the clock
@@ -954,6 +1101,9 @@ class CPU
 
     inline void eor_absolute_x()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "EOR ");
+#endif
         eor(ram[absoluteX()]); // eor
         reg.pc++;              // increment pc
         clocks += 4;           // tick the clock
@@ -961,6 +1111,9 @@ class CPU
 
     inline void eor_absolute_y()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "EOR ");
+#endif
         eor(ram[absoluteY()]); // eor
         reg.pc++;              // increment pc
         clocks += 4;           // tick the clock
@@ -968,6 +1121,9 @@ class CPU
 
     inline void eor_indirect_x()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "EOR ");
+#endif
         eor(ram[indirectX()]); // eor
         reg.pc++;              // increment pc
         clocks += 6;           // tick the clock
@@ -975,6 +1131,9 @@ class CPU
 
     inline void eor_indirect_y()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "EOR ");
+#endif
         eor(ram[indirectY()]); // eor
         reg.pc++;              // increment pc
         clocks += 5;           // tick the clock
@@ -1146,6 +1305,9 @@ class CPU
 
     inline void asl_a()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "ASL ");
+#endif
         shift(true, (unsigned char*)&reg.a); // left shift
         reg.pc++;                            // increment pc
         clocks += 2;                         // tick the clock
@@ -1154,19 +1316,28 @@ class CPU
     inline void asl_zero()
     {
         shift(true, &ram[ram[++reg.pc]]); // left shift
-        reg.pc++;                         // increment pc
-        clocks += 5;                      // tick the clock
+#ifdef DEBUG_OP_DUMP
+        sprintf(debugLine, "ASL $%02X", (int)ram[reg.pc]);
+#endif
+        reg.pc++;    // increment pc
+        clocks += 5; // tick the clock
     }
 
     inline void asl_zero_x()
     {
         shift(true, &ram[ram[++reg.pc] + reg.x]); // left shift
-        reg.pc++;                                 // increment pc
-        clocks += 6;                              // tick the clock
+#ifdef DEBUG_OP_DUMP
+        sprintf(debugLine, "ASL $%02X, X", (int)ram[reg.pc]);
+#endif
+        reg.pc++;    // increment pc
+        clocks += 6; // tick the clock
     }
 
     inline void asl_absolute()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "ASL ");
+#endif
         shift(true, &ram[absolute()]); // left shift
         reg.pc++;                      // increment pc
         clocks += 6;                   // tick the clock
@@ -1174,6 +1345,9 @@ class CPU
 
     inline void asl_absolute_x()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "ASL ");
+#endif
         shift(true, &ram[absoluteX()]); // left shift
         reg.pc++;                       // increment pc
         clocks += 7;                    // tick the clock
@@ -1181,6 +1355,9 @@ class CPU
 
     inline void lsr_a()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "LSR ");
+#endif
         shift(false, (unsigned char*)&reg.a); // right shift
         reg.pc++;                             // increment pc
         clocks += 2;                          // tick the clock
@@ -1189,19 +1366,28 @@ class CPU
     inline void lsr_zero()
     {
         shift(false, &ram[ram[++reg.pc]]); // right shift
-        reg.pc++;                          // increment pc
-        clocks += 5;                       // tick the clock
+#ifdef DEBUG_OP_DUMP
+        sprintf(debugLine, "LSR $%02X", (int)ram[reg.pc]);
+#endif
+        reg.pc++;    // increment pc
+        clocks += 5; // tick the clock
     }
 
     inline void lsr_zero_x()
     {
         shift(false, &ram[ram[++reg.pc] + reg.x]); // right shift
-        reg.pc++;                                  // increment pc
-        clocks += 6;                               // tick the clock
+#ifdef DEBUG_OP_DUMP
+        sprintf(debugLine, "LSR $%02X, X", (int)ram[reg.pc]);
+#endif
+        reg.pc++;    // increment pc
+        clocks += 6; // tick the clock
     }
 
     inline void lsr_absolute()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "LSR ");
+#endif
         shift(false, &ram[absolute()]); // right shift
         reg.pc++;                       // increment pc
         clocks += 6;                    // tick the clock
@@ -1209,6 +1395,9 @@ class CPU
 
     inline void lsr_absolute_x()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "LSR ");
+#endif
         shift(false, &ram[absoluteX()]); // right shift
         reg.pc++;                        // increment pc
         clocks += 7;                     // tick the clock
@@ -1236,6 +1425,9 @@ class CPU
 
     inline void rol_a()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "ROL ");
+#endif
         rotate(true, (unsigned char*)&reg.a); // left rotate
         reg.pc++;                             // increment pc
         clocks += 2;                          // tick the clock
@@ -1244,19 +1436,28 @@ class CPU
     inline void rol_zero()
     {
         rotate(true, &ram[ram[++reg.pc]]); // left rotate
-        reg.pc++;                          // increment pc
-        clocks += 5;                       // tick the clock
+#ifdef DEBUG_OP_DUMP
+        sprintf(debugLine, "ROL $%02X", (int)ram[reg.pc]);
+#endif
+        reg.pc++;    // increment pc
+        clocks += 5; // tick the clock
     }
 
     inline void rol_zero_x()
     {
         rotate(true, &ram[ram[++reg.pc] + reg.x]); // left rotate
-        reg.pc++;                                  // increment pc
-        clocks += 6;                               // tick the clock
+#ifdef DEBUG_OP_DUMP
+        sprintf(debugLine, "ROL $%02X, X", (int)ram[reg.pc]);
+#endif
+        reg.pc++;    // increment pc
+        clocks += 6; // tick the clock
     }
 
     inline void rol_absolute()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "ROL ");
+#endif
         rotate(true, &ram[absolute()]); // left rotate
         reg.pc++;                       // increment pc
         clocks += 6;                    // tick the clock
@@ -1264,6 +1465,9 @@ class CPU
 
     inline void rol_absolute_x()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "ROL ");
+#endif
         rotate(true, &ram[absoluteX()]); // left rotate
         reg.pc++;                        // increment pc
         clocks += 7;                     // tick the clock
@@ -1271,6 +1475,9 @@ class CPU
 
     inline void ror_a()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "ROR ");
+#endif
         rotate(false, (unsigned char*)&reg.a); // right rotate
         reg.pc++;                              // increment pc
         clocks += 2;                           // tick the clock
@@ -1279,19 +1486,28 @@ class CPU
     inline void ror_zero()
     {
         rotate(false, &ram[ram[++reg.pc]]); // right rotate
-        reg.pc++;                           // increment pc
-        clocks += 5;                        // tick the clock
+#ifdef DEBUG_OP_DUMP
+        sprintf(debugLine, "ROR $%02X", (int)ram[reg.pc]);
+#endif
+        reg.pc++;    // increment pc
+        clocks += 5; // tick the clock
     }
 
     inline void ror_zero_x()
     {
         rotate(false, &ram[ram[++reg.pc] + reg.x]); // right rotate
-        reg.pc++;                                   // increment pc
-        clocks += 6;                                // tick the clock
+#ifdef DEBUG_OP_DUMP
+        sprintf(debugLine, "ROR $%02X, X", (int)ram[reg.pc]);
+#endif
+        reg.pc++;    // increment pc
+        clocks += 6; // tick the clock
     }
 
     inline void ror_absolute()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "ROR ");
+#endif
         rotate(false, &ram[absolute()]); // right rotate
         reg.pc++;                        // increment pc
         clocks += 6;                     // tick the clock
@@ -1299,6 +1515,9 @@ class CPU
 
     inline void ror_absolute_x()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "ROR ");
+#endif
         rotate(false, &ram[absoluteX()]); // right rotate
         reg.pc++;                         // increment pc
         clocks += 7;                      // tick the clock
@@ -1446,12 +1665,18 @@ class CPU
     inline void bit_zero()
     {
         bit(ram[ram[++reg.pc]]); // update p
-        reg.pc++;                // increment pc
-        clocks += 3;             // tick the clock
+#ifdef DEBUG_OP_DUMP
+        sprintf(debugLine, "BIT $%02X", ram[reg.pc]);
+#endif
+        reg.pc++;    // increment pc
+        clocks += 3; // tick the clock
     }
 
     inline void bit_absolute()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "BIT ");
+#endif
         bit(ram[absolute()]); // update p
         reg.pc++;             // increment pc
         clocks += 3;          // tick the clock
@@ -1471,6 +1696,9 @@ class CPU
 
     inline void pha()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "PHA ");
+#endif
         push(reg.a);
         reg.pc++;
         clocks += 3;
@@ -1478,6 +1706,9 @@ class CPU
 
     inline void pla()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "PLA ");
+#endif
         reg.a = pull();
         reg.pc++;
         clocks += 4;
@@ -1485,6 +1716,9 @@ class CPU
 
     inline void php()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "PHP ");
+#endif
         push(reg.p);
         reg.pc++;
         clocks += 3;
@@ -1492,6 +1726,9 @@ class CPU
 
     inline void plp()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "PLP ");
+#endif
         reg.p = pull();
         reg.pc++;
         clocks += 4;
@@ -1499,18 +1736,27 @@ class CPU
 
     inline void jmp_absolute()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "JMP ");
+#endif
         reg.pc = absolute();
         clocks += 3;
     }
 
     inline void jmp_indirect()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "JMP ");
+#endif
         reg.pc = indirect();
         clocks += 5;
     }
 
     inline void jsr()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "JSR ");
+#endif
         unsigned short to = absolute();     // get jump to address
         push(((unsigned char*)&reg.pc)[0]); // push return address minus 1 of H
         push(((unsigned char*)&reg.pc)[1]); // push return address minus 1 of L
@@ -1520,6 +1766,9 @@ class CPU
 
     inline void rts()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "RTS ");
+#endif
         ((unsigned char*)&reg.pc)[1] = pull(); // pull return address of L
         ((unsigned char*)&reg.pc)[0] = pull(); // pull return address of H
         reg.pc++;                              // increment program counter
@@ -1528,6 +1777,9 @@ class CPU
 
     inline void rti()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "RTI ");
+#endif
         reg.p = pull();                        // pull p
         ((unsigned char*)&reg.pc)[1] = pull(); // pull return address of L
         ((unsigned char*)&reg.pc)[0] = pull(); // pull return address of H
@@ -1583,6 +1835,9 @@ class CPU
 
     inline void brk()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "BRK ");
+#endif
         // VGSの場合, vramUpdateRequestを発生させる (非推奨のやり方)
         vramUpdateRequest = true;
         reg.pc += 1;
@@ -1591,6 +1846,9 @@ class CPU
 
     inline void nop()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "NOP ");
+#endif
         reg.pc += 1;
         clocks += 2;
     }
