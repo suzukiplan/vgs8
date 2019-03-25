@@ -1,6 +1,8 @@
 all: vgs8.o vgs2tone.o vgsdec.o bin bin/romlink bin/vgsrun
 	cd examples/hello && make
 	cd examples/hello_fg && make
+	cd examples/hello_sp && make
+	cp examples/hello_sp/hello.rom hal/mac/EmuBoard/test.rom
 
 test: all
 	cd tests/full_operands && make
