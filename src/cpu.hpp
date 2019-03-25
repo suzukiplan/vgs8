@@ -129,7 +129,19 @@ class CPU
     inline const char* registerDump()
     {
         static char buf[80];
-        sprintf(buf, "(a=$%02X, x=$%02X, y=$%02X, s=$%02X, p=$%02X)", (int)((unsigned char)reg.a), (int)reg.x, (int)reg.y, (int)reg.s, (int)reg.p);
+        static struct Register prv;
+        sprintf(buf, "(a=%s$%02X\e[m, x=%s$%02X\e[m, y=%s$%02X\e[m, s=%s$%02X\e[m, p=%s$%02X\e[m)",
+                reg.a != prv.a ? "\e[31m" : "",
+                (int)((unsigned char)reg.a),
+                reg.x != prv.x ? "\e[31m" : "",
+                (int)reg.x,
+                reg.y != prv.y ? "\e[31m" : "",
+                (int)reg.y,
+                reg.s != prv.s ? "\e[31m" : "",
+                (int)reg.s,
+                reg.p != prv.p ? "\e[31m" : "",
+                (int)reg.p);
+        memcpy(&prv, &reg, sizeof(Register));
         return buf;
     }
 #endif

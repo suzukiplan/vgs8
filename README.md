@@ -244,7 +244,6 @@ WIP status:
 - [ ] 全命令の動的逆アセンブルに対応
 - [ ] break point機能の追加（任意アドレスでブレイク後、ステップ実行で動作や任意位置のRAMダンプを確認やメモリの書き換えができる機能）
 
-
 ## How to make 6502 programs
 
 - [6502マシン語ゲームプログラミング](https://github.com/suzukiplan/mgp-fc)の基礎編と実践編を読んでください
