@@ -263,163 +263,163 @@ class CPU
     inline void lda_zero()
     {
         unsigned short addr;
-        addr = ram[++reg.pc];                  // calculate address
+        addr = ram[++reg.pc]; // calculate address
+#ifdef DEBUG_OP_DUMP
+        sprintf(debugLine, "LDA $%02X", (int)ram[reg.pc]);
+#endif
         reg.a = ram[addr];                     // a = zero page value
         updateNZ(reg.a);                       // update p
         reg.pc++;                              // increment pc
         clocks += 3;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.a); // I/O check
-#ifdef DEBUG_OP_DUMP
-        sprintf(debugLine, "LDA $%02X", (int)addr);
-#endif
     }
 
     inline void ldx_zero()
     {
         unsigned short addr;
-        addr = ram[++reg.pc];                  // calculate address
+        addr = ram[++reg.pc]; // calculate address
+#ifdef DEBUG_OP_DUMP
+        sprintf(debugLine, "LDX $%02X", (int)ram[reg.pc]);
+#endif
         reg.x = ram[addr];                     // x = zero page value
         updateNZ(reg.x);                       // update p
         reg.pc++;                              // increment pc
         clocks += 3;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.x); // I/O check
-#ifdef DEBUG_OP_DUMP
-        sprintf(debugLine, "LDX $%02X", (int)addr);
-#endif
     }
 
     inline void ldy_zero()
     {
         unsigned short addr;
-        addr = ram[++reg.pc];                  // calculate address
+        addr = ram[++reg.pc]; // calculate address
+#ifdef DEBUG_OP_DUMP
+        sprintf(debugLine, "LDY $%02X", (int)ram[reg.pc]);
+#endif
         reg.y = ram[addr];                     // y = zero page value
         updateNZ(reg.y);                       // update p
         reg.pc++;                              // increment pc
         clocks += 3;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.y); // I/O check
-#ifdef DEBUG_OP_DUMP
-        sprintf(debugLine, "LDY $%02X", (int)addr);
-#endif
     }
 
     inline void sta_zero()
     {
         unsigned short addr;
-        addr = ram[++reg.pc];                // calculate address
+        addr = ram[++reg.pc]; // calculate address
+#ifdef DEBUG_OP_DUMP
+        sprintf(debugLine, "STA $%02X", (int)ram[reg.pc]);
+#endif
         ram[addr] = reg.a;                   // store a to zero page
         reg.pc++;                            // increment pc
         clocks += 3;                         // tick the clock
         checkST(addr, (unsigned char)reg.a); // I/O check
-#ifdef DEBUG_OP_DUMP
-        sprintf(debugLine, "STA $%02X", (int)addr);
-#endif
     }
 
     inline void stx_zero()
     {
         unsigned short addr;
-        addr = ram[++reg.pc];                // calculate address
+        addr = ram[++reg.pc]; // calculate address
+#ifdef DEBUG_OP_DUMP
+        sprintf(debugLine, "STX $%02X", (int)ram[reg.pc]);
+#endif
         ram[addr] = reg.x;                   // store x to zero page
         reg.pc++;                            // increment pc
         clocks += 3;                         // tick the clock
         checkST(addr, (unsigned char)reg.x); // I/O check
-#ifdef DEBUG_OP_DUMP
-        sprintf(debugLine, "STX $%02X", (int)addr);
-#endif
     }
 
     inline void sty_zero()
     {
         unsigned short addr;
-        addr = ram[++reg.pc];                // calculate address
+        addr = ram[++reg.pc]; // calculate address
+#ifdef DEBUG_OP_DUMP
+        sprintf(debugLine, "STY $%02X", (int)ram[reg.pc]);
+#endif
         ram[addr] = reg.y;                   // store y to zero page
         reg.pc++;                            // increment pc
         clocks += 3;                         // tick the clock
         checkST(addr, (unsigned char)reg.y); // I/O check
-#ifdef DEBUG_OP_DUMP
-        sprintf(debugLine, "STY $%02X", (int)addr);
-#endif
     }
 
     inline void lda_zero_x()
     {
         unsigned short addr;
-        addr = ram[++reg.pc] + reg.x;          // calculate address
+        addr = ram[++reg.pc] + reg.x; // calculate address
+#ifdef DEBUG_OP_DUMP
+        sprintf(debugLine, "LDA $%02X, X", (int)ram[reg.pc]);
+#endif
         reg.a = ram[addr];                     // a = zero page value
         updateNZ(reg.a);                       // update p
         reg.pc++;                              // increment pc
         clocks += 4;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.a); // I/O check
-#ifdef DEBUG_OP_DUMP
-        sprintf(debugLine, "LDA $%02X, X", (int)addr);
-#endif
     }
 
     inline void ldx_zero_y()
     {
         unsigned short addr;
-        addr = ram[++reg.pc] + reg.y;          // calculate address
+        addr = ram[++reg.pc] + reg.y; // calculate address
+#ifdef DEBUG_OP_DUMP
+        sprintf(debugLine, "LDX $%02X, Y", (int)ram[reg.pc]);
+#endif
         reg.x = ram[addr];                     // x = zero page value
         updateNZ(reg.x);                       // update p
         reg.pc++;                              // increment pc
         clocks += 4;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.x); // I/O check
-#ifdef DEBUG_OP_DUMP
-        sprintf(debugLine, "LDX $%02X, Y", (int)addr);
-#endif
     }
 
     inline void ldy_zero_x()
     {
         unsigned short addr;
-        addr = ram[++reg.pc] + reg.x;          // calculate address
+        addr = ram[++reg.pc] + reg.x; // calculate address
+#ifdef DEBUG_OP_DUMP
+        sprintf(debugLine, "LDY $%02X, X", (int)ram[reg.pc]);
+#endif
         reg.y = ram[addr];                     // y = zero page value
         updateNZ(reg.y);                       // update p
         reg.pc++;                              // increment pc
         clocks += 4;                           // tick the clock
         checkLD(addr, (unsigned char*)&reg.y); // I/O check
-#ifdef DEBUG_OP_DUMP
-        sprintf(debugLine, "LDY $%02X, X", (int)addr);
-#endif
     }
 
     inline void sta_zero_x()
     {
         unsigned short addr;
-        addr = ram[++reg.pc] + reg.x;        // calculate address
+        addr = ram[++reg.pc] + reg.x; // calculate address
+#ifdef DEBUG_OP_DUMP
+        sprintf(debugLine, "STA $%02X, X ", (int)ram[reg.pc]);
+#endif
         ram[addr] = reg.a;                   // store a to zero page
         reg.pc++;                            // increment pc
         clocks += 4;                         // tick the clock
         checkST(addr, (unsigned char)reg.a); // I/O check
-#ifdef DEBUG_OP_DUMP
-        sprintf(debugLine, "STA $%02X, X ", (int)addr);
-#endif
     }
 
     inline void stx_zero_y()
     {
         unsigned short addr;
-        addr = ram[++reg.pc] + reg.y;        // calculate address
+        addr = ram[++reg.pc] + reg.y; // calculate address
+#ifdef DEBUG_OP_DUMP
+        sprintf(debugLine, "STX $%02X, Y", (int)ram[reg.pc]);
+#endif
         ram[addr] = reg.x;                   // store x to zero page
         reg.pc++;                            // increment pc
         clocks += 4;                         // tick the clock
         checkST(addr, (unsigned char)reg.x); // I/O check
-#ifdef DEBUG_OP_DUMP
-        sprintf(debugLine, "STX $%02X, Y", (int)addr);
-#endif
     }
 
     inline void sty_zero_x()
     {
         unsigned short addr;
-        addr = ram[++reg.pc] + reg.x;        // calculate address
+        addr = ram[++reg.pc] + reg.x; // calculate address
+#ifdef DEBUG_OP_DUMP
+        sprintf(debugLine, "STY $%02X, X", (int)ram[reg.pc]);
+#endif
         ram[addr] = reg.y;                   // store y to zero page
         reg.pc++;                            // increment pc
         clocks += 4;                         // tick the clock
         checkST(addr, (unsigned char)reg.y); // I/O check
-#ifdef DEBUG_OP_DUMP
-        sprintf(debugLine, "STY $%02X, X", (int)addr);
-#endif
     }
 
     inline void lda_absolute()
