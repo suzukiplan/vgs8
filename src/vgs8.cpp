@@ -134,6 +134,20 @@ bool VirtualMachine::load(void* state, size_t size)
     return true;
 }
 
+void VirtualMachine::setBreakPoint(unsigned short bank, unsigned short addr, void (*callback)(VGS8::VirtualMachine*))
+{
+    if (!cpu) return;
+    cpu->brkBank = bank;
+    cpu->brkAddr = addr;
+    cpu->brkCB = callback;
+}
+
+void VirtualMachine::resetBreakPoint()
+{
+    if (!cpu) return;
+    cpu->brkCB = NULL;
+}
+
 void VirtualMachine::_setChrBank(int cn, unsigned char bn)
 {
     if (!ppu) return;

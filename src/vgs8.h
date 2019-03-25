@@ -112,6 +112,20 @@ class VirtualMachine
      */
     bool load(void* state, size_t size);
 
+    /**
+     * 特定のバンクの特定のアドレスの命令を実行する直前にコールバックを呼び出す
+     * @param bank バンク番号
+     * @param addr アドレス（absolute指定）
+     * @param callback コールバック
+     * @note ブレイクポイントはひとつだけ設定可能（最後に設定したもののみ有効）
+     */
+    void setBreakPoint(unsigned short bank, unsigned short addr, void (*callback)(VGS8::VirtualMachine*));
+
+    /**
+     * ブレイクポイントを解除
+     */
+    void resetBreakPoint();
+
     /* 以下、内部関数 (CPUからPPUへアクセスするためのもの) */
     void _setChrBank(int cn, unsigned char bn);
     void _setChrMap(unsigned char n);

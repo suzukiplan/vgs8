@@ -1876,10 +1876,16 @@ class CPU
   public:
     unsigned int clocks;
     unsigned char ram[65536];
+    unsigned char brkBank;
+    unsigned short brkAddr;
+    void (*brkCB)(VGS8::VirtualMachine*);
 
     CPU(VGS8::VirtualMachine* vm)
     {
         this->vm = vm;
+        this->brkBank = 0;
+        this->brkAddr = 0;
+        this->brkCB = NULL;
         memset(ram, 0, sizeof(ram));
         memset(&reg, 0, sizeof(reg));
         reset();
@@ -1897,6 +1903,19 @@ class CPU
         vramUpdateRequest = false;
         clocks = 0;
         while (!vramUpdateRequest) {
+            if (brkCB) {
+                if (reg.pc == brkAddr) {
+                    if (brkAddr < 0xC000) {
+                        if (reg.prg8000 == brkBank) {
+                            brkCB(vm);
+                        }
+                    } else {
+                        if (reg.prgC000 == brkBank) {
+                            brkCB(vm);
+                        }
+                    }
+                }
+            }
 #ifdef DEBUG_OP_DUMP
             printf("$%04X: ", reg.pc);
             debugLine[0] = '\0';
