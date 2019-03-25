@@ -136,12 +136,11 @@ static void breakCallback(VGS8::VirtualMachine* vm)
                     }
                     printf(": %s\n", asc);
                 }
-                printf("\nCOMMAND> ");
                 break;
             }
             default: {
                 puts("M $ADDR: Memory dump");
-                puts("K %%udlrabes: set key status");
+                puts("K %KEY: set key status");
                 puts("C: Continue");
                 puts("Q: Quit");
             }
