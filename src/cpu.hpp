@@ -1259,19 +1259,28 @@ class CPU
     inline void inc_zero()
     {
         inc(&ram[ram[++reg.pc]]); // increment
-        reg.pc++;                 // increment pc
-        clocks += 5;              // tick the clock
+#ifdef DEBUG_OP_DUMP
+        sprintf(debugLine, "INC $%02X", ram[reg.pc]);
+#endif
+        reg.pc++;    // increment pc
+        clocks += 5; // tick the clock
     }
 
     inline void inc_zero_x()
     {
         inc(&ram[ram[++reg.pc] + reg.x]); // increment
-        reg.pc++;                         // increment pc
-        clocks += 6;                      // tick the clock
+#ifdef DEBUG_OP_DUMP
+        sprintf(debugLine, "INC $%02X, X", ram[reg.pc]);
+#endif
+        reg.pc++;    // increment pc
+        clocks += 6; // tick the clock
     }
 
     inline void inc_absolute()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "INC ");
+#endif
         inc(&ram[absolute()]); // increment
         reg.pc++;              // increment pc
         clocks += 6;           // tick the clock
@@ -1279,6 +1288,9 @@ class CPU
 
     inline void inc_absolute_x()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "INC ");
+#endif
         inc(&ram[absoluteX()]); // increment
         reg.pc++;               // increment pc
         clocks += 7;            // tick the clock
@@ -1289,6 +1301,9 @@ class CPU
         inc(&reg.x); // increment
         reg.pc++;    // increment pc
         clocks += 2; // tick the clock
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "INX");
+#endif
     }
 
     inline void iny()
@@ -1296,6 +1311,9 @@ class CPU
         inc(&reg.y); // increment
         reg.pc++;    // increment pc
         clocks += 2; // tick the clock
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "INY");
+#endif
     }
 
     inline void dec(unsigned char* v)
@@ -1307,19 +1325,28 @@ class CPU
     inline void dec_zero()
     {
         dec(&ram[ram[++reg.pc]]); // decrement
-        reg.pc++;                 // increment pc
-        clocks += 5;              // tick the clock
+#ifdef DEBUG_OP_DUMP
+        sprintf(debugLine, "DEC $%02X", ram[reg.pc]);
+#endif
+        reg.pc++;    // increment pc
+        clocks += 5; // tick the clock
     }
 
     inline void dec_zero_x()
     {
         dec(&ram[ram[++reg.pc] + reg.x]); // decrement
-        reg.pc++;                         // increment pc
-        clocks += 6;                      // tick the clock
+#ifdef DEBUG_OP_DUMP
+        sprintf(debugLine, "DEC $%02X, X", ram[reg.pc]);
+#endif
+        reg.pc++;    // increment pc
+        clocks += 6; // tick the clock
     }
 
     inline void dec_absolute()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "DEC ");
+#endif
         dec(&ram[absolute()]); // decrement
         reg.pc++;              // increment pc
         clocks += 6;           // tick the clock
@@ -1327,6 +1354,9 @@ class CPU
 
     inline void dec_absolute_x()
     {
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "DEC ");
+#endif
         dec(&ram[absoluteX()]); // decrement
         reg.pc++;               // increment pc
         clocks += 7;            // tick the clock
@@ -1337,6 +1367,9 @@ class CPU
         dec(&reg.x); // decrement
         reg.pc++;    // increment pc
         clocks += 2; // tick the clock
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "DEX");
+#endif
     }
 
     inline void dey()
@@ -1344,6 +1377,9 @@ class CPU
         dec(&reg.y); // decrement
         reg.pc++;    // increment pc
         clocks += 2; // tick the clock
+#ifdef DEBUG_OP_DUMP
+        strcpy(debugLine, "DEY");
+#endif
     }
 
     inline void bit(unsigned char v)
