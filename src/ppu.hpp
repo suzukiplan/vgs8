@@ -106,6 +106,7 @@ class PPU
         if (data) {
             for (i = 0x5000; i < 0x5400; i += 4) {
                 struct OAM* oam = (struct OAM*)&vm->cpu->ram[i];
+                if (!oam->pattern) continue; // does not draw pattern $00
                 if (oam->flags & 0x01) {
                     // 16x16
                     if (oam->flags & 0x04) {
