@@ -6,7 +6,7 @@ class PPU
         unsigned char x;       // X
         unsigned char y;       // Y
         unsigned char pattern; // pattern number of CHR
-        unsigned char attr;    // attribute
+        unsigned char flags;   // flags
     };
 
     struct Register {
@@ -107,16 +107,11 @@ class PPU
         if (data) {
             for (i = 0x5000; i < 0x5400; i += 4) {
                 struct OAM* oam = (struct OAM*)&vm->cpu->ram[i];
-                dptr = &data[64 * oam->pattern];
-                for (y = 0; y < 8; y++) {
-                    for (x = 0; x < 8; x++) {
-                        c = dptr[y * 8 + x];
-                        if (c) {
-                            vx = oam->x + x;
-                            vy = oam->y + y;
-                            vram[vy * 256 + vx] = c;
-                        }
-                    }
+                drawSprite(data, oam, 0, 0, 0);
+                if (oam->flags & 0x01) {
+                    drawSprite(data, oam, 0x01, 8, 0);
+                    drawSprite(data, oam, 0x10, 0, 8);
+                    drawSprite(data, oam, 0x11, 8, 8);
                 }
             }
         }
@@ -165,5 +160,26 @@ class PPU
     {
         memcpy(&reg, buffer, sizeof(reg));
         return sizeof(reg);
+    }
+
+  private:
+    inline void drawSprite(unsigned char* data, struct OAM* oam, unsigned char dp, unsigned char dx, unsigned char dy)
+    {
+        unsigned char p = oam->pattern + dp;
+        unsigned char* dptr;
+        unsigned char x, y, c, vx, vy;
+        if (p) {
+            dptr = &data[64 * p];
+            for (y = 0; y < 8; y++) {
+                for (x = 0; x < 8; x++) {
+                    c = dptr[y * 8 + x];
+                    if (c) {
+                        vx = oam->x + x;
+                        vy = oam->y + y;
+                        vram[vy * 256 + vx] = c;
+                    }
+                }
+            }
+        }
     }
 };

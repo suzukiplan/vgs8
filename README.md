@@ -235,13 +235,14 @@ struct OAM {
     unsigned char x;        // X
     unsigned char y;        // Y
     unsigned char pattern;  // pattern number of CHR
-    unsigned char reserved; // reserved
+    unsigned char flags;    // flags
 } oam[256];
 ```
 
-- VGS8のスプライトはすべて8x8サイズ固定である
-- x, y が 0 の場合, 描画処理自体が省略されるため, 消したい場合は x, y を 0 にすれば良い
-- `reserved` は現時点では利用できない（将来的に利用するかもしれないので, 今の所常に 0 をセットすることを推奨）
+- `pattern` 番号0 の描画は常に省略される (これはBG/FGも同様で __パターン番号0は常にマスク__ される仕様である)
+- `flags` : `--------x`
+  - `x` : Size of sprite (0: 8x8, 1: 16x16)
+    - `16x16` のpatternレイアウト: `LT=pattern+$00, RT=pattern+$01, LB=pattern+$10, RB=pattern+$11`
 
 ### Switch program banks ($5400, $5401)
 
