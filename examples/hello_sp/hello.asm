@@ -7,8 +7,7 @@
 .segment "STARTUP"
     jsr initialize
 mainloop:
-    jsr input_joy_pad
-    jsr draw_player
+    jsr move_player
     jsr scroll_bg
     lda $5BFF ; Wait for VSYNC
     jmp mainloop
@@ -53,64 +52,53 @@ initialize_draw_loop2:
     ; done!
 
     ; initialize the player variables
-    lda #120
-    sta v_playerX
-    lda #200
-    sta v_playerY
+    lda #120 ; initial position X
+    sta sp_playerX
+    lda #200 ; initial position Y
+    sta sp_playerY
+    lda #$10 ; tile pattern (fix)
+    sta sp_playerP
+    lda #%00000001 ; use 16x16 sprite (fix)
+    sta sp_playerF
     rts
 
 ;-------------------------------------------------------------------------------
-; Input Joy-Pad sub routine
+; Move player
 ;-------------------------------------------------------------------------------
-input_joy_pad:
-    ldx $5700
+move_player:
+    ldx $5700 ; get JoyPad status
     txa
     and #%10000000
-    beq input_joy_pad_1
+    beq move_player_1
     ; move up
-    ldy v_playerY
+    ldy sp_playerY
     dey
-    sty v_playerY
-input_joy_pad_1:
+    sty sp_playerY
+move_player_1:
     txa
     and #%01000000
-    beq input_joy_pad_2
+    beq move_player_2
     ; move down
-    ldy v_playerY
+    ldy sp_playerY
     iny
-    sty v_playerY
-input_joy_pad_2:
+    sty sp_playerY
+move_player_2:
     txa
     and #%00100000
-    beq input_joy_pad_3
+    beq move_player_3
     ; move left
-    ldy v_playerX
+    ldy sp_playerX
     dey
-    sty v_playerX
-input_joy_pad_3:
+    sty sp_playerX
+move_player_3:
     txa
     and #%00010000
-    beq input_joy_pad_4
+    beq move_player_4
     ; move right
-    ldy v_playerX
+    ldy sp_playerX
     iny
-    sty v_playerX
-input_joy_pad_4:
-    rts
-
-;-------------------------------------------------------------------------------
-; Draw player sub routine
-;-------------------------------------------------------------------------------
-draw_player:
-    ; set x to OAM
-    lda v_playerX
-    sta sp_player + 0
-    lda v_playerY
-    sta sp_player + 1
-    lda #$10
-    sta sp_player + 2
-    lda #%00000001 ; use 16x16 sprite
-    sta sp_player + 3
+    sty sp_playerX
+move_player_4:
     rts
 
 ;-------------------------------------------------------------------------------
@@ -134,11 +122,12 @@ string_hello_world:
 ;-------------------------------------------------------------------------------
 .org $0200
 v_scroll:   .byte $00
-v_playerX:  .byte $00
-v_playerY:  .byte $00
 
 ;-------------------------------------------------------------------------------
-; Sprite OAM labels
+; Sprite OAM labels (OAM: x, y, pattern, falgs)
 ;-------------------------------------------------------------------------------
 .org $5000 
-sp_player:  .byte $00, $00, $00, $00
+sp_playerX: .byte $00
+sp_playerY: .byte $00
+sp_playerP: .byte $00
+sp_playerF: .byte $00
