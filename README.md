@@ -29,7 +29,7 @@ __※まだ開発途中です（絶賛テスト中なので, まだバグが結�
 - [ ] examplesを色々と追加しながら一通りの命令+機能をテスト
   - [x] [Hello, World](examples/hello)
   - [x] [FG+スクロールを使ったサンプル](examples/hello_fg)
-  - [ ] スプライト + JoyPadを使ったサンプル
+  - [x] [スプライト + JoyPadを使ったサンプル](examples/hello_sp)
   - [ ] 音声を使ったサンプル
   - [ ] CHRバンク切り替えのサンプル
   - [ ] PRGバンク切り替えのサンプル
