@@ -126,16 +126,12 @@ fire_player_shot:
     ldx v_shotI
     lda #1
     sta v_shotF, x
-    ; increment v_shotI (and loop 0 ~ 7)
-    inc v_shotI
-    lda v_shotI
-    and #$07
-    sta v_shotI
-    ; calcurate index of sprite (x4) to x
+    ; increment v_shotI
     txa
-    asl
-    asl
-    tax
+    clc
+    adc #4
+    and #31
+    sta v_shotI
     ; set initial X
     lda sp_player + 0
     clc
@@ -165,17 +161,13 @@ move_player_shots:
 move_player_shots_1:
     lda v_shotF, x
     beq move_player_shots_2 ; branch if flag is unset
-    txa
-    pha
-    asl
-    asl
-    tax
     jsr move_player_shot
-    pla
-    tax
 move_player_shots_2:
     inx
-    cpx #8
+    inx
+    inx
+    inx
+    cpx #32
     bne move_player_shots_1
     rts
 
@@ -189,14 +181,8 @@ move_player_shot:
     bcs move_player_shot_1
     rts
 move_player_shot_1:
-    ; hide sprite
     lda #0
     sta sp_shot + 2, x
-    ; clear flag
-    txa
-    lsr
-    lsr
-    tax
     lda #0
     sta v_shotF, x
     rts
@@ -281,6 +267,7 @@ move_enemies_4:
 move_enemies_5:
     brk ; BUG: unknown enemy type
 move_enemies_next:
+    jsr enemy_hit_check
     ; add index
     txa
     clc
@@ -325,6 +312,58 @@ remove_enemy:
     lda #0
     sta v_enemy + 0, x ; clear flag
     sta sp_enemy + 2, x ; clear sprite
+    rts
+
+enemy_hit_check:
+    lda v_enemy + 0, x
+    bne enemy_hit_check_1
+    rts
+enemy_hit_check_1:
+    lda sp_enemy + 3, x
+    and #1
+    beq enemy_hit_check_2
+    lda #8
+    sta v_esize
+    jmp enemy_hit_check_3
+enemy_hit_check_2:
+    lda #16
+    sta v_esize
+enemy_hit_check_3:
+    ldy #0
+enemy_hit_check_4:
+    lda v_shotF, y
+    beq enemy_hit_check_next
+    lda sp_enemy + 0, x
+    sec
+    sbc #8
+    cmp sp_shot + 0, y
+    bcs enemy_hit_check_next
+    adc #8
+    adc v_esize
+    cmp sp_shot + 0, y
+    bcc enemy_hit_check_next
+    lda sp_enemy + 1, x
+    sec
+    sbc #8
+    cmp sp_shot + 1, y
+    bcs enemy_hit_check_next
+    adc #8
+    adc v_esize
+    cmp sp_shot + 1, y
+    bcc enemy_hit_check_next
+    jsr remove_enemy
+    lda #0
+    sta v_shotF, y
+    sta sp_shot + 2, y
+enemy_hit_check_next:
+    iny
+    iny
+    iny
+    iny
+    cpy #32
+    beq enemy_hit_check_end
+    jmp enemy_hit_check_4
+enemy_hit_check_end:
     rts
 
 ;-------------------------------------------------------------------------------
@@ -383,7 +422,14 @@ rand_table:; 乱数テーブル
 v_scroll:   .byte $00
 v_shotW:    .byte $00 ; wait fire flag
 v_shotI:    .byte $00 ; index of the player shot
-v_shotF:    .byte $00, $00, $00, $00, $00, $00, $00, $00 ; flags of the player shot
+v_shotF:    .byte $00, $00, $00, $00    ; flags of the player shot[0]
+            .byte $00, $00, $00, $00    ; flags of the player shot[1]
+            .byte $00, $00, $00, $00    ; flags of the player shot[2]
+            .byte $00, $00, $00, $00    ; flags of the player shot[3]
+            .byte $00, $00, $00, $00    ; flags of the player shot[4]
+            .byte $00, $00, $00, $00    ; flags of the player shot[5]
+            .byte $00, $00, $00, $00    ; flags of the player shot[6]
+            .byte $00, $00, $00, $00    ; flags of the player shot[7]
 v_randI:    .byte $00 ; random index
 v_enemyT:   .byte $00 ; enemy timer
 v_enemyI:   .byte $00 ; enemy index
@@ -403,6 +449,7 @@ v_enemy:    .byte $00, $00, $00, $00    ; enemy[0] vars (flag, type, v1, v2)
             .byte $00, $00, $00, $00    ; enemy[13] vars
             .byte $00, $00, $00, $00    ; enemy[14] vars
             .byte $00, $00, $00, $00    ; enemy[15] vars
+v_esize:    .byte $00 ; work area for hit check
 
 ;-------------------------------------------------------------------------------
 ; Sprite OAM labels
