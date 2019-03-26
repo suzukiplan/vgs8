@@ -242,7 +242,7 @@ struct OAM {
 - `pattern` 番号0 の描画は常に省略される (これはBG/FGも同様で __パターン番号0は常にマスク__ される仕様である)
 - `flags` : `------vhx`
   - `v` : flip upside down (0: off, 1: on)
-  - `h` : flip upside down (0: off, 1: on)
+  - `h` : flip holizontal (0: off, 1: on)
   - `x` : Size of sprite (0: 8x8, 1: 16x16)
     - `16x16` pattern layout: `LT=+$00, RT=+$01, LB=+$10, RB=+$11`
 
