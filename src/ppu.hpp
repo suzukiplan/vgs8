@@ -6,7 +6,7 @@ class PPU
         unsigned char x;       // X
         unsigned char y;       // Y
         unsigned char pattern; // pattern number of CHR
-        unsigned char flags;   // flags
+        unsigned char flags;   // flags: -----vhx
     };
 
     struct Register {
@@ -106,11 +106,38 @@ class PPU
         if (data) {
             for (i = 0x5000; i < 0x5400; i += 4) {
                 struct OAM* oam = (struct OAM*)&vm->cpu->ram[i];
-                drawSprite(data, oam, 0, 0, 0);
                 if (oam->flags & 0x01) {
-                    drawSprite(data, oam, 0x01, 8, 0);
-                    drawSprite(data, oam, 0x10, 0, 8);
-                    drawSprite(data, oam, 0x11, 8, 8);
+                    // 16x16
+                    if (oam->flags & 0x04) {
+                        if (oam->flags & 0x02) {
+                            // 上下左右反転
+                            drawSprite(data, oam, 0x00, 8, 8);
+                            drawSprite(data, oam, 0x01, 0, 8);
+                            drawSprite(data, oam, 0x10, 8, 0);
+                            drawSprite(data, oam, 0x11, 0, 0);
+                        } else {
+                            // 上下反転
+                            drawSprite(data, oam, 0x00, 0, 8);
+                            drawSprite(data, oam, 0x01, 8, 8);
+                            drawSprite(data, oam, 0x10, 0, 0);
+                            drawSprite(data, oam, 0x11, 8, 0);
+                        }
+                    } else if (oam->flags & 0x02) {
+                        // 左右反転
+                        drawSprite(data, oam, 0x00, 8, 0);
+                        drawSprite(data, oam, 0x01, 0, 0);
+                        drawSprite(data, oam, 0x10, 8, 8);
+                        drawSprite(data, oam, 0x11, 0, 8);
+                    } else {
+                        // 反転無し
+                        drawSprite(data, oam, 0x00, 0, 0);
+                        drawSprite(data, oam, 0x01, 8, 0);
+                        drawSprite(data, oam, 0x10, 0, 8);
+                        drawSprite(data, oam, 0x11, 8, 8);
+                    }
+                } else {
+                    // 8x8
+                    drawSprite(data, oam, 0x00, 0, 0);
                 }
             }
         }
@@ -169,13 +196,54 @@ class PPU
         unsigned char x, y, c, vx, vy;
         if (p) {
             dptr = &data[64 * p];
-            for (y = 0; y < 8; y++) {
-                for (x = 0; x < 8; x++) {
-                    c = dptr[y * 8 + x];
-                    if (c) {
-                        vx = oam->x + x + dx;
-                        vy = oam->y + y + dy;
-                        vram[vy * 256 + vx] = c;
+            if (oam->flags & 0x04) {
+                if (oam->flags & 0x02) {
+                    // 上下左右反転
+                    for (y = 0; y < 8; y++) {
+                        for (x = 0; x < 8; x++) {
+                            c = dptr[y * 8 + x];
+                            if (c) {
+                                vx = oam->x + 7 - x + dx;
+                                vy = oam->y + 7 - y + dy;
+                                vram[vy * 256 + vx] = c;
+                            }
+                        }
+                    }
+                } else {
+                    // 上下反転
+                    for (y = 0; y < 8; y++) {
+                        for (x = 0; x < 8; x++) {
+                            c = dptr[y * 8 + x];
+                            if (c) {
+                                vx = oam->x + x + dx;
+                                vy = oam->y + 7 - y + dy;
+                                vram[vy * 256 + vx] = c;
+                            }
+                        }
+                    }
+                }
+            } else if (oam->flags & 0x02) {
+                // 左右反転
+                for (y = 0; y < 8; y++) {
+                    for (x = 0; x < 8; x++) {
+                        c = dptr[y * 8 + x];
+                        if (c) {
+                            vx = oam->x + 7 - x + dx;
+                            vy = oam->y + y + dy;
+                            vram[vy * 256 + vx] = c;
+                        }
+                    }
+                }
+            } else {
+                // 反転なし
+                for (y = 0; y < 8; y++) {
+                    for (x = 0; x < 8; x++) {
+                        c = dptr[y * 8 + x];
+                        if (c) {
+                            vx = oam->x + x + dx;
+                            vy = oam->y + y + dy;
+                            vram[vy * 256 + vx] = c;
+                        }
                     }
                 }
             }

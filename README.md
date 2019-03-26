@@ -90,12 +90,12 @@ make
   - ファミコンのNxROM(iNES mapper2)と同様, 動的なバンク切り替えが可能
 - PPU
   - キャラクタデータ: 8bitカラー (256色) 128x128ピクセル x 2枚 (255個のCHR bankから割り当て)
-  - キャラクタサイズ: 8x8 or 16x16ピクセル
+  - キャラクタサイズ: 8x8 or 16x16ピクセル <sup>※16x16はスプライトのみ</sup>
   - スプライト表示数: 256個 (水平上限無し)
   - BG4画面分 + FG4画面分 (BGはスプライトの背面, FGはスプライトの前面に表示される & ミラーは無し)
   - 画面サイズ: 240x240ピクセル (座標系は256x256で, 上下左右の端8pxがmask)
-  - パレットは256色パレットひとつのみ（ここはファミコンではなくVGS仕様に準拠）
-- APU (ココはVGS2と同じ仕様)
+  - パレットは256色パレットひとつのみ（ここはファミコンではなく旧VGS仕様に準拠）
+- APU (ココは旧VGSと同じ仕様)
   - 255個のBGM, 255個のSE
   - BGMはVGSと同等（波形メモリ音源）
   - SEはVGSと同等（PCM）
@@ -240,9 +240,12 @@ struct OAM {
 ```
 
 - `pattern` 番号0 の描画は常に省略される (これはBG/FGも同様で __パターン番号0は常にマスク__ される仕様である)
-- `flags` : `--------x`
+- `flags` : `------vhx`
+  - `v` : flip upside down (0: off, 1: on)
+  - `h` : flip upside down (0: off, 1: on)
   - `x` : Size of sprite (0: 8x8, 1: 16x16)
-    - `16x16` のpatternレイアウト: `LT=pattern+$00, RT=pattern+$01, LB=pattern+$10, RB=pattern+$11`
+    - `16x16` pattern layout: `LT=+$00, RT=+$01, LB=+$10, RB=+$11`
+
 
 ### Switch program banks ($5400, $5401)
 
