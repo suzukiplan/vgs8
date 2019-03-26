@@ -75,10 +75,10 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTime
         case 0xF701: emu_key_down = 1; break;
         case 0xF702: emu_key_left = 1; break;
         case 0xF703: emu_key_right = 1; break;
-        case 0x000d: emu_key_a = 1; break;
-        case 0x0020: emu_key_b = 1; break;
-        case 0x0078: emu_key_select = 1; break;
-        case 0x007A: emu_key_start = 1; break;
+        case 0x000d: emu_key_start = 1; break; // Enter
+        case 0x0020: emu_key_select = 1; break; // Space
+        case 0x0078: emu_key_b = 1; break; // X
+        case 0x007A: emu_key_a = 1; break; // Z
     }
 }
 
@@ -90,10 +90,10 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTime
         case 0xF701: emu_key_down = 0; break;
         case 0xF702: emu_key_left = 0; break;
         case 0xF703: emu_key_right = 0; break;
-        case 0x000d: emu_key_a = 0; break;
-        case 0x0020: emu_key_b = 0; break;
-        case 0x0078: emu_key_select = 0; break;
-        case 0x007A: emu_key_start = 0; break;
+        case 0x000d: emu_key_start = 0; break; // Enter
+        case 0x0020: emu_key_select = 0; break; // Space
+        case 0x0078: emu_key_b = 0; break; // X
+        case 0x007A: emu_key_a = 0; break; // Z
     }
 }
 static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTimeStamp *now, const CVTimeStamp *outputTime, CVOptionFlags flagsIn, CVOptionFlags *flagsOut, void *context)
