@@ -104,29 +104,13 @@ input_joy_pad_4:
 draw_player:
     ; set x to OAM
     lda v_playerX
-    sta sp_player0 + 0
-    sta sp_player2 + 0
-    clc
-    adc #8
-    sta sp_player1 + 0
-    sta sp_player3 + 0
-    ; set y to OAM
+    sta sp_player + 0
     lda v_playerY
-    sta sp_player0 + 1
-    sta sp_player1 + 1
-    clc
-    adc #8
-    sta sp_player2 + 1
-    sta sp_player3 + 1
-    ; set pattern to OAM
+    sta sp_player + 1
     lda #$10
-    sta sp_player0 + 2
-    lda #$11
-    sta sp_player1 + 2
-    lda #$20
-    sta sp_player2 + 2
-    lda #$21
-    sta sp_player3 + 2
+    sta sp_player + 2
+    lda #%00000001 ; use 16x16 sprite
+    sta sp_player + 3
     rts
 
 ;-------------------------------------------------------------------------------
@@ -157,7 +141,4 @@ v_playerY:  .byte $00
 ; Sprite OAM labels
 ;-------------------------------------------------------------------------------
 .org $5000 
-sp_player0: .byte $00, $00, $00, $00    ; left top of the player
-sp_player1: .byte $00, $00, $00, $00    ; right top of the player
-sp_player2: .byte $00, $00, $00, $00    ; left bottom of the player
-sp_player3: .byte $00, $00, $00, $00    ; right bottom of the player
+sp_player:  .byte $00, $00, $00, $00
