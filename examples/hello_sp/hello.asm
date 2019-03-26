@@ -225,9 +225,9 @@ v_shotI:    .byte $00 ; index of the player shot
 v_shotF:    .byte $00, $00, $00, $00, $00, $00, $00, $00 ; flags of the player shot
 
 ;-------------------------------------------------------------------------------
-; Sprite OAM labels (OAM: x, y, pattern, falgs)
+; Sprite OAM labels
 ;-------------------------------------------------------------------------------
-.org $5000 
+.org $5000  ;     X    Y    PTN  FLG
 sp_player:  .byte $00, $00, $00, $00    ; player (16x16)
 sp_shot:    .byte $00, $00, $00, $00    ; shot[0]
             .byte $00, $00, $00, $00    ; shot[1]
