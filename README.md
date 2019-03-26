@@ -82,117 +82,27 @@ make
 - 上記を実行することで, ROMをリンクするツール（[romlink](tools/romlink.c)）の生成とVGS8コアのテストが実行されます
 - 各自が実装するHALには [src](src) ディレクトリ以下のモジュールを取り込んで使用します
 
-## Features
+## Specification
 
 - CPU: MOS6502 8MHz
-  - プログラムは, 最大16KB x 255バンク
-  - ROMのPRGバンクエリアから, RAMの $8000 or $C000 にロードする
-  - ファミコンのNxROM(iNES mapper2)と同様, 動的なバンク切り替えが可能
+  - program 0: $8000 ~ $BFFF (16KB)
+  - program 1: $C000 ~ $FFFF (16KB)
+  - switchable 255 banks (PRG bank)
 - PPU
-  - キャラクタデータ: 8bitカラー (256色) 128x128ピクセル x 2枚 (255個のCHR bankから割り当て)
-  - キャラクタサイズ: 8x8 or 16x16ピクセル <sup>※16x16はスプライトのみ</sup>
-  - スプライト表示数: 256個 (水平上限無し)
-  - BG4画面分 + FG4画面分 (BGはスプライトの背面, FGはスプライトの前面に表示される & ミラーは無し)
-  - 画面サイズ: 240x240ピクセル (座標系は256x256で, 上下左右の端8pxがmask)
-  - パレットは256色パレットひとつのみ（ここはファミコンではなく旧VGS仕様に準拠）
-- APU (ココは旧VGSと同じ仕様)
-  - 255個のBGM, 255個のSE
-  - BGMはVGSと同等（波形メモリ音源）
-  - SEはVGSと同等（PCM）
-- バッテリーバックアップ機能は無い（セーブ/ロードはH/W機能として提供）
+  - character data: 8bit color, 128x128px x 2 pages
+  - switchable 255 banks (CHR bank)
+  - 1 character: 8x8 or 16x16 <sup>*16x16 is sprite only</sup>
+  - max sprites: 256 (no holizontal limit)
+  - BG (back of sprite) & FG (front of sprite)
+  - BG/FG nametable size: 512x512px (64x64 characters)
+  - screen size: 256x256px <sup>*the top, bottom, left, and right ends 8px are masks)</sup>
+- APU
+  - 255 BGM banks & 255 EFF banks
+  - BGM: same as VGS2 <sup>*see the [VGS BGM Decoder](https://github.com/suzukiplan/vgs-bgm-decoder), [VGS MML Compiler](https://github.com/suzukiplan/vgs-mml-compiler)</sup>
+  - EFF: same as VGS2 <sup>*PCM of 22050Hz, 16bit, 1ch</sup>
+- No battery backup features <i>(SAVE/LOAD features are usable as hardware function)</i>
 
-## How to make your GAME
-
-1. cc65を使って最大256個のプログラム `(*.bin)` をアセンブル（1つのプログラムの最大サイズ: 16KB）
-2. 任意のグラフィックエディタで 128x128 サイズの 256色bitmapファイル `(*.bmp)` を最大256個作成
-3. 任意の波形エディタで 22050Hz, 16bit, 1ch の効果音ファイル `(*.wav)` を最大256個作成
-4. 任意のテキストエディタで [VGSのMML形式ファイル](https://github.com/suzukiplan/vgs-mml-compiler/blob/master/MML-ja.md) `(*.mml)` を最大256個作成
-5. [romlink](tools/romlink.c)で, `*.bin` , `*.bmp` , `*.wav` , `*.mml` をリンク
-
-> 以下のファイルを用いたゲームの [romlink](tools/romlink.c) をする例を示します。
->
-> - program1.bin (プログラム1)
-> - program2.bin (プログラム2)
-> - program3.bin (プログラム3)
-> - sprite.bmp (スプライト)
-> - bg1.bmp (背景1)
-> - bg2.bmp (背景2)
-> - bg3.bmp (背景3)
-> - eff1.wav (効果音1)
-> - eff2.wav (効果音2)
-> - eff3.wav (効果音3)
-> - bgm1.mml (BGM1)
-> - bgm2.mml (BGM2)
-> - bgm3.mml (BGM3)
->
-> ```
-> romlink mygame.rom \
->     program1.bin program2.bin program3.bin \
->     sprite.bmp bg1.bmp bg2.bmp bg3.bmp \
->     eff1.wav eff2.wav eff3.wav \
->     bgm1.mml bgm2.mml bgm3.mml
-> ```
->
-> バンク番号は [romlink](tools/romlink.c) のコマンドライン引数指定順で決まります。
-
-## How to debug your GAME
-
-[vgsrun](tools/vgsrun.cpp)を用いて, Terminal上でゲームの簡易デバッグが可能です。
-[vgsrun](tools/vgsrun.cpp)は, 任意フレーム数ゲームROMを実行時のマシン語を動的に逆アセンブルして表示しつつ, 各命令実行後のレジスタ値を確認できます。
-
-```
-usage: vgsrun [-f max-execute-frames]
-              [-b bank addr]
-              target.rom
-```
-
-- `-f` : 実行上限フレーム数を指定（デフォルト: 1）
-- `-b` : ブレイクポイントを設定
-
-ブレイクポイントを設定した場合, 設定アドレスの命令を実行する直前でコマンドモードへ移行します。
-コマンドモードでは, ジョイパッドの入力変更やメモリダンプなどのプログラム動作解析に役立つ機能があります。
-
-```
-$ bin/vgsrun examples/hello/hello.rom -b 0 0x800d
-$8000: LDA #$00                       (a=$00, x=$00, y=$00, s=$00, p=$02)
-$8002: STA $5404                      (a=$00, x=$00, y=$00, s=$00, p=$02)
-$8005: LDX #$00                       (a=$00, x=$00, y=$00, s=$00, p=$02)
-$8007: LDA $8018, X                   (a=$48, x=$00, y=$00, s=$00, p=$00)
-$800A: STA $63C7, X                   (a=$48, x=$00, y=$00, s=$00, p=$00)
-COMMAND> 
-M $ADDR: Memory dump
-K %KEY: set key status
-C: Continue
-Q: Quit
-COMMAND> m $6300
- ADDR: +0 +1 +2 +3 +4 +5 +6 +7 - +8 +9 +A +B +C +D +E +F : ASCII
-$6300: 00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00 : ................
-$6310: 00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00 : ................
-$6320: 00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00 : ................
-$6330: 00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00 : ................
-$6340: 00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00 : ................
-$6350: 00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00 : ................
-$6360: 00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00 : ................
-$6370: 00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00 : ................
-$6380: 00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00 : ................
-$6390: 00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00 : ................
-$63A0: 00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00 : ................
-$63B0: 00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00 : ................
-$63C0: 00 00 00 00 00 00 00 48 - 00 00 00 00 00 00 00 00 : .......H........
-$63D0: 00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00 : ................
-$63E0: 00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00 : ................
-$63F0: 00 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00 : ................
-COMMAND> 
-```
-
-## How to make 6502 programs
-
-- [6502マシン語ゲームプログラミング](https://github.com/suzukiplan/mgp-fc)の基礎編と実践編を読んでください
-- リファレンス編に相当する内容は次章で記します（ただし, VGS8はファミコンのアーキテクチャを参考に開発したゲーム機なので, ファミコンのプログラミングに触れてから触るとより理解し易くなります）
-
-## CPU memory map (WIP)
-
-VGS8ではプログラマが意識する必要があるPPUのメモリマップについてもCPU上でミラーしているため, プログラマはCPUのメモリマップのみ把握すればプログラミング可能なシンプルな構造になっています。
+## Memory map
 
 |Address|Usage|
 |---|---|
@@ -226,188 +136,9 @@ VGS8ではプログラマが意識する必要があるPPUのメモリマップ�
 |$8000〜$BFFF|Program 0|
 |$C000〜$FFFF|Program 1|
 
-### Sprite OAM ($5000〜$53FF)
+## Manual
 
-256個のスプライトの属性情報
-
-```c
-struct OAM {
-    unsigned char x;        // X
-    unsigned char y;        // Y
-    unsigned char pattern;  // pattern number of CHR
-    unsigned char flags;    // flags
-} oam[256];
-```
-
-- `pattern` 番号0 の描画は常に省略される (これはBG/FGも同様で __パターン番号0は常にマスク__ される仕様である)
-- `flags` : `------vhx`
-  - `v` : flip upside down (0: off, 1: on)
-  - `h` : flip holizontal (0: off, 1: on)
-  - `x` : Size of sprite (0: 8x8, 1: 16x16)
-    - `16x16` pattern layout: `LT=+$00, RT=+$01, LB=+$10, RB=+$11`
-
-
-### Switch program banks ($5400, $5401)
-
-- $5400 にPRGバンク番号を store することで Program 0 のバンク切り替えが出来る
-- $5401 にPRGバンク番号を store することで Program 1 のバンク切り替えが出来る
-
-以下のユースケースを想定している。
-
-- Program 0 実行中に Program 1 のバンク切り替え
-- Program 1 実行中に Program 0 のバンク切り替え
-
-> 現在のpcレジスタ上のバンク切り替えも一応できる（あまり使わないと思われるが）
-
-```
-LDA #2
-STA $5400   ; Program 0 を PRGバンク番号2 に変更
-LDA #3
-STA $5401   ; Program 1 を PRGバンク番号3 に変更
-```
-
-### Switch character banks ($5402, $5403)
-
-- $5402 にCHRバンク番号を store することで キャラクタ0 のバンク切り替えが出来る
-- $5403 にCHRバンク番号を store することで キャラクタ1 のバンク切り替えが出来る
-
-> ファミコンと同様, 高速なバンク切り替えアニメーションが可能です
-
-```
-LDA #4
-STA $5402   ; キャラクタ0 を CHRバンク番号4 に変更
-LDA #5
-STA $5403   ; キャラクタ1 を CHRバンク番号5 に変更
-```
-
-### CMAP register ($5404)
-
-bit配列: `-----FBS`
-
-FG, BG, スプライトのそれぞれに指定するキャラクタ番号を各1bitで指定します。
-
-```
-LDA #%00000110
-STA $5404   ; FG = キャラクタ1, BG = キャラクタ1, スプライト = キャラクタ0 に設定
-```
-
-### Background color ($5405)
-
-- 全体の背景色に指定するパレット番号（0〜255）を指定します
-- FG, BG, スプライト では パレット番号0 が透明色になりますが, 背景色には0を設定することができます
-
-```
-LDA #$FF
-STA $5405   ; 背景色をパレット番号255に設定
-```
-
-### BG/FG window positions ($5406〜$5409)
-
-FG, BG の表示起点座標をピクセル単位で指定する
-
-- $5406: FGのX座標
-- $5407: FGのY座標
-- $5408: BGのX座標
-- $5409: BGのY座標
-
-```
-LDA #100
-STA $5406
-STA $5407   ; FGの表示範囲の起点を (100, 100) にする
-LDA #200
-STA $5408
-STA $5409   ; BGの表示範囲の起点を (200, 200) にする
-```
-
-> FG/BGの nametable は 8x8ピクセル のキャラクタ単位で 64x64 (512x512ピクセル) です。
-
-### BG/FG scroll ($540A〜$540D)
-
-FG, BG の nametable を 縦方向 or 横方向 にスクロールできます
-
-- $540A: FG を上下方向にシフト (MSBがONなら上スクロール, MSBがOFF & 非0なら下スクロール)
-- $540B: FG を左右方向にシフト (MSBがONなら左スクロール, MSBがOFF & 非0なら右スクロール)
-- $540C: BG を上下方向にシフト (MSBがONなら上スクロール, MSBがOFF & 非0なら下スクロール)
-- $540D: BG を左右方向にシフト (MSBがONなら左スクロール, MSBがOFF & 非0なら右スクロール)
-
-```
-LDA #$80
-STA $540A   ; FGを上スクロール
-LDA #$01
-STA $540B   ; FGを下スクロール
-LDA #$80
-STA $540C   ; BGを上スクロール
-LDA #$01
-STA $540D   ; BGを下スクロール
-```
-
-> FG/BGの nametable は 8x8ピクセル のキャラクタ単位で 64x64 (512x512ピクセル) なので, 8ピクセル単位のスクロールを本機能で実現可能です。1ピクセル単位の細かいスクロールには window positions を用います。
-
-### Play/Stop sound effect ($5500, $5501)
-
-- $5500 に EFFバンク番号 を store することで, 指定バンク番号の効果音を再生します
-- $5501 に EFFバンク番号 を store することで, 指定バンク番号の効果音を停止します
-
-> 効果音は再生時間が終了すると自動的に停止します
-
-
-### Play/Stop BGM ($5600〜$5603)
-
-- $5600 に BGMバンク番号 を store することで, 指定バンク番号のBGMを再生します
-- $5601 に 任意の値 を store することで, BGMの再生を停止（ポーズ）します
-- $5602 に 任意の値 を stroe することで, BGMの再生を再開（レジューム）します
-- $5603 を load することで, BGMが再生中がチェックできます ($00: 停止中, $01: 再生中)
-
-### read JoyPad status ($5700, $5701)
-
-- $5700 を load することで, プレイヤ1のジョイパッドの入力状態を取得できます
-- $5701 を load することで, プレイヤ2のジョイパッドの入力状態を取得できます
-
-取得した値のbit配列: `UDLRABES`
-
-- `U` : 方向キーの上
-- `D` : 方向キーの下
-- `L` : 方向キーの左
-- `R` : 方向キーの右
-- `A` : Aボタン
-- `B` : Bボタン
-- `E` : SELECTボタン
-- `S` : STARTボタン
-
-### DMA; Direct Memory Access ($5A00〜$5A02)
-
-- $5A00 に ページ番号（アドレスの上位8bit）を設定 (以下, $5A00に設定した値をBP; ベースページと呼ぶ)
-- $5A01 に 値を書き込むと, BPのメモリ内容（$BP00〜$BPFF）を書き込んだ値で塗りつぶす（memset）
-- $5A02 に 値を書き込むと, BPのメモリ内容（$BP00〜$BPFF）を書き込んだ値のページへ転送する（memcpy）
-
-```
-; set BP
-LDA #$60
-STA $5A00   ; BPを $60 にする
-
-; memset
-LDA #$12
-STA $5A01   ; BP ($6000〜$60FF) に $12 をセット
-
-; memcpy
-LDA #$61
-STA $5A02   ; BP ($6000〜$60FF) の内容を $6100〜$61FF へ転送
-```
-
-### update VRAM request ($5BFF)
-
-$5BFF を load することで __VRAM更新信号__ が VGS8 に送信される。
-従って, ゲームのメインループ処理は以下のように実装することになる。
-
-```
-mainloop:
-    ~~~ 処理 ~~~
-    LDA $5BFF       ; VRAM更新信号 を送信
-    JMP mainloop
-```
-
-> `VirtualMachine::tick` は __VRAM更新信号__ が発生するまでの間CPUを回し続けるため, VGS8エミュレータは __VRAM更新信号__ を送信しないプログラムを実行した場合にハングアップしてしまうことになるが, この場合 1フレーム分 (8MHz÷60) のクロック消費で強制的に __VRAM更新信号__ が発生する。
-
+see the [MANUAL.md](MANUAL.md)
 
 ## License
 
