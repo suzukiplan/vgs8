@@ -1,8 +1,9 @@
+; Hello, World! for VGS8 by SUZUKI PLAN (PUBLIC DOMAIN)
 .setcpu     "6502"
 .autoimport on
 
 ;-------------------------------------------------------------------------------
-; Program entry point
+; Program entry point & main loop
 ;-------------------------------------------------------------------------------
 .segment "STARTUP"
     jsr initialize
@@ -14,7 +15,7 @@ mainloop:
     jmp mainloop
 
 ;-------------------------------------------------------------------------------
-; Initialize sub routine
+; Initialize
 ;-------------------------------------------------------------------------------
 initialize:
     ; init CMAP register
@@ -54,13 +55,13 @@ initialize_draw_loop2:
 
     ; initialize the player variables
     lda #120 ; initial position X
-    sta sp_playerX
+    sta sp_player + 0
     lda #200 ; initial position Y
-    sta sp_playerY
+    sta sp_player + 1
     lda #$10 ; tile pattern (fix)
-    sta sp_playerP
+    sta sp_player + 2
     lda #%00000001 ; use 16x16 sprite (fix)
-    sta sp_playerF
+    sta sp_player + 3
     rts
 
 ;-------------------------------------------------------------------------------
@@ -72,33 +73,33 @@ move_player:
     and #%10000000
     beq move_player_1
     ; move up
-    ldy sp_playerY
+    ldy sp_player + 1
     dey
-    sty sp_playerY
+    sty sp_player + 1
 move_player_1:
     txa
     and #%01000000
     beq move_player_2
     ; move down
-    ldy sp_playerY
+    ldy sp_player + 1
     iny
-    sty sp_playerY
+    sty sp_player + 1
 move_player_2:
     txa
     and #%00100000
     beq move_player_3
     ; move left
-    ldy sp_playerX
+    ldy sp_player + 0
     dey
-    sty sp_playerX
+    sty sp_player + 0
 move_player_3:
     txa
     and #%00010000
     beq move_player_4
     ; move right
-    ldy sp_playerX
+    ldy sp_player + 0
     iny
-    sty sp_playerX
+    sty sp_player + 0
 move_player_4:
     txa
     and #%00001100
@@ -134,12 +135,12 @@ fire_player_shot:
     asl
     tax
     ; set initial X
-    lda sp_playerX
+    lda sp_player + 0
     clc
     adc #4
     sta sp_shot, x
     ; set initial Y
-    lda sp_playerY
+    lda sp_player + 1
     sec
     sbc #8
     sta sp_shot + 1, x
@@ -199,7 +200,7 @@ move_player_shot_1:
     rts
 
 ;-------------------------------------------------------------------------------
-; Scroll BG sub routine
+; Scroll BG
 ;-------------------------------------------------------------------------------
 scroll_bg:
     ldx v_scroll
@@ -227,10 +228,7 @@ v_shotF:    .byte $00, $00, $00, $00, $00, $00, $00, $00 ; flags of the player s
 ; Sprite OAM labels (OAM: x, y, pattern, falgs)
 ;-------------------------------------------------------------------------------
 .org $5000 
-sp_playerX: .byte $00                   ; player
-sp_playerY: .byte $00
-sp_playerP: .byte $00
-sp_playerF: .byte $00
+sp_player:  .byte $00, $00, $00, $00    ; player (16x16)
 sp_shot:    .byte $00, $00, $00, $00    ; shot[0]
             .byte $00, $00, $00, $00    ; shot[1]
             .byte $00, $00, $00, $00    ; shot[2]
