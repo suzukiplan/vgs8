@@ -65,7 +65,6 @@ class PPU
         unsigned char y, x, vx, vy, dx, dy;
         unsigned char* data;
         unsigned char* dptr;
-        unsigned char c;
         unsigned char window[32 * 32];
         memset(vram, reg.bgC, sizeof(vram));
 
@@ -174,8 +173,8 @@ class PPU
                 for (x = 0; x < 8; x++) {
                     c = dptr[y * 8 + x];
                     if (c) {
-                        vx = oam->x + x;
-                        vy = oam->y + y;
+                        vx = oam->x + x + dx;
+                        vy = oam->y + y + dy;
                         vram[vy * 256 + vx] = c;
                     }
                 }
