@@ -2087,8 +2087,8 @@ class CPU
                 case 0x2C: bit_absolute(); break;
                 // PHA/PLA/PHP/PLP
                 case 0x48: pha(); break;
-                case 0x08: pla(); break;
-                case 0x68: php(); break;
+                case 0x68: pla(); break;
+                case 0x08: php(); break;
                 case 0x28: plp(); break;
                 // JMP
                 case 0x4c: jmp_absolute(); break;
