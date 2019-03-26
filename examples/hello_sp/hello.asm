@@ -1,7 +1,22 @@
 .setcpu     "6502"
 .autoimport on
 
+;-------------------------------------------------------------------------------
+; Program entry point
+;-------------------------------------------------------------------------------
 .segment "STARTUP"
+    jsr initialize
+mainloop:
+    jsr input_joy_pad
+    jsr draw_player
+    jsr scroll_bg
+    lda $5BFF ; Wait for VSYNC
+    jmp mainloop
+
+;-------------------------------------------------------------------------------
+; Initialize sub routine
+;-------------------------------------------------------------------------------
+initialize:
     ; init CMAP register
     ;     -----FBS
     lda #%00000011
@@ -15,12 +30,12 @@
 
     ; draw "Hello, VGS8 World!" on the FG nametable
     ldx #$00
-draw_loop:
+initialize_draw_loop1:
     lda string_hello_world, x
     sta $73C7, x ; write on (7 + x, 15) = ($007 + x, $3C0 = 15 * 64)
     inx
     cpx #18 ; text length
-    bne draw_loop
+    bne initialize_draw_loop1
 
     ; fill $01 on the BG nametable (TIPS: it's very easy if use DMA!)
     ; 1st. fill $01 to $6000 ~ $60FF
@@ -30,11 +45,11 @@ draw_loop:
     sta $5A01
     ; 2nd. copy $60xx to $61xx ~ $6Fxx
     ldx #$61
-draw_loop2:
+initialize_draw_loop2:
     stx $5A02
     inx
     cpx #$70
-    bne draw_loop2
+    bne initialize_draw_loop2
     ; done!
 
     ; initialize the player variables
@@ -42,14 +57,11 @@ draw_loop2:
     sta v_playerX
     lda #200
     sta v_playerY
+    rts
 
-mainloop:
-    jsr input_joy_pad
-    jsr draw_player
-    jsr scroll_bg
-    lda $5BFF ; Wait for VSYNC
-    jmp mainloop
-
+;-------------------------------------------------------------------------------
+; Input Joy-Pad sub routine
+;-------------------------------------------------------------------------------
 input_joy_pad:
     ldx $5700
     txa
@@ -86,6 +98,9 @@ input_joy_pad_3:
 input_joy_pad_4:
     rts
 
+;-------------------------------------------------------------------------------
+; Draw player sub routine
+;-------------------------------------------------------------------------------
 draw_player:
     ; set x to OAM
     lda v_playerX
@@ -114,6 +129,9 @@ draw_player:
     sta sp_player3 + 2
     rts
 
+;-------------------------------------------------------------------------------
+; Scroll BG sub routine
+;-------------------------------------------------------------------------------
 scroll_bg:
     ldx v_scroll
     stx $5409
@@ -121,15 +139,24 @@ scroll_bg:
     stx v_scroll
     rts
 
+;-------------------------------------------------------------------------------
+; String literal definition
+;-------------------------------------------------------------------------------
 string_hello_world:
     .byte "Hello, VGS8 World!"
 
-.org $0200  ; variables
+;-------------------------------------------------------------------------------
+; WRAM (variable labels)
+;-------------------------------------------------------------------------------
+.org $0200
 v_scroll:   .byte $00
 v_playerX:  .byte $00
 v_playerY:  .byte $00
 
-.org $5000  ; Sprite OAM labels
+;-------------------------------------------------------------------------------
+; Sprite OAM labels
+;-------------------------------------------------------------------------------
+.org $5000 
 sp_player0: .byte $00, $00, $00, $00    ; left top of the player
 sp_player1: .byte $00, $00, $00, $00    ; right top of the player
 sp_player2: .byte $00, $00, $00, $00    ; left bottom of the player
