@@ -4,9 +4,9 @@ __※まだ開発途中です（絶賛テスト中なので, まだバグが結�
 
 > _後述のWIP statusに全部チェックが付いた頃にようやくテスト完了でstableになります（stableになった後は破壊的変更はしない予定）_
 
-- SUZUKI PLAN - Video Game System - 8bit (VGS8) は, 現代向けに再設計された新しい8bitゲーム機です
-- このリポジトリでは, VGS8コアシステムのエミュレータ（HALを省略した形）とVGS用ゲーム開発に必要なSDKを提供します
-- VGS8の基礎アーキテクチャは, 任天堂のファミリーコンピュータ（ファミコン）から着想を得て設計していますが, ファミコンとの互換性はありません
+- SUZUKI PLAN - Video Game System - 8bit (VGS8) is a newly designed 8 bit game machine with current technologies.
+- This repository provides VGS8 emulator core module, SDK tools, HAL examples and example programs.
+- The base architecture design of VGS8 is inspired by NES (;Nintendo Entertaiment System), but it does not have a compatibility.
 
 ## WIP status
 
@@ -59,8 +59,8 @@ __※まだ開発途中です（絶賛テスト中なので, まだバグが結�
 
 #### macOS
 
-- GNU make, CLANG は XCODE Command Line Tools をインストール
-- cc65 は HomeBrew でインストールできます
+- GNU make, CLANG are installed via `XCODE Command Line Tools`
+- cc65 is installable with HomeBrew
 
 ```
 brew install cc65
@@ -79,8 +79,13 @@ git submodule update --init --recursive
 make
 ```
 
-- 上記を実行することで, ROMをリンクするツール（[romlink](tools/romlink.c)）の生成とVGS8コアのテストが実行されます
-- 各自が実装するHALには [src](src) ディレクトリ以下のモジュールを取り込んで使用します
+make command will build the following modules:
+
+- ROM linkage tool（[romlink](tools/romlink.c))
+- ROM debugger tool ([vgsrun](tools/vgsrun.cpp))
+- example ROMs
+
+Please copy [src/*](src) files to your project, if you make an original VGS8 emulator.
 
 ## Specification
 
