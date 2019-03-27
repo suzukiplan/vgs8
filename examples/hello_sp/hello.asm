@@ -14,6 +14,7 @@ mainloop:
     jsr move_player_shots
     jsr scroll_bg
     jsr show_mouse_status
+    jsr drag_mouse_to_hscroll
     jsr draw_mouse_cursor
     lda $5BFF ; Wait for VSYNC
     jmp mainloop
@@ -396,22 +397,26 @@ get_rand_to_a:
     rts
 
 ;-------------------------------------------------------------------------------
-; Draw mouse cursor
+; Scroll the background horizontally by dragging (I don't know why :)
 ;-------------------------------------------------------------------------------
-draw_mouse_cursor:
-    ; horizontal scroll if drag
+drag_mouse_to_hscroll:
     lda v_prevT
-    beq draw_mouse_cursor_1
+    beq drag_mouse_to_hscroll_end
     lda $5800
-    beq draw_mouse_cursor_1
+    beq drag_mouse_to_hscroll_end
     lda $5801
     sec
     sbc sp_mouse + 0
     clc
     adc v_scrollX
     sta v_scrollX
-draw_mouse_cursor_1:
-    ; draw mouse
+drag_mouse_to_hscroll_end:
+    rts
+
+;-------------------------------------------------------------------------------
+; Draw mouse cursor
+;-------------------------------------------------------------------------------
+draw_mouse_cursor:
     lda $5801
     sta sp_mouse + 0
     lda $5802
