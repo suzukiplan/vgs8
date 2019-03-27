@@ -87,6 +87,15 @@ make command will build the following modules:
 
 Please copy [src/*](src) files to your project, if you make an original VGS8 emulator.
 
+#### Execute VGS8 emulator on macOS
+
+Please execute following command after setup.
+
+```
+cd hal/mac
+open EmuBoard.xcodeproj
+```
+
 ## Specification
 
 - CPU: MOS6502 8MHz
