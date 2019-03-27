@@ -268,7 +268,7 @@ move_enemies_4:
     jsr move_enemy_type2
     jmp move_enemies_next
 move_enemies_5:
-    brk ; BUG: unknown enemy type
+    jsr move_enemy_destruct
 move_enemies_next:
     jsr enemy_hit_check
     ; add index
@@ -311,10 +311,39 @@ move_enemy_type2:
 move_enemy_type3:
     rts
 
+move_enemy_destruct:
+    lda v_enemy + 2, x
+    clc
+    adc #$01
+    and #$0F
+    bne move_enemy_destruct_1
+    jsr remove_enemy
+    rts
+move_enemy_destruct_1:
+    sta v_enemy + 2, x
+    lsr
+    lsr
+    asl
+    clc
+    adc #$30
+    sta sp_enemy + 2, x
+    dec sp_enemy + 1, x
+    rts
+
 remove_enemy:
     lda #0
     sta v_enemy + 0, x ; clear flag
     sta sp_enemy + 2, x ; clear sprite
+    rts
+
+destruct_enemy:
+    lda #$FF
+    sta v_enemy + 0, x ; change flag (no hit check)
+    sta v_enemy + 1, x ; change type (bomb)
+    lda #$00
+    sta v_enemy + 2, x ; clear v1
+    lda #$30
+    sta sp_enemy + 2, x ; change sprite
     rts
 
 enemy_hit_check:
@@ -322,6 +351,10 @@ enemy_hit_check:
     bne enemy_hit_check_1
     rts
 enemy_hit_check_1:
+    cmp #$FF
+    bne enemy_hit_check_1_1
+    rts
+enemy_hit_check_1_1:
     lda sp_enemy + 3, x
     and #1
     beq enemy_hit_check_2
@@ -354,7 +387,7 @@ enemy_hit_check_4:
     adc v_esize
     cmp sp_shot + 1, y
     bcc enemy_hit_check_next
-    jsr remove_enemy
+    jsr destruct_enemy
     lda #0
     sta v_shotF, y
     sta sp_shot + 2, y
