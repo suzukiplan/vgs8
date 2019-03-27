@@ -12,6 +12,7 @@
 		1D163C19224742CD00BBC2FD /* vgs2tone.c in Sources */ = {isa = PBXBuildFile; fileRef = 1D163C12224742CD00BBC2FD /* vgs2tone.c */; };
 		1D163C1A224742CD00BBC2FD /* vgsdec.c in Sources */ = {isa = PBXBuildFile; fileRef = 1D163C16224742CD00BBC2FD /* vgsdec.c */; };
 		1D163C1C224754D300BBC2FD /* test.rom in Resources */ = {isa = PBXBuildFile; fileRef = 1D163C1B224754D300BBC2FD /* test.rom */; };
+		1DB5B18E224BCD170021C592 /* vgsspu_al.c in Sources */ = {isa = PBXBuildFile; fileRef = 1DB5B18D224BCD170021C592 /* vgsspu_al.c */; };
 		94D1AB2A21D86ADC00DC595E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 94D1AB2921D86ADC00DC595E /* AppDelegate.m */; };
 		94D1AB2D21D86ADC00DC595E /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94D1AB2C21D86ADC00DC595E /* ViewController.m */; };
 		94D1AB2F21D86ADD00DC595E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 94D1AB2E21D86ADD00DC595E /* Assets.xcassets */; };
@@ -38,6 +39,8 @@
 		1D163C15224742CD00BBC2FD /* apu.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = apu.hpp; path = ../../../../src/apu.hpp; sourceTree = "<group>"; };
 		1D163C16224742CD00BBC2FD /* vgsdec.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vgsdec.c; path = ../../../../src/vgsdec.c; sourceTree = "<group>"; };
 		1D163C1B224754D300BBC2FD /* test.rom */ = {isa = PBXFileReference; lastKnownFileType = file; path = test.rom; sourceTree = "<group>"; };
+		1DB5B18C224BCD170021C592 /* vgsspu_al.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = vgsspu_al.h; sourceTree = "<group>"; };
+		1DB5B18D224BCD170021C592 /* vgsspu_al.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = vgsspu_al.c; sourceTree = "<group>"; };
 		94D1AB2521D86ADC00DC595E /* EmuBoard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EmuBoard.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		94D1AB2821D86ADC00DC595E /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		94D1AB2921D86ADC00DC595E /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -123,6 +126,8 @@
 				94D1AB4021D86E0900DC595E /* VideoLayer.m */,
 				94D1AB4321D87FFF00DC595E /* EmuBoard.h */,
 				94D1AB4621D8987800DC595E /* EmuBoard.cpp */,
+				1DB5B18C224BCD170021C592 /* vgsspu_al.h */,
+				1DB5B18D224BCD170021C592 /* vgsspu_al.c */,
 				94D1AB2E21D86ADD00DC595E /* Assets.xcassets */,
 				94D1AB3021D86ADD00DC595E /* Main.storyboard */,
 				94D1AB3321D86ADD00DC595E /* Info.plist */,
@@ -217,6 +222,7 @@
 				94D1AB4721D8987800DC595E /* EmuBoard.cpp in Sources */,
 				94D1AB3E21D86DC900DC595E /* VideoView.m in Sources */,
 				94D1AB2D21D86ADC00DC595E /* ViewController.m in Sources */,
+				1DB5B18E224BCD170021C592 /* vgsspu_al.c in Sources */,
 				94D1AB3521D86ADD00DC595E /* main.m in Sources */,
 				94D1AB2A21D86ADC00DC595E /* AppDelegate.m in Sources */,
 				94D1AB4121D86E0900DC595E /* VideoLayer.m in Sources */,
