@@ -7,6 +7,8 @@
 ;-------------------------------------------------------------------------------
 .segment "STARTUP"
     jsr initialize
+    lda #$00
+    sta $5600 ; play BGM 0
 mainloop:
     lda $5BFF ; Wait for VSYNC
     jsr add_new_enemy

@@ -7,7 +7,8 @@ all:
 		bank000.bmp \
 		bank001.bmp \
 		bank000_bomb.wav \
-		bank001_shot.wav
+		bank001_shot.wav \
+		bank000.mml
 
 clean:
 	rm -rf hello.o
