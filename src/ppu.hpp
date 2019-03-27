@@ -1,4 +1,8 @@
 // Copyright 2019, SUZUKI PLAN (MIT license)
+#ifndef INCLUDE_PPU_HPP
+#define INCLUDE_PPU_HPP
+
+using namespace VGS8;
 
 class PPU
 {
@@ -251,3 +255,5 @@ class PPU
         }
     }
 };
+
+#endif

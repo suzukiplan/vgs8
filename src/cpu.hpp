@@ -1,6 +1,9 @@
 // Copyright 2019, SUZUKI PLAN (MIT license)
-
+#ifndef INCLUDE_CPU_HPP
+#define INCLUDE_CPU_HPP
 #define CPU_CLOCKS_PER_FRAME 139810 /* 8MHz / 60 */
+
+using namespace VGS8;
 
 class CPU
 {
@@ -2177,3 +2180,5 @@ class CPU
         return index;
     }
 };
+
+#endif

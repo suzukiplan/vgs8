@@ -1,4 +1,9 @@
 // Copyright 2019, SUZUKI PLAN (MIT license)
+#ifndef INCLUDE_APU_HPP
+#define INCLUDE_APU_HPP
+#include "vgs8.h"
+
+using namespace VGS8;
 
 class APU
 {
@@ -152,3 +157,5 @@ class APU
         return sizeof(reg);
     }
 };
+
+#endif

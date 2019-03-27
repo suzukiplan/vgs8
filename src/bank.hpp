@@ -1,4 +1,8 @@
 // Copyright 2019, SUZUKI PLAN (MIT license)
+#ifndef INCLUDE_BANK_HPP
+#define INCLUDE_BANK_HPP
+
+using namespace VGS8;
 
 class Bank
 {
@@ -97,3 +101,5 @@ class Bank
         memset(eff, 0, sizeof(eff));
     }
 };
+
+#endif
