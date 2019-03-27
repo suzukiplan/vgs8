@@ -154,6 +154,9 @@ fire_player_shot:
     ; set wait fire flag
     lda #4
     sta v_shotW
+    ; play eff $01
+    lda #$01
+    sta $5500
     rts
 
 ;-------------------------------------------------------------------------------
@@ -344,6 +347,9 @@ destruct_enemy:
     sta v_enemy + 2, x ; clear v1
     lda #$30
     sta sp_enemy + 2, x ; change sprite
+    ; play eff $00
+    lda #$00
+    sta $5500
     rts
 
 enemy_hit_check:
