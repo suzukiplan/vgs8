@@ -112,6 +112,34 @@ static void breakCallback(VGS8::VirtualMachine* vm)
                 printf(" start: %s\n", start ? "ON" : "OFF");
                 break;
             }
+            case 'T': {        // set touching status
+                bool touching = false;
+                unsigned char x = 0;;
+                unsigned char y = 0;
+                int i = 1;
+                for (int i = 1; buf[i]; i++) {
+                    if (' ' == buf[i] || '\t' == buf[i]) continue;
+                    touching = atoi65(&buf[i]) ? true : false;
+                    break;
+                }
+                for (; buf[i] && ' ' != buf[i] && '\t' != buf[i]; i++);
+                for (; buf[i]; i++) {
+                    if (' ' == buf[i] || '\t' == buf[i]) continue;
+                    x = atoi65(&buf[i]) ? true : false;
+                    break;
+                }
+                for (; buf[i] && ' ' != buf[i] && '\t' != buf[i]; i++);
+                for (; buf[i]; i++) {
+                    if (' ' == buf[i] || '\t' == buf[i]) continue;
+                    y = atoi65(&buf[i]) ? true : false;
+                    break;
+                }
+                vm->setTouch(touching, x, y);
+                printf("touching: %s\n", touching ? "ON" : "OFF");
+                printf("  touchX: %d\n", (int)x);
+                printf("  touchY: %d\n", (int)y);
+                break;
+            }
             case 'M': { // show memory dump
                 unsigned short addr = 0;
                 for (int i = 1; buf[i]; i++) {
@@ -140,7 +168,8 @@ static void breakCallback(VGS8::VirtualMachine* vm)
             }
             default: {
                 puts("M $ADDR: Memory dump");
-                puts("K %KEY: set key status");
+                puts("K $KEY: set key status");
+                puts("T $F $X $Y: set touching status");
                 puts("C: Continue");
                 puts("Q: Quit");
             }
