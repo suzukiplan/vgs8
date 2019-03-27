@@ -19,18 +19,20 @@ __※まだ開発途中です（絶賛テスト中なので, まだバグが結�
 - [ ] [macOS上で動作するエミュレータ（CocoaApp）](hal/mac)を作成
   - [x] [CPU](src/cpu.hpp)を動作させるHALを実装
   - [x] [PPU](src/ppu.hpp)を動作させるHALを実装
-  - [ ] [APU](src/apu.hpp)を動作させるHALを実装
+  - [x] [APU](src/apu.hpp)を動作させるHALを実装
   - [ ] 固定のROMファイル（test.rom）ではなく起動時に任意ROMを選択できるようにする
 - [x] コマンドライン・デバッガ ([vgsrun](tools/vgsrun.cpp)) 作成
   - [x] 全命令の動的逆アセンブル & レジスタダンプに対応
   - [x] break point機能の実装
   - [x] メモリダンプの実装
   - [x] キー入力の実装
+  - [x] タッチ入力の実装
+- [ ] コマンドラインMMLプレイヤ作成
 - [ ] examplesを色々と追加しながら一通りの命令+機能をテスト
   - [x] [Hello, World](examples/hello)
   - [x] [FG+スクロールを使ったサンプル](examples/hello_fg)
   - [x] [スプライト + JoyPadを使ったサンプル](examples/hello_sp)
-  - [ ] 音声を使ったサンプル
+  - [x] 音声を使ったサンプル
   - [ ] CHRバンク切り替えのサンプル
   - [ ] PRGバンク切り替えのサンプル
   - [ ] [COSMIC SHOOTER](https://github.com/suzukiplan/stg-for-nes)をVGS8に移植
