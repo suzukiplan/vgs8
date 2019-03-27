@@ -1415,17 +1415,27 @@ class CPU
         unsigned char lsb = a & 1;
         unsigned char msb = a & 0x80;
         if (isLeft) {
-            a <<= 1;           // left shift
-            *v = a & 0xFE;     // store to result without LSB
-            *v |= msb ? 1 : 0; // store LSB if previous MSB has set
+            a <<= 1;
+            if (msb) {
+                a |= 1;
+                *v = a & 0xFF;
+                reg.p |= 1;       
+            } else {
+                *v = a & 0xFE;
+            }
         } else {
-            a >>= 1;              // right shift
-            *v = a & 0x7F;        // store to result without MSB
-            *v |= lsb ? 0x80 : 0; // store MSB if previous LSB has set
+            a >>= 1;
+            a &= 0x7F;
+            if (lsb) {
+                a |= 0x80;
+                *v = a & 0xFF;
+                reg.p |= 1;
+            } else {
+                *v = a & 0x7F;
+            }
         }
-        if (a & 0x80) reg.p |= 0x80;    // set N if negative
-        if (0 == *v) reg.p |= 2;        // set Z if zero
-        if (a & 0xFFFFFF00) reg.p |= 1; // set carry
+        if (a & 0x80) reg.p |= 0x80;
+        if (0 == *v) reg.p |= 2;
     }
 
     inline void rol_a()
