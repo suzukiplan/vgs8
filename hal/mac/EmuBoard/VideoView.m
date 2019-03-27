@@ -83,6 +83,7 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTime
 {
     if (curPoint.x < 0) curPoint.x = 0;
     if (curPoint.y < 0) curPoint.y = 0;
+    curPoint.y = self.frame.size.height - curPoint.y;
     curPoint.x *= 240.0 / self.frame.size.width;
     curPoint.y *= 240.0 / self.frame.size.height;
     if (239 <= curPoint.x) curPoint.x = 239;
