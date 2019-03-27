@@ -13,6 +13,7 @@ mainloop:
     jsr move_player
     jsr move_player_shots
     jsr scroll_bg
+    jsr show_mouse_status
     lda $5BFF ; Wait for VSYNC
     jmp mainloop
 
@@ -389,6 +390,122 @@ get_rand_to_a:
     stx v_randI
     ldx $00
     plp
+    rts
+
+;-------------------------------------------------------------------------------
+; Show mouse status ($FF use for work)
+;-------------------------------------------------------------------------------
+show_mouse_status:
+    lda #$5B ; '['
+    sta $7041
+    lda #$2C ; ','
+    sta $7045
+    lda #$5D ; ']'
+    sta $7049
+    ; draw ?00 of X
+    lda $5801
+    jsr calc_100s
+    clc
+    adc #$30
+    sta $7042
+    ; draw 0?0 of X
+    lda $5801
+    jsr calc_10s
+    clc
+    adc #$30
+    sta $7043
+    ; draw 00? of X
+    lda $5801
+    jsr calc_1s
+    adc #$30
+    sta $7044
+    ; draw ?00 of Y
+    lda $5802
+    jsr calc_100s
+    clc
+    adc #$30
+    sta $7046
+    ; draw 0?0 of X
+    lda $5802
+    jsr calc_10s
+    clc
+    adc #$30
+    sta $7047
+    ; draw 00? of X
+    lda $5802
+    jsr calc_1s
+    adc #$30
+    sta $7048
+    ; draw clicking mark
+    lda $5800
+    beq show_mouse_status_no_clicking
+    lda #$43 ; 'C'
+    sta $704A
+    rts
+show_mouse_status_no_clicking:
+    lda #$00
+    sta $704A
+    rts
+
+;-------------------------------------------------------------------------------
+; Calculate the hundreds place of register A
+;-------------------------------------------------------------------------------
+calc_100s:
+    cmp #200
+    bcc calc_100s_1
+    lda #2
+    rts
+calc_100s_1:
+    cmp #100
+    bcc calc_100s_2
+    lda #1
+    rts
+calc_100s_2:
+    lda #0
+    rts
+
+;-------------------------------------------------------------------------------
+; Calculate the tens digit of register A (use $FF for work)
+; a = (a mod 100) div 10
+;-------------------------------------------------------------------------------
+calc_10s:
+    sta $FF
+    txa
+    pha
+    lda $FF
+    cmp #200
+    bcc calc_10s_1
+    sec
+    sbc #200
+    jmp calc_10s_2
+calc_10s_1:
+    cmp #100
+    bcc calc_10s_2
+    sec
+    sbc #100
+calc_10s_2:
+    ldx #$FF
+calc_10s_3:
+    inx
+    sec
+    sbc #10
+    bcc calc_10s_3
+    stx $FF
+    pla
+    tax
+    lda $FF
+    rts
+
+;-------------------------------------------------------------------------------
+; Calculate 1's digit of register A
+;-------------------------------------------------------------------------------
+calc_1s:
+    and #$0F
+    cmp #10
+    bcc calc_1s_2
+    sec
+    sbc #10
+calc_1s_2:
     rts
 
 ;-------------------------------------------------------------------------------
