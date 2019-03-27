@@ -26,6 +26,9 @@ int emu_key_a;
 int emu_key_b;
 int emu_key_select;
 int emu_key_start;
+int emu_touching;
+unsigned char emu_touchX;
+unsigned char emu_touchY;
 
 static VGS8::VirtualMachine* vm;
 
@@ -49,6 +52,7 @@ void emu_vsync()
 {
     if (!vm) return;
     vm->setKey(0, emu_key_up, emu_key_down, emu_key_left, emu_key_right, emu_key_a, emu_key_b, emu_key_select, emu_key_start);
+    vm->setTouch(emu_touching ? true : false, emu_touchX, emu_touchY);
     vm->tick();
     size_t size;
     memcpy(emu_vram, vm->getDisplay565(&size), sizeof(emu_vram));

@@ -19,12 +19,16 @@ extern int emu_key_a;
 extern int emu_key_b;
 extern int emu_key_select;
 extern int emu_key_start;
+extern int emu_touching;
+extern unsigned char emu_touchX;
+extern unsigned char emu_touchY;
 
 static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTimeStamp *now, const CVTimeStamp *outputTime, CVOptionFlags flagsIn, CVOptionFlags *flagsOut, void *context);
 
 @interface VideoView()
 @property (nonatomic) VideoLayer* videoLayer;
 @property CVDisplayLinkRef displayLink;
+@property (nonatomic) NSTrackingArea* trankingArea;
 @end
 
 @implementation VideoView
@@ -65,6 +69,53 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTime
 - (BOOL)acceptsFirstResponder
 {
     return YES;
+}
+
+- (void)updateTrackingAreas
+{
+    if (_trankingArea) [self removeTrackingArea:_trankingArea];
+    NSTrackingAreaOptions opts = NSTrackingMouseMoved | NSTrackingMouseEnteredAndExited | NSTrackingActiveInKeyWindow | NSTrackingEnabledDuringMouseDrag;
+    _trankingArea = [[NSTrackingArea alloc] initWithRect:self.frame options:opts owner:self userInfo:nil];
+    [self addTrackingArea:_trankingArea];
+}
+
+- (void)_updateTouchingPoint:(NSPoint)curPoint
+{
+    if (curPoint.x < 0) curPoint.x = 0;
+    if (curPoint.y < 0) curPoint.y = 0;
+    curPoint.x *= 240.0 / self.frame.size.width;
+    curPoint.y *= 240.0 / self.frame.size.height;
+    if (239 <= curPoint.x) curPoint.x = 239;
+    if (239 <= curPoint.y) curPoint.y = 239;
+    emu_touchX = (unsigned char)(curPoint.x + 8);
+    emu_touchY = (unsigned char)(curPoint.y + 8);
+}
+
+- (void)mouseDown:(NSEvent *)event
+{
+    emu_touching = 1;
+    [self _updateTouchingPoint:[self convertPoint:[event locationInWindow] fromView:nil]];
+}
+
+- (void)mouseUp:(NSEvent *)event
+{
+    emu_touching = 0;
+    [self _updateTouchingPoint:[self convertPoint:[event locationInWindow] fromView:nil]];
+}
+
+- (void)mouseMoved:(NSEvent *)event
+{
+    [self _updateTouchingPoint:[self convertPoint:[event locationInWindow] fromView:nil]];
+}
+
+- (void)mouseDragged:(NSEvent *)event
+{
+    [self _updateTouchingPoint:[self convertPoint:[event locationInWindow] fromView:nil]];
+}
+
+- (void)mouseExited:(NSEvent *)event
+{
+    [self _updateTouchingPoint:[self convertPoint:[event locationInWindow] fromView:nil]];
 }
 
 - (void)keyDown:(NSEvent *)event
