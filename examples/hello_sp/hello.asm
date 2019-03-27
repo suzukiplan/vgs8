@@ -14,6 +14,7 @@ mainloop:
     jsr move_player_shots
     jsr scroll_bg
     jsr show_mouse_status
+    jsr draw_mouse_cursor
     lda $5BFF ; Wait for VSYNC
     jmp mainloop
 
@@ -393,6 +394,20 @@ get_rand_to_a:
     rts
 
 ;-------------------------------------------------------------------------------
+; Draw mouse cursor
+;-------------------------------------------------------------------------------
+draw_mouse_cursor:
+    lda $5801
+    sta sp_mouse + 0
+    lda $5802
+    sta sp_mouse + 1
+    lda $5800
+    clc
+    adc #5
+    sta sp_mouse + 2
+    rts
+
+;-------------------------------------------------------------------------------
 ; Show mouse status ($FF use for work)
 ;-------------------------------------------------------------------------------
 show_mouse_status:
@@ -572,7 +587,7 @@ v_esize:    .byte $00 ; work area for hit check
 ; Sprite OAM labels
 ;-------------------------------------------------------------------------------
 .org $5000  ;     X    Y    PTN  FLG
-sp_player:  .byte $00, $00, $00, $00    ; player (16x16)
+sp_player:  .byte $00, $00, $00, $00    ; player
 sp_shot:    .byte $00, $00, $00, $00    ; shot[0]
             .byte $00, $00, $00, $00    ; shot[1]
             .byte $00, $00, $00, $00    ; shot[2]
@@ -597,3 +612,4 @@ sp_enemy:   .byte $00, $00, $00, $00    ; enemy[0]
             .byte $00, $00, $00, $00    ; enemy[13]
             .byte $00, $00, $00, $00    ; enemy[14]
             .byte $00, $00, $00, $00    ; enemy[15]
+sp_mouse:   .byte $00, $00, $00, $00    ; mouse
