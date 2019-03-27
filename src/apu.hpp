@@ -100,6 +100,7 @@ class APU
             soundBuffer = soundBuffer2;
             soundBufferSize = sizeof(soundBuffer2);
         }
+        memset(soundBuffer, 0, soundBufferSize);
         // BGMをバッファに書き込む
         if (reg.bgmPlaying) {
             vgsdec_execute(vgsdec, soundBuffer, soundBufferSize);
@@ -120,6 +121,7 @@ class APU
                         soundBuffer[j] = (short)w;
                         reg.effCursor[i]++;
                     } else {
+                        reg.effCursor[i] = 0;
                         reg.effPlaying[i] = 0;
                         break;
                     }
