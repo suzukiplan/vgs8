@@ -8,6 +8,7 @@
 .segment "STARTUP"
     jsr initialize
 mainloop:
+    lda $5BFF ; Wait for VSYNC
     jsr add_new_enemy
     jsr move_enemies
     jsr move_player
@@ -16,7 +17,6 @@ mainloop:
     jsr show_mouse_status
     jsr drag_mouse_to_hscroll
     jsr draw_mouse_cursor
-    lda $5BFF ; Wait for VSYNC
     jmp mainloop
 
 ;-------------------------------------------------------------------------------
