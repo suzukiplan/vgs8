@@ -1419,7 +1419,7 @@ class CPU
             if (msb) {
                 a |= 1;
                 *v = a & 0xFF;
-                reg.p |= 1;       
+                reg.p |= 1;
             } else {
                 *v = a & 0xFE;
             }
