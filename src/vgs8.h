@@ -23,11 +23,14 @@ class VirtualMachine
     int savePtr;
 
   public:
-    unsigned char keys[2]; // キー入力状態
-    Bank* bank;            // Bank
-    CPU* cpu;              // Central Processing Unit
-    APU* apu;              // Audio Processing Unit
-    PPU* ppu;              // Picture Processing Unit
+    unsigned char keys[2];  // キー入力状態
+    unsigned char touching; // タッチ状態 ($00: not touching, $01: touching)
+    unsigned char touchX;   // 最後にタッチしていたX座標
+    unsigned char touchY;   // 最後にタッチしていたY座標
+    Bank* bank;             // Bank
+    CPU* cpu;               // Central Processing Unit
+    APU* apu;               // Audio Processing Unit
+    PPU* ppu;               // Picture Processing Unit
 
     /**
      * コンストラクタ（VMを新規生成）
@@ -64,6 +67,14 @@ class VirtualMachine
                 bool b,
                 bool select,
                 bool start);
+
+    /**
+     * タッチパネルを入力状態を設定
+     * @param isTouching [I] on / off
+     * @param x X座標 (8〜247)
+     * @param y Y座標 (8〜247)
+     */
+    void setTouch(bool isTouching, unsigned char x, unsigned char y);
 
     /**
      * リセット

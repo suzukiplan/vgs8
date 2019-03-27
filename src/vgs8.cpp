@@ -44,6 +44,13 @@ void VirtualMachine::setKey(int number,
     keys[number] |= start ? 0x01 : 0;
 }
 
+void VirtualMachine::setTouch(bool isTouching, unsigned char x, unsigned char y)
+{
+    touching = isTouching;
+    touchX = x;
+    touchY = y;
+}
+
 void VirtualMachine::reset()
 {
     cpu->reset();

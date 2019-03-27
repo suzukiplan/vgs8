@@ -131,6 +131,9 @@ Please copy [src/*](src) files to your project, if you make an original VGS8 emu
 |$5603|APU I/O port (R): BGM playing status|
 |$5700|JoyPad I/O port (R): read 1P JoyPad status|
 |$5701|JoyPad I/O port (R): read 2P JoyPad status|
+|$5800|Mouse/TouchPannel I/O port (R): touching status|
+|$5801|Mouse/TouchPannel I/O port (R): last touched position X|
+|$5802|Mouse/TouchPannel I/O port (R): last touched position Y|
 |$5A00|DMA I/O port (RW): Set base page|
 |$5A01|DMA I/O port (W): execute memset|
 |$5A02|DMA I/O port (W): execute memcpy|

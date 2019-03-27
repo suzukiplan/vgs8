@@ -93,6 +93,9 @@ class CPU
             case 0x5603: *value = vm->_isBgmPlaying() ? 1 : 0; break;
             case 0x5700: *value = vm->keys[0]; break;
             case 0x5701: *value = vm->keys[1]; break;
+            case 0x5800: *value = vm->touching ? 1 : 0; break;
+            case 0x5801: *value = vm->touchX; break;
+            case 0x5802: *value = vm->touchY; break;
             case 0x5BFF: vramUpdateRequest = true; return;
             default: return;
         }
