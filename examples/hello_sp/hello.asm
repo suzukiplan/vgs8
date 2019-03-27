@@ -372,6 +372,8 @@ enemy_hit_check_end:
 ; Scroll BG
 ;-------------------------------------------------------------------------------
 scroll_bg:
+    ldx v_scrollX
+    stx $5408
     ldx v_scroll
     stx $5409
     inx
@@ -397,11 +399,25 @@ get_rand_to_a:
 ; Draw mouse cursor
 ;-------------------------------------------------------------------------------
 draw_mouse_cursor:
+    ; horizontal scroll if drag
+    lda v_prevT
+    beq draw_mouse_cursor_1
+    lda $5800
+    beq draw_mouse_cursor_1
+    lda $5801
+    sec
+    sbc sp_mouse + 0
+    clc
+    adc v_scrollX
+    sta v_scrollX
+draw_mouse_cursor_1:
+    ; draw mouse
     lda $5801
     sta sp_mouse + 0
     lda $5802
     sta sp_mouse + 1
     lda $5800
+    sta v_prevT
     clc
     adc #5
     sta sp_mouse + 2
@@ -552,6 +568,7 @@ rand_table:; 乱数テーブル
 ;-------------------------------------------------------------------------------
 .org $0200
 v_scroll:   .byte $00
+v_scrollX:  .byte $00
 v_shotW:    .byte $00 ; wait fire flag
 v_shotI:    .byte $00 ; index of the player shot
 v_shotF:    .byte $00, $00, $00, $00    ; flags of the player shot[0]
@@ -582,6 +599,8 @@ v_enemy:    .byte $00, $00, $00, $00    ; enemy[0] vars (flag, type, v1, v2)
             .byte $00, $00, $00, $00    ; enemy[14] vars
             .byte $00, $00, $00, $00    ; enemy[15] vars
 v_esize:    .byte $00 ; work area for hit check
+v_prevT:    .byte $00 ; mouse status of previous frame
+v_prevX:    .byte $00 ; mouse X of previous frame
 
 ;-------------------------------------------------------------------------------
 ; Sprite OAM labels
