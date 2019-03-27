@@ -418,14 +418,21 @@ drag_mouse_to_hscroll_end:
 ;-------------------------------------------------------------------------------
 draw_mouse_cursor:
     lda $5801
+    sec
+    sbc #8
     sta sp_mouse + 0
     lda $5802
+    sec
+    sbc #8
     sta sp_mouse + 1
     lda $5800
     sta v_prevT
+    asl
     clc
-    adc #5
+    adc #$16
     sta sp_mouse + 2
+    lda #%00000001
+    sta sp_mouse + 3
     rts
 
 ;-------------------------------------------------------------------------------
