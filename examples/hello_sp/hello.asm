@@ -596,7 +596,7 @@ calc_1s_2:
 ; String literal definition
 ;-------------------------------------------------------------------------------
 string_hello_world:
-    .byte "Hello, VGS8 World!"
+    .byte "HELLO, VGS8 WORLD!"
 
 rand_table:; 乱数テーブル
     .byte   $72,$DD,$03,$89,$C9,$86,$DB,$30,$8E,$4F,$DC,$99,$67,$54,$13,$4C
