@@ -1703,12 +1703,12 @@ class CPU
     inline void push(unsigned char v)
     {
         ram[0x100 + reg.s] = v;
-        reg.s--;
+        reg.s++;
     }
 
     inline unsigned char pull()
     {
-        reg.s++;
+        reg.s--;
         return ram[0x100 + reg.s];
     }
 
