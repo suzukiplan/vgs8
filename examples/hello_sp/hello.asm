@@ -19,7 +19,55 @@ mainloop:
     jsr show_mouse_status
     jsr drag_mouse_to_hscroll
     jsr draw_mouse_cursor
+    jsr pause
     jmp mainloop
+
+;-------------------------------------------------------------------------------
+; Pause
+;-------------------------------------------------------------------------------
+pause:
+    lda $5700 ; get JoyPad status
+    and #%00000001
+    bne pause_start
+    rts
+pause_start:
+    ; pause BGM & EFF
+    sta $5502
+    sta $5601
+    ; draw "PAUSE" on the FG nametable
+    ldx #$00
+pause_1:
+    lda string_pause, x
+    sta $744D, x ; write on (13 + x, 17) = ($00D + x, $440 = 17 * 64)
+    inx
+    cpx #5 ; text length
+    bne pause_1
+    jsr wait_while_pushing_start
+pause_loop:
+    lda $5BFF ; Wait for VSYNC
+    lda $5700 ; get JoyPad status
+    and #%00000001
+    beq pause_loop
+    jsr wait_while_pushing_start
+    ; clear "PAUSE" text
+    ldx #$00
+    lda #$00
+pause_2:
+    sta $744D, x ; write on (13 + x, 17) = ($00D + x, $440 = 17 * 64)
+    inx
+    cpx #5 ; text length
+    bne pause_2
+    ; resume BGM & EFF
+    sta $5503
+    sta $5602
+    rts
+
+wait_while_pushing_start:
+    lda $5BFF ; Wait for VSYNC
+    lda $5700 ; get JoyPad status
+    and #%00000001
+    bne wait_while_pushing_start
+    rts
 
 ;-------------------------------------------------------------------------------
 ; Initialize
@@ -597,6 +645,9 @@ calc_1s_2:
 ;-------------------------------------------------------------------------------
 string_hello_world:
     .byte "HELLO, VGS8 WORLD!"
+
+string_pause:
+    .byte "PAUSE"
 
 rand_table:; 乱数テーブル
     .byte   $72,$DD,$03,$89,$C9,$86,$DB,$30,$8E,$4F,$DC,$99,$67,$54,$13,$4C
