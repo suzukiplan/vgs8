@@ -216,6 +216,24 @@ void VirtualMachine::_stopEff(unsigned char n)
     apu->stopEff(n);
 }
 
+void VirtualMachine::_pauseEff()
+{
+    if (!apu) return;
+    apu->pauseEff();
+}
+
+void VirtualMachine::_resumeEff()
+{
+    if (!apu) return;
+    apu->resumeEff();
+}
+
+void VirtualMachine::_updateEffMasterVolume()
+{
+    if (!apu) return;
+    apu->updateEffMasterVolume();
+}
+
 void VirtualMachine::_playBgm(unsigned char n)
 {
     if (!apu) return;

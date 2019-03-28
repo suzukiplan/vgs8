@@ -11,8 +11,8 @@ class APU
     struct Register {
         unsigned char bgmPlaying;
         unsigned char bgmCursor;
-        unsigned char reserved1;
-        unsigned char reserved2;
+        unsigned char effPausing;
+        unsigned char effMasterVolume;
         unsigned int bgmCurrentTime;
         unsigned char effPlaying[256];
         unsigned int effCursor[256];
@@ -94,6 +94,21 @@ class APU
         reg.effPlaying[n] = 0;
     }
 
+    void pauseEff()
+    {
+        reg.effPausing = 1;
+    }
+
+    void resumeEff()
+    {
+        reg.effPausing = 0;
+    }
+
+    void updateEffMasterVolume()
+    {
+        reg.effMasterVolume = vm->cpu->ram[0x5504];
+    }
+
     void execute()
     {
         // 1フレーム毎にバッファを367samplesと368samplesで切り替えることで音ズレの発生を防ぐ
@@ -114,23 +129,26 @@ class APU
             reg.bgmCurrentTime = vgsdec_get_value(vgsdec, VGSDEC_REG_TIME);
         }
         // 効果音をバッファに合成
-        for (int i = 0; i < 256; i++) {
-            if (reg.effPlaying[i]) {
-                for (int j = 0; j < soundBufferSize / 2; j++) {
-                    if (reg.effCursor[i] < vm->bank->effSize[i]) {
-                        int w = vm->bank->eff[i][reg.effCursor[i]];
-                        w += soundBuffer[j];
-                        if (32767 < w) {
-                            w = 32767;
-                        } else if (w < -32768) {
-                            w = -32768;
+        if (!reg.effPausing) {
+            double master = 255.0 / (255 - reg.effMasterVolume);
+            for (int i = 0; i < 256; i++) {
+                if (reg.effPlaying[i]) {
+                    for (int j = 0; j < soundBufferSize / 2; j++) {
+                        if (reg.effCursor[i] < vm->bank->effSize[i]) {
+                            int w = vm->bank->eff[i][reg.effCursor[i]];
+                            w += soundBuffer[j];
+                            if (32767 < w) {
+                                w = 32767;
+                            } else if (w < -32768) {
+                                w = -32768;
+                            }
+                            soundBuffer[j] = (short)(w * master);
+                            reg.effCursor[i]++;
+                        } else {
+                            reg.effCursor[i] = 0;
+                            reg.effPlaying[i] = 0;
+                            break;
                         }
-                        soundBuffer[j] = (short)w;
-                        reg.effCursor[i]++;
-                    } else {
-                        reg.effCursor[i] = 0;
-                        reg.effPlaying[i] = 0;
-                        break;
                     }
                 }
             }
@@ -163,6 +181,7 @@ class APU
                 vgsdec_set_value(vgsdec, VGSDEC_REG_TIME, reg.bgmCurrentTime);
             }
         }
+        updateEffMasterVolume();
         return sizeof(reg);
     }
 };

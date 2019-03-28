@@ -125,6 +125,9 @@ class CPU
             case 0x540D: bgNameTableShiftH(value); break;
             case 0x5500: vm->_playEff(value); break;
             case 0x5501: vm->_stopEff(value); break;
+            case 0x5502: vm->_pauseEff(); break;
+            case 0x5503: vm->_resumeEff(); break;
+            case 0x5504: vm->_updateEffMasterVolume(); break;
             case 0x5600: vm->_playBgm(value); break;
             case 0x5601: vm->_pauseBgm(); break;
             case 0x5602: vm->_resumeBgm(); break;

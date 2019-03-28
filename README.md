@@ -136,6 +136,9 @@ open EmuBoard.xcodeproj
 |$540A〜$540D|PPU I/O port (W): FG/BG scroll|
 |$5500|APU I/O port (W): play EFF|
 |$5501|APU I/O port (W): stop EFF|
+|$5502|APU I/O port (W): pause all EFFs|
+|$5503|APU I/O port (W): resume all EFFs|
+|$5504|APU I/O port (RW): all EFFs master volume down rate|
 |$5600|APU I/O port (W): play BGM|
 |$5601|APU I/O port (W): pause BGM|
 |$5602|APU I/O port (W): resume BGM|

@@ -152,6 +152,9 @@ class VirtualMachine
     void _setFgX(unsigned char n);
     void _setFgY(unsigned char n);
     void _playEff(unsigned char n);
+    void _pauseEff();
+    void _resumeEff();
+    void _updateEffMasterVolume();
     void _stopEff(unsigned char n);
     void _playBgm(unsigned char n);
     void _pauseBgm();
