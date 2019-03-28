@@ -140,6 +140,7 @@ open EmuBoard.xcodeproj
 |$5601|APU I/O port (W): pause BGM|
 |$5602|APU I/O port (W): resume BGM|
 |$5603|APU I/O port (R): BGM playing status|
+|$5604|APU I/O port (RW): BGM master volume down rate|
 |$5700|JoyPad I/O port (R): read 1P JoyPad status|
 |$5701|JoyPad I/O port (R): read 2P JoyPad status|
 |$5800|Mouse/TouchPannel I/O port (R): touching status|

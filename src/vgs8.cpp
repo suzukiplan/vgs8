@@ -238,3 +238,9 @@ bool VirtualMachine::_isBgmPlaying()
     if (!apu) return false;
     return apu->isBgmPlaying();
 }
+
+void VirtualMachine::_updateBgmMasterVolume()
+{
+    if (!apu) return;
+    apu->updateBgmMasterVolume();
+}

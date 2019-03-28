@@ -156,6 +156,7 @@ class VirtualMachine
     void _pauseBgm();
     void _resumeBgm();
     bool _isBgmPlaying();
+    void _updateBgmMasterVolume();
 };
 
 #include "bank.hpp"

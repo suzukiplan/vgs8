@@ -51,6 +51,7 @@ class APU
         void* data = vm->bank->bgm[n];
         if (data) {
             vgsdec_load_bgm_from_memory(vgsdec, data, vm->bank->bgmSize[n]);
+            updateBgmMasterVolume();
             reg.bgmPlaying = 1;
         } else {
             reg.bgmPlaying = 0;
@@ -72,6 +73,11 @@ class APU
     bool isBgmPlaying()
     {
         return reg.bgmPlaying ? true : false;
+    }
+
+    void updateBgmMasterVolume()
+    {
+        vgsdec_set_value(vgsdec, VGSDEC_REG_VOLUME_RATE, 25500 / (255 - vm->cpu->ram[0x5604]));
     }
 
     void playEff(unsigned char n)
