@@ -1,4 +1,5 @@
 // Copyright 2019, SUZUKI PLAN (MIT license)
+// VGS Audio Processing Unit emulator
 #ifndef INCLUDE_APU_HPP
 #define INCLUDE_APU_HPP
 #include "vgs8.h"

@@ -1,4 +1,5 @@
 // Copyright 2019, SUZUKI PLAN (MIT license)
+// VGS8 emulator virtual machine
 #include "vgs8.h"
 using namespace VGS8;
 

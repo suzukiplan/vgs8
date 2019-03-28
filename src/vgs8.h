@@ -1,4 +1,5 @@
 // Copyright 2019, SUZUKI PLAN (MIT license)
+// VGS8 emulator virtual machine
 #ifndef INCLUDE_VGS8_H
 #define INCLUDE_VGS8_H
 #include <stdio.h>

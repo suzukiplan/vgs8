@@ -1,4 +1,5 @@
 // Copyright 2019, SUZUKI PLAN (MIT license)
+// VGS cartridge system (BANK) emulator
 #ifndef INCLUDE_BANK_HPP
 #define INCLUDE_BANK_HPP
 
