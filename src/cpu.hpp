@@ -29,64 +29,40 @@ class CPU
     char debugLine[32];
 #endif
 
-    // BGのnametable全体を縦方向にシフトさせる
-    inline void bgNameTableShiftV(char value)
+    // nametable全体を縦方向にローテートさせる
+    inline void nameTableRotateV(unsigned short base, char value)
     {
+        unsigned char work[64];
         if (value & 0x80) {
             // 上スクロール
-            memmove(&ram[0x6000 + 64], &ram[0x6000], 64 * 63);
-            memset(&ram[0x6000 + 63 * 64], 0, 64);
+            memcpy(work, &ram[base], 64);
+            memmove(&ram[base], &ram[base + 64], 64 * 63);
+            memcpy(&ram[base + 64 * 63], work, 64);
         } else if (value) {
             // 下スクロール
-            memmove(&ram[0x6000], &ram[0x6000 + 64], 64 * 63);
-            memset(&ram[0x6000], 0, 64);
-        }
-    }
-
-    // BGのnametable全体を横方向にシフトさせる
-    inline void bgNameTableShiftH(char value)
-    {
-        if (value & 0x80) {
-            // 左スクロール
-            for (int y = 0; y < 64 * 64; y += 64) {
-                memmove(&ram[0x6000 + y], &ram[0x6000 + y + 1], 63);
-                ram[0x6000 + y + 63] = 0;
-            }
-        } else if (value) {
-            // 右スクロール
-            for (int y = 0; y < 64 * 64; y += 64) {
-                memmove(&ram[0x6000 + y + 1], &ram[0x6000 + y], 63);
-                ram[0x6000 + y] = 0;
-            }
-        }
-    }
-
-    // FGのnametable全体を縦方向にシフトさせる
-    inline void fgNameTableShiftV(char value)
-    {
-        if (value & 0x80) {
-            memmove(&ram[0x7000 + 64], &ram[0x7000], 64 * 63);
-            memset(&ram[0x7000 + 63 * 64], 0, 64);
-        } else if (value) {
-            memmove(&ram[0x7000], &ram[0x7000 + 64], 64 * 63);
-            memset(&ram[0x7000], 0, 64);
+            memcpy(work, &ram[base + 64 * 63], 64);
+            memmove(&ram[base + 64], &ram[base], 64 * 63);
+            memcpy(&ram[base], work, 64);
         }
     }
 
     // FGのnametable全体を横方向にシフトさせる
-    inline void fgNameTableShiftH(char value)
+    inline void nameTableRotateH(unsigned short base, char value)
     {
+        unsigned char work;
         if (value & 0x80) {
             // 左スクロール
             for (int y = 0; y < 64 * 64; y += 64) {
-                memmove(&ram[0x7000 + y], &ram[0x7000 + y + 1], 63);
-                ram[0x6000 + y + 63] = 0;
+                work = ram[base + y];
+                memmove(&ram[base + y], &ram[base + y + 1], 63);
+                ram[base + y + 63] = work;
             }
         } else if (value) {
             // 右スクロール
             for (int y = 0; y < 64 * 64; y += 64) {
-                memmove(&ram[0x7000 + y + 1], &ram[0x7000 + y], 63);
-                ram[0x7000 + y] = 0;
+                work = ram[base + y + 63];
+                memmove(&ram[base + y + 1], &ram[base + y], 63);
+                ram[base + y] = work;
             }
         }
     }
@@ -119,10 +95,10 @@ class CPU
             case 0x5407: vm->_setFgY(value); break;
             case 0x5408: vm->_setBgX(value); break;
             case 0x5409: vm->_setBgY(value); break;
-            case 0x540A: fgNameTableShiftV(value); break;
-            case 0x540B: fgNameTableShiftH(value); break;
-            case 0x540C: bgNameTableShiftV(value); break;
-            case 0x540D: bgNameTableShiftH(value); break;
+            case 0x540A: nameTableRotateV(0x7000, value); break;
+            case 0x540B: nameTableRotateH(0x7000, value); break;
+            case 0x540C: nameTableRotateV(0x6000, value); break;
+            case 0x540D: nameTableRotateH(0x6000, value); break;
             case 0x5500: vm->_playEff(value); break;
             case 0x5501: vm->_stopEff(value); break;
             case 0x5502: vm->_pauseEff(); break;
