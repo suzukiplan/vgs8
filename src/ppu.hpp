@@ -99,14 +99,14 @@ class PPU
                     if (!cn) continue; // do not draw $00
                     cn *= 64;
                     for (i = 0; i < 8; i++) {
-                        vy = y * 8 + dy + i;
+                        vy = y * 8 - dy + i;
                         if (8 <= vy && vy < 248) {
                             vy *= 256;
                             int ca = cn + i * 8;
                             for (j = 0; j < 8; j++) {
                                 dptr = &data[ca + j];
                                 if (*dptr) {
-                                    vx = x * 8 + dx + j;
+                                    vx = x * 8 - dx + j;
                                     if (8 <= vx && vx < 248) {
                                         vram[vy + vx] = *dptr;
                                     }
@@ -173,14 +173,14 @@ class PPU
                     if (!cn) continue; // do not draw $00
                     cn *= 64;
                     for (i = 0; i < 8; i++) {
-                        vy = y * 8 + dy + i;
+                        vy = y * 8 - dy + i;
                         if (8 <= vy && vy < 248) {
                             vy *= 256;
                             int ca = cn + i * 8;
                             for (j = 0; j < 8; j++) {
                                 dptr = &data[ca++];
                                 if (*dptr) {
-                                    vx = x * 8 + dx + j;
+                                    vx = x * 8 - dx + j;
                                     if (8 <= vx && vx < 248) {
                                         vram[vy + vx] = *dptr;
                                     }
