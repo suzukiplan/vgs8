@@ -6,6 +6,7 @@
 //  Copyright © 2018年 SUZUKIPLAN. All rights reserved.
 //
 
+#include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -23,7 +24,7 @@ unsigned short emu_vram[VRAM_WIDTH * VRAM_HEIGHT];
 static void* spu;
 static std::mutex sound_lock;
 static unsigned short sound_buffer[65536];
-static unsigned short sound_cursor;
+static volatile unsigned short sound_cursor;
 
 int emu_key_up;
 int emu_key_down;
@@ -42,6 +43,7 @@ static VGS8::VirtualMachine* vm;
 
 void sound_proc(void* buffer, size_t size)
 {
+    while (sound_cursor < size / 2) usleep(100);
     std::unique_lock<std::mutex> lock(sound_lock);
     memcpy(buffer, sound_buffer, size);
     if (size <= sound_cursor) sound_cursor -= size;
@@ -55,7 +57,7 @@ void emu_init(void* rom, size_t size)
 {
     puts("emu_init");
     if (vm) return;
-    spu = vgsspu_start2(22050, 16, 1, 4410, sound_proc);
+    spu = vgsspu_start2(22050, 16, 1, 5880, sound_proc);
     vm = new VGS8::VirtualMachine(rom, size);
 }
 
