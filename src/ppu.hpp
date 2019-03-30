@@ -79,9 +79,9 @@ class PPU
         if (data) {
             vy = reg.bgY / 8;
             vx = reg.bgX / 8;
+            unsigned short wa = 0;
             for (i = 0; i < 32; i++) {
                 unsigned short addr = 0x6000 + (vy + i) * 64 + vx;
-                unsigned short wa = i * 32;
                 for (j = 0; j < 32; j++) {
                     window[wa++] = vm->cpu->ram[addr++];
                 }
@@ -162,9 +162,9 @@ class PPU
         if (data) {
             vy = reg.fgY / 8;
             vx = reg.fgX / 8;
+            unsigned short wa = 0;
             for (i = 0; i < 32; i++) {
                 unsigned short addr = 0x7000 + (vy + i) * 64 + vx;
-                unsigned short wa = i * 32;
                 for (j = 0; j < 32; j++) {
                     window[wa++] = vm->cpu->ram[addr++];
                 }
