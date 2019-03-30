@@ -69,28 +69,33 @@ class PPU
         int y, x, vx, vy, dx, dy;
         unsigned char* data;
         unsigned char* dptr;
-        unsigned char window[32 * 32];
+        unsigned char windowBG[32 * 32];
+        unsigned char windowFG[32 * 32];
         memset(vram, reg.bgC, sizeof(vram));
+
+        // make BG/FG window
+        vy = reg.bgY / 8;
+        vx = reg.bgX / 8;
+        unsigned short wa = 0;
+        for (i = 0; i < 32; i++) {
+            unsigned short addrBG = 0x6000 + (vy + i) * 64 + vx;
+            unsigned short addrFG = 0x7000 + (vy + i) * 64 + vx;
+            for (j = 0; j < 32; j++) {
+                windowFG[wa] = vm->cpu->ram[addrFG++];
+                windowBG[wa++] = vm->cpu->ram[addrBG++];
+            }
+        }
 
         // draw BG
         int cno = reg.cmap & 2 ? 1 : 0;
         int bno = reg.cbank[cno];
         data = (unsigned char*)vm->bank->chr[bno];
         if (data) {
-            vy = reg.bgY / 8;
-            vx = reg.bgX / 8;
-            unsigned short wa = 0;
-            for (i = 0; i < 32; i++) {
-                unsigned short addr = 0x6000 + (vy + i) * 64 + vx;
-                for (j = 0; j < 32; j++) {
-                    window[wa++] = vm->cpu->ram[addr++];
-                }
-            }
             dy = reg.bgY % 8;
             dx = reg.bgX % 8;
             for (y = 0; y < 32; y++) {
                 for (x = 0; x < 32; x++) {
-                    int cn = window[y * 32 + x];
+                    int cn = windowBG[y * 32 + x];
                     if (!cn) continue; // do not draw $00
                     cn *= 64;
                     for (i = 0; i < 8; i++) {
@@ -160,20 +165,11 @@ class PPU
         bno = reg.cbank[cno];
         data = (unsigned char*)vm->bank->chr[bno];
         if (data) {
-            vy = reg.fgY / 8;
-            vx = reg.fgX / 8;
-            unsigned short wa = 0;
-            for (i = 0; i < 32; i++) {
-                unsigned short addr = 0x7000 + (vy + i) * 64 + vx;
-                for (j = 0; j < 32; j++) {
-                    window[wa++] = vm->cpu->ram[addr++];
-                }
-            }
             dy = reg.fgY % 8;
             dx = reg.fgX % 8;
             for (y = 0; y < 32; y++) {
                 for (x = 0; x < 32; x++) {
-                    int cn = window[y * 32 + x];
+                    int cn = windowFG[y * 32 + x];
                     if (!cn) continue; // do not draw $00
                     cn *= 64;
                     for (i = 0; i < 8; i++) {
