@@ -48,7 +48,7 @@ static void term_al(struct AL* al);
 
 void* vgsspu_start(void (*callback)(void* buffer, size_t size))
 {
-    return vgsspu_start2(22050, 16, 1, 5880, callback);
+    return vgsspu_start2(22050, 16, 1, 1470, callback);
 }
 
 void* vgsspu_start2(int sampling, int bit, int ch, size_t size, void (*callback)(void* buffer, size_t size))
