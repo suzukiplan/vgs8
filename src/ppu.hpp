@@ -66,7 +66,7 @@ class PPU
     void execute()
     {
         int i, j;
-        unsigned char y, x, vx, vy, dx, dy;
+        int y, x, vx, vy, dx, dy;
         unsigned char* data;
         unsigned char* dptr;
         unsigned char window[32 * 32];
@@ -80,8 +80,10 @@ class PPU
             vy = reg.bgY / 8;
             vx = reg.bgX / 8;
             for (i = 0; i < 32; i++) {
+                unsigned short addr = 0x6000 + (vy + i) * 64 + vx;
+                unsigned short wa = i * 32;
                 for (j = 0; j < 32; j++) {
-                    window[i * 32 + j] = vm->cpu->ram[0x6000 + (vy + i) * 64 + vx + j];
+                    window[wa++] = vm->cpu->ram[addr++];
                 }
             }
             dy = reg.bgY % 8;
@@ -92,12 +94,16 @@ class PPU
                     if (!cn) continue; // do not draw $00
                     cn *= 64;
                     for (i = 0; i < 8; i++) {
-                        for (j = 0; j < 8; j++) {
-                            dptr = &data[cn + i * 8 + j];
-                            if (*dptr) {
-                                vx = x * 8 + dx + j;
-                                vy = y * 8 + dy + i;
-                                vram[vy * 256 + vx] = *dptr;
+                        vy = y * 8 + dy + i;
+                        if (8 <= vy && vy < 248) {
+                            for (j = 0; j < 8; j++) {
+                                dptr = &data[cn + i * 8 + j];
+                                if (*dptr) {
+                                    vx = x * 8 + dx + j;
+                                    if (8 <= vx && vx < 248) {
+                                        vram[vy * 256 + vx] = *dptr;
+                                    }
+                                }
                             }
                         }
                     }
@@ -155,8 +161,10 @@ class PPU
             vy = reg.fgY / 8;
             vx = reg.fgX / 8;
             for (i = 0; i < 32; i++) {
+                unsigned short addr = 0x7000 + (vy + i) * 64 + vx;
+                unsigned short wa = i * 32;
                 for (j = 0; j < 32; j++) {
-                    window[i * 32 + j] = vm->cpu->ram[0x7000 + (vy + i) * 64 + vx + j];
+                    window[wa++] = vm->cpu->ram[addr++];
                 }
             }
             dy = reg.fgY % 8;
@@ -167,12 +175,16 @@ class PPU
                     if (!cn) continue; // do not draw $00
                     cn *= 64;
                     for (i = 0; i < 8; i++) {
-                        for (j = 0; j < 8; j++) {
-                            dptr = &data[cn + i * 8 + j];
-                            if (*dptr) {
-                                vx = x * 8 + dx + j;
-                                vy = y * 8 + dy + i;
-                                vram[vy * 256 + vx] = *dptr;
+                        vy = y * 8 + dy + i;
+                        if (8 <= vy && vy < 248) {
+                            for (j = 0; j < 8; j++) {
+                                dptr = &data[cn + i * 8 + j];
+                                if (*dptr) {
+                                    vx = x * 8 + dx + j;
+                                    if (8 <= vx && vx < 248) {
+                                        vram[vy * 256 + vx] = *dptr;
+                                    }
+                                }
                             }
                         }
                     }
