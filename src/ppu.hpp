@@ -76,10 +76,12 @@ class PPU
         // make BG/FG window
         vy = reg.bgY / 8;
         vx = reg.bgX / 8;
+        dy = reg.fgY / 8;
+        dx = reg.fgX / 8;
         unsigned short wa = 0;
         for (i = 0; i < 32; i++) {
             unsigned short addrBG = 0x6000 + (vy + i) * 64 + vx;
-            unsigned short addrFG = 0x7000 + (vy + i) * 64 + vx;
+            unsigned short addrFG = 0x7000 + (dy + i) * 64 + dx;
             for (j = 0; j < 32; j++) {
                 windowFG[wa] = vm->cpu->ram[addrFG++];
                 windowBG[wa++] = vm->cpu->ram[addrBG++];
