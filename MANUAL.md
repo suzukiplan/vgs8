@@ -277,13 +277,13 @@ LDA #$61
 STA $5A02   ; BP ($6000〜$60FF) の内容を $6100〜$61FF へ転送
 ```
 
-### degree calculation ($5A00〜$5A04)
+### degree calculation ($5A10〜$5A14)
 
-- $5A00 に x1 の座標をstore
-- $5A01 に y1 の座標をstore
-- $5A02 に x2 の座標をstore
-- $5A03 に y2 の座標をstore
-- $5A04 を load することで (x1, y1) と (x2, y2) の角度を求める
+- $5A10 に x1 の座標をstore
+- $5A11 に y1 の座標をstore
+- $5A12 に x2 の座標をstore
+- $5A13 に y2 の座標をstore
+- $5A14 を load することで (x1, y1) と (x2, y2) の角度を求める
 
 角度は上向きをゼロとして時計まわりで0~255の範囲で算出される:
 - ↑: 0
