@@ -69,10 +69,10 @@ class CPU
 
     inline unsigned char calc_degree()
     {
-        double x1 = ram[0x5A00];
-        double y1 = ram[0x5A01];
-        double x2 = ram[0x5A02];
-        double y2 = ram[0x5A03];
+        double x1 = ram[0x5A10];
+        double y1 = ram[0x5A11];
+        double x2 = ram[0x5A12];
+        double y2 = ram[0x5A13];
         unsigned char deg = (unsigned char)((M_PI + atan2(y1 - y2, x1 - x2)) / (M_PI * 2) * 255);
         deg -= 191;
         return deg;
@@ -87,7 +87,7 @@ class CPU
             case 0x5800: *value = vm->touching ? 1 : 0; break;
             case 0x5801: *value = vm->touchX; break;
             case 0x5802: *value = vm->touchY; break;
-            case 0x5A04: *value = calc_degree(); break;
+            case 0x5A14: *value = calc_degree(); break;
             case 0x5BFF: vramUpdateRequest = true; return;
             default: return;
         }
