@@ -1912,13 +1912,13 @@ class CPU
         this->brkBank = 0;
         this->brkAddr = 0;
         this->brkCB = NULL;
-        memset(ram, 0, sizeof(ram));
-        memset(&reg, 0, sizeof(reg));
         reset();
     }
 
     void reset()
     {
+        memset(ram, 0, sizeof(ram));
+        memset(&reg, 0, sizeof(reg));
         reg.pc = 0x8000;
         changeProgramBank8000(0);
         changeProgramBankC000(1);

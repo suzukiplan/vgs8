@@ -61,6 +61,11 @@ void emu_init(void* rom, size_t size)
     vm = new VGS8::VirtualMachine(rom, size);
 }
 
+void emu_reset()
+{
+    vm->reset();
+}
+
 /**
  * 画面の更新間隔（1秒間で60回）毎にこの関数がコールバックされる
  * この中で以下の処理を実行する想定:

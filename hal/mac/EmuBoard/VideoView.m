@@ -146,7 +146,9 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTime
         case 0x0020: emu_key_select = 0; break; // Space
         case 0x0078: emu_key_b = 0; break; // X
         case 0x007A: emu_key_a = 0; break; // Z
+        case 0x0072: emu_reset(); break;
     }
+    // NSLog(@"keycode: %04X", (int)tolower(c));
 }
 static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTimeStamp *now, const CVTimeStamp *outputTime, CVOptionFlags flagsIn, CVOptionFlags *flagsOut, void *context)
 {
