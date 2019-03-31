@@ -152,12 +152,30 @@ open EmuBoard.xcodeproj
 |$5A00|DMA I/O port (RW): Set base page|
 |$5A01|DMA I/O port (W): execute memset|
 |$5A02|DMA I/O port (W): execute memcpy|
+|$5A10|DEGREE I/O port (RW): x1|
+|$5A11|DEGREE I/O port (RW): y1|
+|$5A12|DEGREE I/O port (RW): x2|
+|$5A13|DEGREE I/O port (RW): y2|
+|$5A14|DEGREE I/O port (R): calculate degree of (x1, y1) and (x2, y2)<sup>*1</sup>|
 |$5BFF|CPU I/O port (R): update VRAM request|
 |$5C00〜$5FFF|Palette|
 |$6000〜$6FFF|BG nametable (64x64)|
 |$7000〜$7FFF|FG nametable (64x64)|
 |$8000〜$BFFF|Program 0|
 |$C000〜$FFFF|Program 1|
+
+
+> *1: VGS8 degree calculation:
+> ```
+> x1=100, y1=100, x2=100, y2=  0: degree=0
+> x1=100, y1=100, x2=200, y2=  0: degree=32
+> x1=100, y1=100, x2=200, y2=100: degree=64
+> x1=100, y1=100, x2=200, y2=200: degree=96
+> x1=100, y1=100, x2=100, y2=200: degree=128
+> x1=100, y1=100, x2=  0, y2=200: degree=160
+> x1=100, y1=100, x2=  0, y2=100: degree=192
+> x1=100, y1=100, x2=  0, y2=  0: degree=224
+> ```
 
 ## Manual
 
