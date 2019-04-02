@@ -71,4 +71,26 @@
     emu_destroy();
 }
 
+-(void)menuOpenRomFile:(id)sender
+{
+    __weak NSOpenPanel* panel = [NSOpenPanel openPanel];
+    panel.allowsMultipleSelection = NO;
+    panel.canChooseDirectories = NO;
+    panel.canCreateDirectories = YES;
+    panel.canChooseFiles = YES;
+    panel.allowedFileTypes = @[@"rom", @"vgs8"];
+    [panel beginWithCompletionHandler:^(NSModalResponse result) {
+        if (!result) return;
+        NSData* data = [NSData dataWithContentsOfURL:panel.URL];
+        if (!data) return;
+        emu_reload(data.bytes, data.length);
+        [[NSDocumentController sharedDocumentController] noteNewRecentDocumentURL:panel.URL];
+    }];
+}
+
+-(void)menuReset:(id)sender
+{
+    emu_reset();
+}
+
 @end

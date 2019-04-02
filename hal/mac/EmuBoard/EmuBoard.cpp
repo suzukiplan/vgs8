@@ -53,11 +53,19 @@ void sound_proc(void* buffer, size_t size)
 /**
  * 起動時に1回だけ呼び出される
  */
-void emu_init(void* rom, size_t size)
+void emu_init(const void* rom, size_t size)
 {
     puts("emu_init");
     if (vm) return;
     spu = vgsspu_start2(22050, 16, 1, 5880, sound_proc);
+    vm = new VGS8::VirtualMachine(rom, size);
+}
+
+void emu_reload(const void* rom, size_t size)
+{
+    puts("emu_reload");
+    std::unique_lock<std::mutex> lock(sound_lock);
+    if (vm) delete vm;
     vm = new VGS8::VirtualMachine(rom, size);
 }
 

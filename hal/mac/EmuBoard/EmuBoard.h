@@ -13,7 +13,8 @@ extern "C" {
 #endif
 
 extern unsigned short emu_vram[VRAM_WIDTH * VRAM_HEIGHT];
-void emu_init(void* rom, size_t size);
+void emu_init(const void* rom, size_t size);
+void emu_reload(const void* rom, size_t size);
 void emu_reset(void);
 void emu_vsync(void);
 void emu_destroy(void);
