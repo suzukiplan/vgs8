@@ -126,6 +126,17 @@ open EmuBoard.xcodeproj
 |$0100〜$01FF|Stack|
 |$0200〜$4FFF|RAM|
 |$5000〜$53FF|Sprite OAM (4x256)|
+|$5400〜$5BFF|I/O ports|
+|$5C00〜$5FFF|Palette|
+|$6000〜$6FFF|BG nametable (64x64)|
+|$7000〜$7FFF|FG nametable (64x64)|
+|$8000〜$BFFF|Program 0|
+|$C000〜$FFFF|Program 1|
+
+## I/O map
+
+|Address|Usage|
+|---|---|
 |$5400|CPU I/O port (RW): PRG Bank of $8000〜$BFFF|
 |$5401|CPU I/O port (RW): PRG Bank of $C000〜$FFFF|
 |$5402|PPU I/O port (RW): CHR Bank of 0|
@@ -158,12 +169,6 @@ open EmuBoard.xcodeproj
 |$5A13|DEGREE I/O port (RW): y2|
 |$5A14|DEGREE I/O port (R): calculate degree of (x1, y1) and (x2, y2)<sup>*1</sup>|
 |$5BFF|CPU I/O port (R): update VRAM request|
-|$5C00〜$5FFF|Palette|
-|$6000〜$6FFF|BG nametable (64x64)|
-|$7000〜$7FFF|FG nametable (64x64)|
-|$8000〜$BFFF|Program 0|
-|$C000〜$FFFF|Program 1|
-
 
 > *1: VGS8 degree calculation:
 > ```
