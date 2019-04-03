@@ -19,9 +19,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    NSString* romFile = [[NSBundle mainBundle] pathForResource:@"test" ofType:@"rom"];
+    NSString* romFile = [[NSBundle mainBundle] pathForResource:@"init" ofType:@"rom"];
     NSData* rom = [NSData dataWithContentsOfFile:romFile];
-    NSLog(@"test.rom: %ld bytes", rom.length);
     emu_init((void*)rom.bytes, rom.length);
     self.view.frame = CGRectMake(0, 0, VRAM_VIEW_WIDTH * 1.5, VRAM_VIEW_HEIGHT * 1.5);
     CALayer *layer = [CALayer layer];
