@@ -11,7 +11,7 @@
 #import "constants.h"
 #import "EmuBoard.h"
 
-@interface ViewController() <NSWindowDelegate>
+@interface ViewController() <NSWindowDelegate, VideoViewDelegate>
 @property (nonatomic) VideoView* video;
 @end
 
@@ -28,6 +28,7 @@
     [self.view setWantsLayer:YES];
     [self.view setLayer:layer];
     _video = [[VideoView alloc] initWithFrame:[self calcVramRect]];
+    _video.delegate = self;
     [self.view addSubview:_video];
     [self.view.window makeFirstResponder:_video];
 }
@@ -90,6 +91,13 @@
 -(void)menuReset:(id)sender
 {
     emu_reset();
+}
+
+- (void)videoView:(VideoView *)view didDropFile:(NSString *)file
+{
+    NSData* data = [NSData dataWithContentsOfFile:file];
+    if (!data) return;
+    emu_reload(data.bytes, data.length);
 }
 
 @end

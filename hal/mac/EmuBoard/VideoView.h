@@ -10,7 +10,14 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@class VideoView;
+
+@protocol VideoViewDelegate <NSObject>
+- (void)videoView:(VideoView*)view didDropFile:(NSString*)file;
+@end
+
 @interface VideoView : NSView
+@property (nonatomic, weak) id<VideoViewDelegate> delegate;
 @property (nonatomic, readwrite) BOOL isFullScreen;
 - (id)initWithFrame:(CGRect)frame;
 - (void)releaseDisplayLink;

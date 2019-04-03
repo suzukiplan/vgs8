@@ -47,6 +47,7 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTime
         CVDisplayLinkCreateWithActiveCGDisplays(&_displayLink);
         CVDisplayLinkSetOutputCallback(_displayLink, MyDisplayLinkCallback, (__bridge void *)self);
         CVDisplayLinkStart(_displayLink);
+        [self registerForDraggedTypes:@[NSFilenamesPboardType]];
     }
     return self;
 }
@@ -150,6 +151,28 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTime
     }
     // NSLog(@"keycode: %04X", (int)tolower(c));
 }
+
+- (NSDragOperation)draggingEntered:(id<NSDraggingInfo>)sender
+{
+    return NSDragOperationCopy;
+}
+
+- (BOOL)prepareForDragOperation:(id<NSDraggingInfo>)sender
+{
+    NSArray<NSString*>* files = [sender.draggingPasteboard propertyListForType:NSFilenamesPboardType];
+    return files.count == 1; // 1ファイルのみ許可
+}
+
+- (BOOL)performDragOperation:(id<NSDraggingInfo>)sender
+{
+    if (_delegate) {
+        for (NSString* file in [sender.draggingPasteboard propertyListForType:NSFilenamesPboardType]) {
+            [_delegate videoView:self didDropFile:file];
+        }
+    }
+    return YES;
+}
+    
 static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTimeStamp *now, const CVTimeStamp *outputTime, CVOptionFlags flagsIn, CVOptionFlags *flagsOut, void *context)
 {
     [(__bridge VideoLayer *)context performSelectorOnMainThread:@selector(vsync) withObject:nil waitUntilDone:NO];
