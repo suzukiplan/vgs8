@@ -12,11 +12,11 @@
                 <application id="hnw-xV-0zn" sceneMemberID="viewController">
                     <menu key="mainMenu" title="Main Menu" systemMenu="main" id="AYu-sK-qS6">
                         <items>
-                            <menuItem title="EmuBoard" id="1Xt-HY-uBw">
+                            <menuItem title="VGS8" id="1Xt-HY-uBw">
                                 <modifierMask key="keyEquivalentModifierMask"/>
-                                <menu key="submenu" title="EmuBoard" systemMenu="apple" id="uQy-DD-JDr">
+                                <menu key="submenu" title="VGS8" systemMenu="apple" id="uQy-DD-JDr">
                                     <items>
-                                        <menuItem title="About EmuBoard" id="5kV-Vb-QxS">
+                                        <menuItem title="About VGS8" id="5kV-Vb-QxS">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="orderFrontStandardAboutPanel:" target="Ady-hI-5gd" id="Exp-CZ-Vem"/>
@@ -119,14 +119,29 @@
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="Ao6-gc-6jn"/>
-                                        <menuItem title="Display size 1x" keyEquivalent="" id="xgq-I4-2Mm">
+                                        <menuItem title="View size 1x" keyEquivalent="" id="xgq-I4-2Mm">
                                             <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="menuViewSize1x:" target="Ady-hI-5gd" id="hvi-70-hSd"/>
+                                            </connections>
                                         </menuItem>
-                                        <menuItem title="Display size 2x" keyEquivalent="" id="Ld6-nx-DCw">
+                                        <menuItem title="View size 2x" keyEquivalent="" id="Ld6-nx-DCw">
                                             <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="menuViewSize2x:" target="Ady-hI-5gd" id="gW2-8m-GBG"/>
+                                            </connections>
                                         </menuItem>
-                                        <menuItem title="Display size 3x" keyEquivalent="" id="Rr5-mP-hfG">
+                                        <menuItem title="View size 3x" keyEquivalent="" id="Rr5-mP-hfG">
                                             <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="menuViewSize3x:" target="Ady-hI-5gd" id="RTG-Ns-i9N"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="View size 4x" keyEquivalent="" id="hUG-gG-mNu">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="menuViewSize4x:" target="Ady-hI-5gd" id="Ie9-Rv-zge"/>
+                                            </connections>
                                         </menuItem>
                                     </items>
                                 </menu>

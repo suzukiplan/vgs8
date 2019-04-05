@@ -13,6 +13,7 @@
 
 @interface ViewController() <NSWindowDelegate, VideoViewDelegate>
 @property (nonatomic) VideoView* video;
+@property (nonatomic) BOOL isFullScreen;
 @end
 
 @implementation ViewController
@@ -91,6 +92,40 @@
 -(void)menuReset:(id)sender
 {
     emu_reset();
+}
+
+- (void)menuViewSize1x:(id)sender
+{
+    if (_isFullScreen) return;
+    [self.view.window setContentSize:NSMakeSize(VRAM_VIEW_WIDTH * 1, VRAM_VIEW_HEIGHT * 1)];
+}
+
+- (void)menuViewSize2x:(id)sender
+{
+    if (_isFullScreen) return;
+    [self.view.window setContentSize:NSMakeSize(VRAM_VIEW_WIDTH * 2, VRAM_VIEW_HEIGHT * 2)];
+}
+
+- (void)menuViewSize3x:(id)sender
+{
+    if (_isFullScreen) return;
+    [self.view.window setContentSize:NSMakeSize(VRAM_VIEW_WIDTH * 3, VRAM_VIEW_HEIGHT * 3)];
+}
+
+- (void)menuViewSize4x:(id)sender
+{
+    if (_isFullScreen) return;
+    [self.view.window setContentSize:NSMakeSize(VRAM_VIEW_WIDTH * 4, VRAM_VIEW_HEIGHT * 4)];
+}
+
+- (void)windowDidEnterFullScreen:(NSNotification *)notification
+{
+    _isFullScreen = YES;
+}
+
+- (void)windowDidExitFullScreen:(NSNotification *)notification
+{
+    _isFullScreen = NO;
 }
 
 - (void)videoView:(VideoView *)view didDropFile:(NSString *)file
